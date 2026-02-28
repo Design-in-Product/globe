@@ -1,0 +1,4 @@
+verify_frames/*.png filter=lfs diff=lfs merge=lfs -text
+test_crossfade/*.png filter=lfs diff=lfs merge=lfs -text
+frames/*.png filter=lfs diff=lfs merge=lfs -text
+render_frames/*.png filter=lfs diff=lfs merge=lfs -text
