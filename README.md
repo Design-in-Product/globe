@@ -1,4 +1,4 @@
-# Atlas: Animated Tectonic Globe
+# Tectonic Globe
 
 A 3D animated visualization of Earth's tectonic history, showing continental drift from 1000 million years ago (Rodinia) through Pangaea to the present day.
 
