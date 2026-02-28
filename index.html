@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tectonic Globe</title>
 
-    <!-- Open Graph (Slack, iMessage, Facebook, LinkedIn, etc.) -->
+    <!-- Open Graph -->
     <meta property="og:title" content="Tectonic Globe">
     <meta property="og:description" content="1 billion years of tectonic plate movement in 100 seconds">
     <meta property="og:type" content="video.other">
@@ -26,12 +26,400 @@
     <meta name="twitter:image" content="https://globe.dinp.xyz/verify_frames/check_01.png">
 
     <style>
+        :root {
+            --bg: #000;
+            --bg-raised: #0a0a0f;
+            --bg-card: #111118;
+            --text: #e8e8e8;
+            --text-muted: #888;
+            --text-dim: #555;
+            --accent: #4a9eff;
+            --accent-dim: #2a5a99;
+            --border: #222;
+            --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #000; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        video { max-width: 100%; max-height: 100vh; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── Hero ──────────────────────────────────── */
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 2rem;
+            font-weight: 300;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+        }
+
+        .hero .tagline {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .hero-video-wrap {
+            width: 100%;
+            max-width: 960px;
+        }
+
+        .hero-video-wrap video {
+            width: 100%;
+            border-radius: 4px;
+            background: #000;
+        }
+
+        .video-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .video-toggle button {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-family: var(--font);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .video-toggle button.active {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .video-toggle button:hover {
+            border-color: var(--text-muted);
+            color: var(--text);
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 2rem;
+            color: var(--text-dim);
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            animation: fade-pulse 3s ease-in-out infinite;
+        }
+
+        .scroll-hint::after {
+            content: "";
+            display: block;
+            width: 1px;
+            height: 24px;
+            background: var(--text-dim);
+            margin: 0.5rem auto 0;
+        }
+
+        @keyframes fade-pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        /* ── Sections ─────────────────────────────── */
+
+        section {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 4rem 1.25rem;
+        }
+
+        section h2 {
+            font-size: 1.4rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+        }
+
+        /* ── About ─────────────────────────────────── */
+
+        .about p {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .pipeline {
+            background: var(--bg-raised);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+            font-size: 0.8rem;
+            line-height: 1.8;
+            color: var(--text-muted);
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        .pipeline .step { color: var(--text); }
+        .pipeline .arrow { color: var(--accent-dim); }
+        .pipeline .output { color: var(--text-dim); }
+
+        /* ── Timeline ──────────────────────────────── */
+
+        .timeline {
+            position: relative;
+            padding-left: 0;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 0.5rem;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: var(--border);
+        }
+
+        .version-card {
+            position: relative;
+            padding-left: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .version-card::before {
+            content: "";
+            position: absolute;
+            left: 0.25rem;
+            top: 0.35rem;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--accent-dim);
+            border: 2px solid var(--bg);
+        }
+
+        .version-card.current::before {
+            background: var(--accent);
+            box-shadow: 0 0 8px var(--accent);
+        }
+
+        .version-card h3 {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .version-card h3 span {
+            color: var(--accent);
+        }
+
+        .version-card .version-desc {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .version-card video {
+            width: 100%;
+            border-radius: 4px;
+            background: #000;
+            border: 1px solid var(--border);
+        }
+
+        /* ── Footer ────────────────────────────────── */
+
+        footer {
+            border-top: 1px solid var(--border);
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 2rem 1.25rem 3rem;
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 0.8rem;
+        }
+
+        footer a {
+            color: var(--text-muted);
+            text-decoration: none;
+            border-bottom: 1px solid var(--border);
+            transition: color 0.2s;
+        }
+
+        footer a:hover {
+            color: var(--accent);
+        }
+
+        footer .more {
+            margin-top: 0.5rem;
+            font-style: italic;
+            color: var(--text-dim);
+        }
+
+        /* ── Desktop ───────────────────────────────── */
+
+        @media (min-width: 768px) {
+            .hero h1 { font-size: 2.8rem; }
+            .hero .tagline { font-size: 1rem; }
+
+            section { padding: 5rem 2rem; }
+
+            .timeline { padding-left: 0; }
+
+            .timeline::before {
+                left: 2rem;
+            }
+
+            .version-card {
+                padding-left: 5rem;
+            }
+
+            .version-card::before {
+                left: 1.75rem;
+            }
+
+            .version-card video {
+                max-width: 560px;
+            }
+        }
     </style>
 </head>
 <body>
-    <video src="tectonic_globe_v6.mp4" controls autoplay loop></video>
+
+<!-- ── Hero ───────────────────────────────────────── -->
+<div class="hero">
+    <h1>Tectonic Globe</h1>
+    <p class="tagline">1 billion years of continental drift in 100 seconds</p>
+
+    <div class="hero-video-wrap">
+        <video id="hero-video"
+               src="tectonic_globe_v6.mp4"
+               poster="verify_frames/check_01.png"
+               controls
+               playsinline
+               preload="metadata">
+        </video>
+        <div class="video-toggle">
+            <button class="active" id="btn-globe" onclick="switchVideo('globe')">3D Globe</button>
+            <button id="btn-flat" onclick="switchVideo('flat')">Flat Projection</button>
+        </div>
+    </div>
+
+    <a href="#about" class="scroll-hint" aria-label="Scroll down">Scroll</a>
+</div>
+
+<!-- ── About ──────────────────────────────────────── -->
+<section class="about" id="about">
+    <h2>What is this?</h2>
+
+    <p>An animated visualization of Earth's tectonic history, from the assembly of Rodinia 1 billion years ago, through Pangaea, to the present day. The continents genuinely slide at 1-million-year resolution &mdash; 1,001 frames of plate reconstruction data rendered onto a 3D globe in Blender.</p>
+
+    <p>Built collaboratively by <strong>Xian</strong> and <strong>Claude</strong> (Anthropic's AI) over a series of working sessions. Xian brought the vision and caught the visual bugs; Claude wrote the code across Python geoscience libraries, Blender's 3D API, video encoding, and subtitle rendering.</p>
+
+    <div class="pipeline"><span class="step">generate_frames.py</span>     <span class="output">gplately/Merdith2021 &rarr; 1001 equirectangular PNGs</span>
+        <span class="arrow">&darr;</span>
+<span class="step">compute_camera_path.py</span>  <span class="output">adaptive centroid tracking &rarr; camera_path.json</span>
+        <span class="arrow">&darr;</span>
+<span class="step">render_globe.py</span>         <span class="output">Blender Cycles + dual-texture crossfade &rarr; MP4</span>
+<span class="step">render_flat.py</span>          <span class="output">PIL crossfade + ffmpeg &rarr; MP4</span></div>
+</section>
+
+<!-- ── Version History ────────────────────────────── -->
+<section id="history">
+    <h2>How it evolved</h2>
+
+    <div class="timeline">
+
+        <div class="version-card">
+            <h3><span>v1</span> &mdash; First pixels</h3>
+            <p class="version-desc">Got a rotating globe with continental plates on screen. Camera targeting was broken and it was only 15 seconds long, but the pipeline existed: gplately data in, Blender render out.</p>
+            <video src="tectonic_globe_v1.mp4" poster="verify_v1_f1.png" controls playsinline preload="none"></video>
+        </div>
+
+        <div class="version-card">
+            <h3><span>v2</span> &mdash; Pacing &amp; subtitles</h3>
+            <p class="version-desc">Added variable pacing and subtitle overlays, but introduced a rotation bug that shifted everything 90&deg; east. The kind of bug that's easy to write and hard to spot &mdash; it <em>almost</em> looks right.</p>
+            <video src="tectonic_globe_v2.mp4" poster="verify_v2_f1.png" controls playsinline preload="none"></video>
+        </div>
+
+        <div class="version-card">
+            <h3><span>v3</span> &mdash; Fixing rotations</h3>
+            <p class="version-desc">Fixed the longitude bug but introduced a latitude one: rotating around the X axis instead of Y. On a globe, that's the difference between "tilt toward the camera" and "tilt sideways." Xian caught it by watching the output.</p>
+            <video src="tectonic_globe_v3.mp4" poster="verify_v3_01.png" controls playsinline preload="none"></video>
+        </div>
+
+        <div class="version-card">
+            <h3><span>v4</span> &mdash; Smart camera tracking</h3>
+            <p class="version-desc">The first version that actually worked well. Rewrote the camera path with Union-Find clustering to track the largest landmass through time, adaptive thresholds for polar supercontinents, Cartesian centroid averaging, and Gaussian smoothing. Duration went from 15 to 64 seconds with variable pacing.</p>
+            <video src="tectonic_globe_v4.mp4" poster="verify_v4_01.png" controls playsinline preload="none"></video>
+        </div>
+
+        <div class="version-card">
+            <h3><span>v5</span> &mdash; Crossfade blending</h3>
+            <p class="version-desc">Added a dual-texture shader in Blender that dissolves between geological frames instead of cutting. Figuring out Blender 5.0's ShaderNodeMix API (input indices: Factor=0, A=6, B=7, Result=2) was the tricky part.</p>
+            <video src="tectonic_globe_v5.mp4" controls playsinline preload="none"></video>
+        </div>
+
+        <div class="version-card current">
+            <h3><span>v6</span> &mdash; 1 Ma resolution</h3>
+            <p class="version-desc">The breakthrough. Instead of crossfading between frames 5 million years apart, we regenerated at 1 Ma resolution &mdash; 1,001 frames instead of 201. The continents genuinely <em>slide</em>. This is when it crossed from "sort of cool" to "wow."</p>
+            <video src="tectonic_globe_v6.mp4" poster="verify_frames/check_01.png" controls playsinline preload="none"></video>
+        </div>
+
+    </div>
+</section>
+
+<!-- ── Footer ─────────────────────────────────────── -->
+<footer>
+    <p>Built by Xian &amp; Claude &middot; February 2025 &middot; <a href="https://github.com/Design-in-Product/globe">View source on GitHub</a></p>
+    <p class="more">More to come.</p>
+</footer>
+
+<!-- ── Script ─────────────────────────────────────── -->
+<script>
+    function switchVideo(type) {
+        const video = document.getElementById('hero-video');
+        const btnGlobe = document.getElementById('btn-globe');
+        const btnFlat = document.getElementById('btn-flat');
+        const wasPlaying = !video.paused;
+        const currentTime = video.currentTime;
+
+        if (type === 'globe') {
+            video.src = 'tectonic_globe_v6.mp4';
+            video.poster = 'verify_frames/check_01.png';
+            btnGlobe.classList.add('active');
+            btnFlat.classList.remove('active');
+        } else {
+            video.src = 'tectonic_flat_v6.mp4';
+            video.poster = '';
+            btnFlat.classList.add('active');
+            btnGlobe.classList.remove('active');
+        }
+
+        video.currentTime = currentTime;
+        if (wasPlaying) video.play();
+    }
+</script>
+
 </body>
 </html>
