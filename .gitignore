@@ -3,22 +3,8 @@
 __pycache__/
 *.pyc
 
-# Render outputs (regenerable)
-render_frames/
-test_rotation/
-*.mp4
-
-# Data (auto-downloaded by gplately)
-data/plate-models/
-
 # OS
 .DS_Store
-
-# Generated artifacts
-overlay_text.ass
-overlay_flat.ass
-verify_*.png
-*.log
 
 # Editor
 *.swp
