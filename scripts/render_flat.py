@@ -22,7 +22,7 @@ from PIL import Image
 # ── Configuration ─────────────────────────────────────────────
 CAMERA_PATH_FILE = os.path.abspath("./camera_path.json")
 FRAMES_DIR = os.path.abspath("./frames")
-OUTPUT_PATH = os.path.abspath("./tectonic_flat_v3.mp4")
+OUTPUT_PATH = os.path.abspath("./tectonic_flat_v6.mp4")
 OVERLAY_SCRIPT = os.path.abspath("./overlay_flat.ass")
 FPS = 24
 RES_X = 1920
