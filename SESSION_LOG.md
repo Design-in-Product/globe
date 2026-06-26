@@ -75,6 +75,26 @@ These are the house rules for this project. Honor them unless explicitly changed
   `--rotations`, `--direction`, `--min-hold`).
 - `camera_path_spin.json` — Pangaea spinning, ready to render directly.
 
+**Build environment (reconstructed from repo records: README + render_v5/v6.log)**
+- Earlier agents ran the Blender step on **Xian's local Mac**, never in a cloud
+  session (logs reference `/Users/xian/Development/atlas/`; project is "atlas"
+  locally, "globe" in the repo).
+- Headless: `/Applications/Blender.app/Contents/MacOS/Blender --background
+  --python scripts/render_globe.py`.
+- **Blender 5.0.1**, Cycles, 64 samples, **Apple M4** 10-core GPU via Metal
+  (`render_globe.py` configures Metal explicitly).
+- v6 full render: **20,428 s ≈ 5.7 hours** for 2,422 frames (~0.12 fps), then
+  ffmpeg assembles the MP4 with the ASS overlay.
+- The web container has **no Blender/ffmpeg/GPU** — hence math/data work happens
+  here, rendering happens on Xian's machine. Resuming the session **locally**
+  would let the agent drive the render and inspect rendered PNG frames directly.
+- Division of labor (still true): agent inspects **stills**; Xian judges
+  **motion** — the original Claude "can look at individual frames but can't watch
+  video in motion" (README), which is how Xian caught the v2/v3 rotation bugs.
+- Fast iteration path for local work: `test_rotation.py` already renders a few
+  frames in **EEVEE at 960×540** — use that (or a Pangaea-window variant) for a
+  minutes-long sanity check before a full ~6 hr Cycles pass.
+
 **Handoff / next step**
 - Xian renders the **full path** (not descoped) with `render_globe.py` pointed at
   `camera_path_spin.json`, and judges the Pangaea spin.
