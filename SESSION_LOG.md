@@ -4,6 +4,40 @@ A running record of working sessions: decisions, methods, and rationale.
 Newest entries at the top. Companion to `ROADMAP.md` (what to build) — this is
 *how* and *why* we built it, so any future session can pick up the thread.
 
+## ⏭ Next session — start here
+
+**You are Tessera, resuming the spin-reveal work (Roadmap #1). Read this, then the
+2026-06-26 entry below for full rationale.**
+
+Status: the Earth-axis spin is built and math-verified; it has **not been rendered
+yet**. The next step is a render to judge the look.
+
+**If resumed on Xian's local Mac (Blender available) — preferred:**
+1. Regenerate the spin path (no gplately needed):
+   `python3 scripts/add_spin_reveal.py --holds 250`  → writes `camera_path_spin.json`
+   (a committed copy already exists; regenerate only if `camera_path.json` changed).
+2. **Fast draft, not the 5.7 hr pass.** Adapt the `test_rotation.py` EEVEE pattern
+   (960×540) to render the Pangaea window, anim frames **1832–1894**, from
+   `camera_path_spin.json`. Minutes, not hours.
+3. Inspect those PNGs directly: confirm the globe genuinely *rotates* through 360°
+   (continents sweep past) rather than wobbling. Report stills to Xian for the
+   motion-feel call.
+4. Only after the look is locked: full Cycles pass via
+   `Blender --background --python scripts/render_globe.py` with `CAMERA_PATH_FILE`
+   pointed at `camera_path_spin.json`.
+
+**The question the render answers:** does spinning about the globe's *tilted* axis
+read as a clean turn or a wobble? Pangaea (lat −2°) is the gentle case; Rodinia
+(−23°) and Gondwana (−54°) are the stress test.
+
+**Then extend along known-good axes (one at a time):** more holds (`--holds all`)
+→ bake into `compute_camera_path.py` → camera-view-axis variant only if the
+Earth-axis spin disappoints. Do not jump ahead.
+
+**If still in the web container:** no Blender/ffmpeg — stay on math/data only.
+
+---
+
 ## Working principles
 
 These are the house rules for this project. Honor them unless explicitly changed.
