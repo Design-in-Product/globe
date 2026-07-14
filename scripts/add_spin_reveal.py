@@ -79,6 +79,40 @@ def extend_hold(frames, run, target_len):
     return extra
 
 
+def wrap_lon(lon):
+    """Normalize longitude to [-180, 180]."""
+    return ((lon + 180.0) % 360.0) - 180.0
+
+
+def recenter_hold(frames, run, target_lat, target_lon, ramp):
+    """Shift a hold's rest pose to (target_lat, target_lon), easing the
+    offset in over `ramp` frames before the hold and out over `ramp` frames
+    after, so the camera path stays velocity-smooth.
+
+    Applied BEFORE the spin, which then sweeps around the new base longitude.
+    """
+    start, end, _ = run
+    base_lat = frames[start]["camera_lat"]
+    base_lon = frames[start]["camera_lon"]
+    dlat = target_lat - base_lat
+    dlon = wrap_lon(target_lon - base_lon)  # take the short way around
+
+    for k in range(start, end + 1):
+        frames[k]["camera_lat"] = base_lat + dlat
+        frames[k]["camera_lon"] = wrap_lon(frames[k]["camera_lon"] + dlon)
+
+    for r in range(1, ramp + 1):
+        w = smootherstep(1.0 - r / (ramp + 1))
+        pre, post = start - r, end + r
+        if pre >= 0 and not frames[pre].get("spin_reveal"):
+            frames[pre]["camera_lat"] += dlat * w
+            frames[pre]["camera_lon"] = wrap_lon(frames[pre]["camera_lon"] + dlon * w)
+        if post < len(frames) and not frames[post].get("spin_reveal"):
+            frames[post]["camera_lat"] += dlat * w
+            frames[post]["camera_lon"] = wrap_lon(frames[post]["camera_lon"] + dlon * w)
+    return dlat, dlon
+
+
 def apply_spin(frames, run, rotations, direction):
     """Rewrite camera_lon across a hold run to perform an eased 360°*rotations sweep.
 
@@ -123,7 +157,20 @@ def main():
                          "(e.g. 132 ≈ 5.5s at 24fps). Default: leave hold lengths as-is. "
                          "NOTE: changes total frame count — any frame-timed overlay "
                          "(.ass) must be regenerated to match.")
+    ap.add_argument("--recenter", action="append", default=[],
+                    help="Shift a hold's rest pose: 'time_ma:lat,lon' (repeatable, e.g. "
+                         "--recenter '480:-51.2,142.5'). Eased in/out over --ramp frames "
+                         "around the hold. Use when the smoothed/blended path pose sits "
+                         "off the landmass center.")
+    ap.add_argument("--ramp", type=int, default=24,
+                    help="Frames over which a --recenter offset eases in/out (default 24).")
     args = ap.parse_args()
+
+    recenters = {}
+    for spec in args.recenter:
+        t, coords = spec.split(":")
+        lat, lon = coords.split(",")
+        recenters[float(t)] = (float(lat), float(lon))
 
     with open(args.inp) as f:
         data = json.load(f)
@@ -160,6 +207,11 @@ def main():
         start, end, time_ma = run
         era = frames[start].get("era_label", "")
         selected = wanted is None or float(time_ma) in wanted
+        if float(time_ma) in recenters:
+            tlat, tlon = recenters[float(time_ma)]
+            dlat, dlon = recenter_hold(frames, run, tlat, tlon, args.ramp)
+            print(f"  ↺ recentered {int(time_ma)} Ma hold to ({tlat:+.1f}, {tlon:+.1f})  "
+                  f"(dlat={dlat:+.1f}, dlon={dlon:+.1f}, ramp={args.ramp}f)")
         if selected:
             length = apply_spin(frames, run, args.rotations, args.direction)
             spun += 1
