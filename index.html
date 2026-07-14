@@ -7,9 +7,9 @@
 
     <!-- Open Graph -->
     <meta property="og:title" content="Tectonic Globe">
-    <meta property="og:description" content="1 billion years of tectonic plate movement in 100 seconds">
+    <meta property="og:description" content="1 billion years of tectonic plate movement in two minutes">
     <meta property="og:type" content="video.other">
-    <meta property="og:video" content="https://globe.dinp.xyz/tectonic_globe_v6.mp4">
+    <meta property="og:video" content="https://globe.dinp.xyz/tectonic_globe_v7.mp4">
     <meta property="og:video:type" content="video/mp4">
     <meta property="og:video:width" content="1920">
     <meta property="og:video:height" content="1080">
@@ -19,7 +19,7 @@
     <!-- Twitter/X Card -->
     <meta name="twitter:card" content="player">
     <meta name="twitter:title" content="Tectonic Globe">
-    <meta name="twitter:description" content="1 billion years of tectonic plate movement in 100 seconds">
+    <meta name="twitter:description" content="1 billion years of tectonic plate movement in two minutes">
     <meta name="twitter:player" content="https://globe.dinp.xyz">
     <meta name="twitter:player:width" content="1920">
     <meta name="twitter:player:height" content="1080">
@@ -309,12 +309,12 @@
 <!-- ── Hero ───────────────────────────────────────── -->
 <div class="hero">
     <h1>Tectonic Globe</h1>
-    <p class="tagline">1 billion years of continental drift in 100 seconds</p>
+    <p class="tagline">1 billion years of continental drift in two minutes</p>
 
     <div class="hero-video-wrap">
         <video id="hero-video"
-               src="tectonic_globe_v6.mp4"
-               poster="verify_frames/check_01.png"
+               src="tectonic_globe_v7.mp4"
+               poster="poster_v7.png"
                controls
                playsinline
                preload="metadata">
@@ -339,6 +339,8 @@
     <div class="pipeline"><span class="step">generate_frames.py</span>     <span class="output">gplately/Merdith2021 &rarr; 1001 equirectangular PNGs</span>
         <span class="arrow">&darr;</span>
 <span class="step">compute_camera_path.py</span>  <span class="output">adaptive centroid tracking &rarr; camera_path.json</span>
+        <span class="arrow">&darr;</span>
+<span class="step">add_spin_reveal.py</span>      <span class="output">360&deg; reveals at supercontinent holds &rarr; camera_path_spin_v8.json</span>
         <span class="arrow">&darr;</span>
 <span class="step">render_globe.py</span>         <span class="output">Blender Cycles + dual-texture crossfade &rarr; MP4</span>
 <span class="step">render_flat.py</span>          <span class="output">PIL crossfade + ffmpeg &rarr; MP4</span></div>
@@ -380,10 +382,16 @@
             <video src="tectonic_globe_v5.mp4" controls playsinline preload="none"></video>
         </div>
 
-        <div class="version-card current">
+        <div class="version-card">
             <h3><span>v6</span> &mdash; 1 Ma resolution</h3>
             <p class="version-desc">The breakthrough. Instead of crossfading between frames 5 million years apart, we regenerated at 1 Ma resolution &mdash; 1,001 frames instead of 201. The continents genuinely <em>slide</em>. This is when it crossed from "sort of cool" to "wow."</p>
             <video src="tectonic_globe_v6.mp4" poster="verify_frames/check_01.png" controls playsinline preload="none"></video>
+        </div>
+
+        <div class="version-card current">
+            <h3><span>v7</span> &mdash; Spin reveals</h3>
+            <p class="version-desc">The camera learns to linger. At each supercontinent &mdash; Rodinia, Gondwana, Pangaea, and the present day &mdash; the flight pauses for a slow 360&deg; turn that reveals the whole surface, including the world-ocean hiding on the far side. Along the way we discovered Gondwana's camera had been sitting 41&deg; off-center, and that a supercontinent spanning most of the globe has no meaningful "center" at all. Rendered in a day by two Macs splitting the frames over the LAN.</p>
+            <video src="tectonic_globe_v7.mp4" poster="poster_v7.png" controls playsinline preload="none"></video>
         </div>
 
     </div>
@@ -391,7 +399,7 @@
 
 <!-- ── Footer ─────────────────────────────────────── -->
 <footer>
-    <p>Built by Xian &amp; Claude &middot; February 2025 &middot; <a href="https://github.com/Design-in-Product/globe">View source on GitHub</a></p>
+    <p>Built by Xian &amp; Claude &middot; February 2025 &ndash; July 2026 &middot; <a href="https://github.com/Design-in-Product/globe">View source on GitHub</a></p>
     <p class="more">More to come.</p>
 </footer>
 
@@ -405,8 +413,8 @@
         const currentTime = video.currentTime;
 
         if (type === 'globe') {
-            video.src = 'tectonic_globe_v6.mp4';
-            video.poster = 'verify_frames/check_01.png';
+            video.src = 'tectonic_globe_v7.mp4';
+            video.poster = 'poster_v7.png';
             btnGlobe.classList.add('active');
             btnFlat.classList.remove('active');
         } else {
