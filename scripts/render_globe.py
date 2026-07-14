@@ -21,9 +21,11 @@ import json
 import math
 
 # ── Configuration ──────────────────────────────────────────────
+# CAMERA_PATH_FILE / RENDER_DIR / OUTPUT_PATH can be overridden via env vars
+# so alternate paths (e.g. spin-reveal variants) render without editing this file.
 FRAMES_DIR = os.path.abspath("./frames")
-CAMERA_PATH_FILE = os.path.abspath("./camera_path.json")
-OUTPUT_PATH = os.path.abspath("./tectonic_globe_v6.mp4")
+CAMERA_PATH_FILE = os.path.abspath(os.environ.get("CAMERA_PATH_FILE", "./camera_path.json"))
+OUTPUT_PATH = os.path.abspath(os.environ.get("OUTPUT_PATH", "./tectonic_globe_v6.mp4"))
 CROSSFADE_HALF = 1  # frames from each side of transition = 2-frame crossfade window
 
 # Renderer: set to True for fast drafts, False for final quality
@@ -108,7 +110,7 @@ scene.render.resolution_y = RES_Y
 scene.render.resolution_percentage = 100
 
 # Render individual PNGs, then assemble with ffmpeg
-RENDER_DIR = os.path.abspath("./render_frames")
+RENDER_DIR = os.path.abspath(os.environ.get("RENDER_DIR", "./render_frames"))
 os.makedirs(RENDER_DIR, exist_ok=True)
 scene.render.image_settings.file_format = 'PNG'
 scene.render.image_settings.color_mode = 'RGB'
@@ -351,7 +353,12 @@ for i, pf in enumerate(path_frames):
         # Pure texture A (no crossfade)
         mix_node.inputs[0].default_value = 0.0
 
-    # Render this frame
+    # Render this frame (skip if already on disk — makes long runs resumable)
+    out_png = os.path.join(RENDER_DIR, f"render_{anim_f:04d}.png")
+    if os.path.exists(out_png) and os.path.getsize(out_png) > 0:
+        if (i + 1) % 200 == 0:
+            print(f"  [{i+1}/{total_anim_frames}] Frame {anim_f}: exists, skipping")
+        continue
     scene.frame_set(anim_f)
     scene.render.filepath = os.path.join(RENDER_DIR, f"render_{anim_f:04d}")
     bpy.ops.render.render(write_still=True)
