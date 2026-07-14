@@ -26,6 +26,11 @@ import math
 FRAMES_DIR = os.path.abspath("./frames")
 CAMERA_PATH_FILE = os.path.abspath(os.environ.get("CAMERA_PATH_FILE", "./camera_path.json"))
 OUTPUT_PATH = os.path.abspath(os.environ.get("OUTPUT_PATH", "./tectonic_globe_v6.mp4"))
+# Optional frame range (1-indexed anim frames, inclusive) for splitting a render
+# across machines; frames outside the range are skipped. ffmpeg assembly is
+# skipped when a range is set (assemble on the machine that has all frames).
+FRAME_START = int(os.environ.get("FRAME_START", "0")) or None
+FRAME_END = int(os.environ.get("FRAME_END", "0")) or None
 CROSSFADE_HALF = 1  # frames from each side of transition = 2-frame crossfade window
 
 # Renderer: set to True for fast drafts, False for final quality
@@ -353,6 +358,9 @@ for i, pf in enumerate(path_frames):
         # Pure texture A (no crossfade)
         mix_node.inputs[0].default_value = 0.0
 
+    # Skip frames outside this machine's assigned range (multi-machine split)
+    if (FRAME_START and anim_f < FRAME_START) or (FRAME_END and anim_f > FRAME_END):
+        continue
     # Render this frame (skip if already on disk — makes long runs resumable)
     out_png = os.path.join(RENDER_DIR, f"render_{anim_f:04d}.png")
     if os.path.exists(out_png) and os.path.getsize(out_png) > 0:
@@ -375,6 +383,12 @@ render_elapsed = time.time() - render_start
 print(f"\n✓ Frames rendered in {render_elapsed:.0f}s ({total_anim_frames / render_elapsed:.2f} fps)")
 
 # ── Assemble MP4 with ffmpeg + text overlay ──────────────────
+if FRAME_START or FRAME_END:
+    print(f"\nFrame range set ({FRAME_START}-{FRAME_END}) — skipping ffmpeg assembly.")
+    print("Assemble on the machine holding the complete frame set.")
+    import sys
+    sys.exit(0)
+
 # Step 1: Build per-frame text overlay using ffmpeg drawtext with textfile
 # Generate a subtitle file (ASS format) for precise per-frame text
 print(f"\nGenerating text overlay data...")
