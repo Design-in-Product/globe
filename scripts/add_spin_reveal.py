@@ -63,6 +63,22 @@ def find_hold_runs(frames, min_hold):
     return runs
 
 
+def extend_hold(frames, run, target_len):
+    """Pad a hold run to target_len frames by duplicating its rest pose.
+
+    Duplicates are inserted just after the run's first frame (all pre-spin hold
+    frames are identical, so position within the run doesn't matter). Frames
+    are renumbered by the caller after all holds are extended.
+    """
+    start, end, _ = run
+    length = end - start + 1
+    if length >= target_len:
+        return 0
+    extra = target_len - length
+    frames[start + 1:start + 1] = [dict(frames[start]) for _ in range(extra)]
+    return extra
+
+
 def apply_spin(frames, run, rotations, direction):
     """Rewrite camera_lon across a hold run to perform an eased 360°*rotations sweep.
 
@@ -102,6 +118,11 @@ def main():
                          "only), or 'all' (default).")
     ap.add_argument("--min-hold", type=int, default=20,
                     help="Minimum run length to be treated as a hold (default 20).")
+    ap.add_argument("--target-hold", type=int, default=None,
+                    help="Pad each selected hold to this many frames before spinning "
+                         "(e.g. 132 ≈ 5.5s at 24fps). Default: leave hold lengths as-is. "
+                         "NOTE: changes total frame count — any frame-timed overlay "
+                         "(.ass) must be regenerated to match.")
     args = ap.parse_args()
 
     with open(args.inp) as f:
@@ -117,6 +138,20 @@ def main():
         wanted = None
     else:
         wanted = {float(x) for x in args.holds.split(",") if x.strip() != ""}
+
+    if args.target_hold:
+        # Extend in reverse run order so earlier indices stay valid, then
+        # renumber and re-detect runs before spinning.
+        added = 0
+        for run in reversed(runs):
+            if wanted is None or float(run[2]) in wanted:
+                added += extend_hold(frames, run, args.target_hold)
+        for i, fr in enumerate(frames):
+            fr["anim_frame"] = i
+        data.setdefault("metadata", {})["animation_frames"] = len(frames)
+        print(f"Extended holds to {args.target_hold} frames (+{added} frames, "
+              f"total now {len(frames)})")
+        runs = find_hold_runs(frames, args.min_hold)
 
     print(f"Source: {args.inp}  ({len(frames)} frames)")
     print(f"Detected {len(runs)} hold(s) >= {args.min_hold} frames:")
