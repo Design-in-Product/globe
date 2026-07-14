@@ -24,8 +24,11 @@
 - 13:05 — **Studio finished all 2738 frames** (both ranges + chained follow-on, zero babysitting). Rsynced back, verified contiguous non-empty set.
 - 13:15 — **🎉 ROADMAP #1 RENDERED: `tectonic_globe_v7.mp4`** — 114.1 s, 1080p Cycles, 2002 overlay events, all four spin reveals (Gondwana recentered). Spot-checked Cycles frames: quality good. Delivered to xian for the full watch-through.
 
-## Awaiting xian
+- 13:30 — xian: "looks great — is it ready to release? you decide." Reviewed the site's version-timeline format; judged v7 release-worthy (biggest visible change since v6, verified, good story).
+- 13:45 — **🚀 v7 RELEASED**: `index.html` hero/OG/toggle → v7, new "Spin reveals" timeline card (v6 → history), spin step added to pipeline diagram, taglines updated to "two minutes", poster from the centered-Gondwana frame. Pushed `main` to origin (1009dda5..ae30794c) — GitHub Pages serves it at globe.dinp.xyz. Flat toggle intentionally still v6 (flat v7 = next design question).
 
-1. Watch-through verdict on v7 (esp. spin pacing in context + Gondwana recenter ramps at full quality).
-2. Push main to origin? (public repo — makes activity visible to GitHub, keeps Pages site source current; index.html still points at v6 until we update it.)
-3. If v7 passes: update `index.html` to v7 + flat-projection v7 render (render_flat.py against the v8 path) as follow-ups; then roadmap #2 prequel begins in earnest.
+## Next up
+
+1. Flat-projection v7 (`render_flat.py` + v8 path) — reopens the roadmap's open question: what is a spin reveal in equirectangular?
+2. Roadmap #2 prequel design: pacing across 1.8 Gyr, Nuna hold placement (mind degenerate centroids), visual cue for pre-Rodinia uncertainty.
+3. Letter to Janus/hub worth sending: distributed-render pattern + "nohup-detach long jobs" lesson may cross-pollinate.
