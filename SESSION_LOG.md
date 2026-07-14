@@ -6,8 +6,47 @@ Newest entries at the top. Companion to `ROADMAP.md` (what to build) — this is
 
 ## ⏭ Next session — start here
 
-**You are Tessera, resuming the spin-reveal work (Roadmap #1). Read this, then the
-2026-06-26 entry below for full rationale.**
+**You are Tessera. Roadmap #1 (spin reveal) is RENDERED — `tectonic_globe_v7.mp4`,
+awaiting xian's watch-through. Read the 2026-07-13/14 entry below, then the daily
+logs in `logs/` for detail.**
+
+Next moves (gated on xian's v7 verdict):
+1. If v7 passes: update `index.html` to serve v7; render the flat-projection v7
+   (`render_flat.py` needs the v8 path + spin-aware treatment — the flat scroll
+   during spins is an OPEN DESIGN QUESTION, see ROADMAP.md item 1).
+2. Roadmap #2 (deep-time prequel) is de-risked and ready: Cao et al. 2024 model
+   downloads by name (`cao2024`) in the venv, renders in house style 1800→1000 Ma,
+   and matches Merdith at the 1000 Ma handoff (`scripts/test_deeptime_frames.py`,
+   `docs/research/deep-time-plate-models-2026-07-13.md`). Design work: pacing,
+   Nuna hold placement (mind degenerate centroids — see 2026-07-13 log), and a
+   visual cue for lower-confidence pre-Rodinia science.
+3. Conventions now in force: **all Blender renders on the Mac Studio**
+   (`ssh studio`, `~/globe-render/`, nohup-detached, FRAME_START/END ranges);
+   land work on local `main` as you go (Janus scans main); memos go in the
+   recipient's repo.
+
+---
+
+## 2026-07-13/14 — Sessions 2–3 (Tessera, local) — spin reveal shipped to v7
+
+Two-day local run: merged Session 1's cloud work, EEVEE-drafted the Earth-axis
+spin (Pangaea → all four holds), xian approved the look ("majestic", Gondwana
+carousel included). Extended holds to 132 frames (5.5 s reveals, v7 path), fixed
+Gondwana's hold sitting 41° off its landmass (new `--recenter` in
+add_spin_reveal.py, eased ramps; v8 path), audited the other holds (fine — and
+learned near-global landmass clusters have degenerate centroids; hand framing
+wins there). Final 2738-frame Cycles render ran distributed: laptop + xian's Mac
+Studio (M1 Max, ~6 s/frame, ~3× the M1 laptop), split by FRAME_START/END env
+ranges with skip-existing resume. Assembled `tectonic_globe_v7.mp4` (114 s).
+
+Hard-won operational lessons: macOS Low Power Mode GPU-throttles renders ~3×;
+harness-tied background renders die with the agent session (nohup-detach always);
+the Studio is now the standing render machine. Prequel spike also landed:
+cao2024 is a drop-in Merdith superset — roadmap #2 is data-ready.
+
+## ⏮ Older handoff (superseded 2026-07-14)
+
+**Original Session 1 handoff follows for the record.**
 
 Status: the Earth-axis spin is built and math-verified; it has **not been rendered
 yet**. The next step is a render to judge the look.
