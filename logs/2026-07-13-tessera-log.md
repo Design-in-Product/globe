@@ -54,3 +54,20 @@
 - 18:20 — **Cao 2024 downloaded + unzipped** (`data/deep-time/1.8Ga_model_GSF/`, 115 MB unpacked): rotations split 1800–1000 + 1000–0, era-sliced plate-boundary topologies, static polygons/coasts/continents/COB, GPlates project file. Filenames confirmed (research uncertainty resolved).
 - 18:25 — **Prequel integration will be tiny**: `generate_frames.py` loads its model via `plate_model_manager.get_model("Merdith2021")`, and the working venv (`~/Development/atlas/.venv`, gplately 2.0.0) already registers **`cao2024`** as an available model name. Swap the name + extend the time range ≈ the whole code change. (venv note: gplately imports fine there; PyGMT warning is nonfatal.)
 - 18:30 — **Stress tests rendered** (Rodinia 227–276, Gondwana 1218–1255; both clean runs). Stills: Rodinia reads as a clean tilted turn; Gondwana (−54°) reads as a "polar carousel" — looking down toward the pole while land wheels around. Previews sent to xian for the motion call.
+- 18:40 — xian's verdict: **"majestic"** — all three spin looks approved. Proceeding to pacing.
+- 18:45 — Extended `add_spin_reveal.py` with `--target-hold`: pads holds to uniform length before spinning. Generated **`camera_path_spin_v7.json`**: 132-frame holds (5.5 s/reveal), 2738 total frames (~114 s @ 24fps), all four sweeps verified (exact 360°, seamless return, contiguous renumbering). Note: uniform holds trade away the original per-supercontinent pause weighting (48/36/60/60) — flagged for xian.
+- 18:50 — Overlay-timing check: both `render_globe.py` and `render_flat.py` **generate** their ASS overlays from the camera-path JSON at assembly time — no stale-timing risk with the new path.
+- 18:52 — Committed day's work to branch (spin scripts, v7 path, research doc, log). Held `data/deep-time/` (136 MB) out of git pending xian's vendoring call (`data/plate-models` 90 MB *is* committed, so either way is defensible).
+- 18:55 — Extended-Gondwana pacing draft (anim 1300–1431 from v7 path) rendering in background.
+- 19:20 — Pacing draft done (132 frames, clean run; padded rest frames + gradual sweep verified in stills). Preview sent to xian.
+
+- 19:30 — xian: pacing good; **Gondwana hold not centered**. Minor calls resolved per Tessera's leans (keep deep-time data git-ignored; uniform holds) unless a reason emerges.
+- 19:40 — Root-caused the off-center hold: computed true land centroids at all four hold times (scratchpad, venv). Gondwana pose was **41° lon off centroid**; Rodinia ~5° (fine); Pangaea/Present deliberately framed (raw centroid at 0 Ma = Siberia). Fix: new `--recenter time:lat,lon` in `add_spin_reveal.py` with smootherstep ramps (default 24f). **v8 path** = v7 + Gondwana hold at (−51.2, 142.5). Verified: exact sweep, smooth ramps. Single-frame check: Gondwana now centered, night-and-day. Committed.
+- 19:45 — v8 Gondwana reveal (incl. entry/exit ramps, anim 1276–1455) rendering for xian's confirmation.
+
+- 20:00 — **Hold-framing audit** (xian: "double-check the others"): rendered current-vs-centroid stills for Rodinia/Pangaea/Present. Verdict: current framing wins or ties everywhere; **Gondwana was the only broken hold**. Key finding: for near-global clusters (Pangaea 93%, Present 91% of land) the area-weighted centroid **degenerates** — it can land in open ocean between continents; it's only meaningful for compact clusters (Gondwana 63%). Relevant later for prequel hold placement (Nuna). v8 stands. (Also: zsh doesn't word-split unquoted vars — a `set -- $spec` loop silently no-opped; explicit commands fixed it.)
+
+## Open calls for xian (end of day)
+
+1. Confirm the recentered Gondwana reveal (v8 preview, incl. ramps).
+2. When to launch the full Cycles re-render with `camera_path_spin_v8.json` (~6.4 h for 2738 frames) — overnight candidate. Prequel spike (cao2024 in the venv) can run alongside.
