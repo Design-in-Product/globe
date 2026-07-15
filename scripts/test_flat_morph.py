@@ -15,18 +15,30 @@ Draft on the Pangaea texture (geo frame 750):
 """
 
 import os
+import argparse
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from PIL import Image
+from scipy.ndimage import map_coordinates
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SOURCE = os.path.join(ROOT, "frames", "globe_frame_0750.png")  # Pangaea, 250 Ma
-OUT_DIR = os.path.join(ROOT, "test_flat_morph")
+
+ap = argparse.ArgumentParser()
+ap.add_argument("--source", default=os.path.join(ROOT, "frames", "globe_frame_0750.png"))
+ap.add_argument("--out", default=os.path.join(ROOT, "test_flat_morph"))
+ap.add_argument("--resx", type=int, default=960)
+ap.add_argument("--resy", type=int, default=480)
+ap.add_argument("--nlon", type=int, default=512, help="mesh cells (lon); ≈resx for per-pixel quality")
+ap.add_argument("--nlat", type=int, default=256, help="mesh cells (lat); ≈resy for per-pixel quality")
+args = ap.parse_args()
+
+SOURCE = args.source
+OUT_DIR = args.out
 os.makedirs(OUT_DIR, exist_ok=True)
 
-RES_X, RES_Y = 960, 480
+RES_X, RES_Y = args.resx, args.resy
 FPS = 24
 OCEAN = '#1a425a'
 
@@ -34,7 +46,7 @@ OCEAN = '#1a425a'
 PHASES = [1.5, 2.0, 5.0, 2.0, 1.5]
 
 # Mesh density (cells)
-NLON, NLAT = 512, 256
+NLON, NLAT = args.nlon, args.nlat
 
 
 def smootherstep(t):
@@ -78,13 +90,18 @@ LON_C, LAT_C = np.meshgrid(lon_c, lat_c)
 
 img = np.asarray(Image.open(SOURCE).convert('RGB'), dtype=np.float32) / 255.0
 H, W = img.shape[:2]
-ROW = np.clip(((90 - LAT_C) / 180.0 * H).astype(int), 0, H - 1)
+ROW_F = np.clip((90 - LAT_C) / 180.0 * H - 0.5, 0, H - 1)
 
 
 def sample_colors(lon0):
-    """Sample the source texture with the planet rotated by lon0 degrees."""
-    col = (((LON_C + lon0 + 180.0) % 360.0) / 360.0 * W).astype(int) % W
-    return img[ROW, col]
+    """Bilinearly sample the source texture, planet rotated by lon0 degrees."""
+    col_f = (((LON_C + lon0 + 180.0) % 360.0) / 360.0 * W - 0.5) % W
+    coords = np.stack([ROW_F.ravel(), col_f.ravel()])
+    out = np.empty((*LON_C.shape, 3), dtype=np.float32)
+    for c in range(3):
+        out[..., c] = map_coordinates(img[..., c], coords, order=1,
+                                      mode='grid-wrap').reshape(LON_C.shape)
+    return out
 
 
 # ── Frame schedule ────────────────────────────────────────────
