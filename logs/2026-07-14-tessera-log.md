@@ -30,9 +30,13 @@
 - 14:15 — Flat-v7 direction chosen by xian: **projection morph** — and their addition makes it sing: rotate the planet *under* a fixed projection so continents deform through its distortion zones (only the flat view can do this; the views deliberately diverge). Prototyped `scripts/test_flat_morph.py` (pure numpy mesh-warp, no new deps): equirect → Mollweide morph → 360° rotation under the ellipse → morph home, 12 s draft on the Pangaea texture. Sent to xian. Known draft limitation: coarse flat-shaded mesh → dithery texture; production = per-pixel inverse mapping.
 - Prequel discussion opened: xian loves the uncertainty/fuzziness idea. Proposed arc 1800→1000 (fragments → Nuna hold+spin → breakup → Rodinia gathering → handoff), treatments: haze/desaturation gradient + soft coastlines (lean), dashed boundaries, grain. Next: fuzziness test strip.
 
-## Next up
+## Next up (carried to 2026-07-15)
 
 1. xian's motion verdict on the Mollweide morph draft; then production-quality reprojection + how it composes with `render_flat.py` (which projections? Mollweide only, or a tour?).
 2. Prequel fuzziness test strip: ~5 Nuna-era frames at graduated haze/blur for xian to judge.
 3. Prequel design: pacing across 1.8 Gyr, Nuna hold placement (mind degenerate centroids), overlay labels for uncertain eras.
 4. Letter to Janus/hub: distributed-render pattern + nohup lesson may cross-pollinate.
+
+## Day close
+
+**Shipped: v7 to globe.dinp.xyz** — spin reveals at all four supercontinent holds, rendered distributed across laptop + Studio. Studio became the standing render machine; prequel de-risked (cao2024); flat-v7 direction chosen (projection morph, concept draft approved end of day). Sessions logged, main pushed, conventions saved to memory. A very good day.
