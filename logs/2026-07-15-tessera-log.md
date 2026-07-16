@@ -15,6 +15,8 @@
 - 10:05 — **Fuzziness test strip delivered**: 6 cao2024 frames 1800→1000 Ma with graduated blur + desaturation + contrast haze (100%→0%), labeled strip. New `scripts/test_fuzziness_strip.py`. Tunables: MAX_BLUR 6px, MAX_DESAT 0.45, MAX_DECONTRAST 0.25, haze tint (60,80,100) @ 0.18 max.
 - 10:20 — **HD morph delivered** (~10 min render, 288 frames): per-pixel mesh + bilinear sampling is crisp — rotation midpoint frame (Panthalassa centered, Pangaea wrapped around the ellipse rim) is a stunner. Flat-v7 technique proven end-to-end.
 
+- 18:48 — xian (remote): HD morph video wouldn't play. Diagnosis: `moov` atom at end of file (no faststart) → streaming/mobile players fail. Remuxed (`-c copy -movflags +faststart`) and resent. **Convention: always `-movflags +faststart` on preview MP4s** (the v6/v7 site videos already stream fine — GitHub Pages serves range requests — but previews sent to xian's phone must be faststart).
+
 ## Awaiting xian
 
 1. Fuzziness strip verdict (all knobs tunable one-line).
