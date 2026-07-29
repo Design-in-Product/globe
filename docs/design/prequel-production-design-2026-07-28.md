@@ -86,11 +86,13 @@ film's era track: Statherian 1800–1600 · Calymmian 1600–1400 · Ectasian
 1400–1200 · Stenian 1200–1000 (Ma). Supercontinent annotations ride the holds
 ("Nuna/Columbia assembled", "Rodinia assembling") as v8's do.
 
-## Open: member coherence (raised by the 7/28 motion draft)
+## Member coherence — DECIDED 2026-07-29: coherent
 
-Per-frame member re-rolls make the cloud fringes boil. Tessera's position:
+Per-frame member re-rolls make the cloud fringes boil. Tessera argued
 coherent per-member trajectories are both easier to read AND more honest —
 reconstruction error is time-correlated, so the joint-distribution sample
 (nine smooth parallel worlds) is the truthful film; the boil falsely implies
-uncertainty decorrelates on ~1 Myr timescales. Side-by-side comparison
-rendered 2026-07-29 for xian's verdict before the full-span draft.
+uncertainty decorrelates on ~1 Myr timescales. Stacked side-by-side rendered
+2026-07-29; **xian: "agreed smooth is better."** Production renders use
+`--coherent`. (Parked variant if the smooth cloud ever reads too static:
+slow random-walk drift on the member perturbations.)

@@ -29,5 +29,9 @@
   1550→1500 Ma window (~7 min) and delivered a stacked **boil-vs-coherent
   comparison** to xian. Stills are statistically identical between modes, as
   they should be — the difference exists only in motion.
-- Next: xian's coherence verdict → full-span pacing draft (step 2) in the
-  winning mode → Nuna hold candidates.
+- **Coherence verdict: coherent wins** ("agreed smooth is better") — recorded
+  in the design doc; production renders use `--coherent`.
+- `test_ensemble_motion.py` generalized (`--start/--end/--step/--fps/--tag`).
+- **Step 2 launched**: full-span pacing draft, 1800→1000 Ma, 4 Ma cadence,
+  201 frames × 9 coherent members, nohup-detached (~27 min). Deliverables:
+  flipbook + tempo-matched previews, Nuna hold-time candidates.

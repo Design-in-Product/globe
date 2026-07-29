@@ -23,21 +23,28 @@ ap = argparse.ArgumentParser()
 ap.add_argument("--coherent", action="store_true",
                 help="fixed per-member perturbations (smooth parallel worlds) "
                      "instead of per-frame re-rolls (boiling fringes)")
+ap.add_argument("--start", type=int, default=1550, help="start time (Ma)")
+ap.add_argument("--end", type=int, default=1500, help="end time (Ma)")
+ap.add_argument("--step", type=int, default=1, help="cadence (Ma per frame)")
+ap.add_argument("--fps", type=int, default=10, help="preview framerate")
+ap.add_argument("--tag", default=None,
+                help="output tag (dir test_deeptime/<tag>/, preview <tag>.mp4); "
+                     "default keeps the original motion/motion_coherent naming")
 args = ap.parse_args()
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(ROOT, "data", "plate-models")
-VARIANT = "motion_coherent" if args.coherent else "motion"
+VARIANT = args.tag or ("motion_coherent" if args.coherent else "motion")
 OUT_DIR = os.path.join(ROOT, "test_deeptime", VARIANT)
 os.makedirs(OUT_DIR, exist_ok=True)
 
 IMAGE_WIDTH, IMAGE_HEIGHT, DPI = 2048, 1024, 200
-T_START, T_END, T_STEP = 1550, 1500, 1
+T_START, T_END, T_STEP = args.start, args.end, args.step
 N_MEMBERS = 9
 POLE_SIGMA_DEG = 5.0
 TIME_SIGMA_MA = 25.0
 SEED = 42
-FPS_OUT = 10  # ≈ main-film tempo (~10 Ma/s) without frame duplication
+FPS_OUT = args.fps
 
 OCEAN_COLOR = '#1a425a'
 CONTINENT_COLOR = '#a07c5a'
@@ -155,7 +162,7 @@ print(f"\n✓ Textures: {n_rendered} rendered, {n_skipped} already on disk, "
       f"of {len(times)} total")
 
 preview = os.path.join(ROOT, "test_deeptime",
-                       f"{'motion_draft_coherent' if args.coherent else 'motion_draft'}.mp4")
+                       f"{args.tag or ('motion_draft_coherent' if args.coherent else 'motion_draft')}.mp4")
 cmd = ["ffmpeg", "-y", "-loglevel", "error",
        "-framerate", str(FPS_OUT),
        "-i", os.path.join(OUT_DIR, "motion_%04d.png"),
