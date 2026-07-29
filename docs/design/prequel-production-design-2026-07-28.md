@@ -79,6 +79,13 @@ member-render** (2048×1024, cartopy fill + DateLineWrapper). VERIFIED.
 4. **No extra confidence-annotation cue** — the u-ramp carries it; may
    reconsider after seeing the rendering. DECIDED.
 
+### Era labels (decision 2 implemented as data)
+
+ICS Proterozoic periods covering the span, same overlay style as the main
+film's era track: Statherian 1800–1600 · Calymmian 1600–1400 · Ectasian
+1400–1200 · Stenian 1200–1000 (Ma). Supercontinent annotations ride the holds
+("Nuna/Columbia assembled", "Rodinia assembling") as v8's do.
+
 ## Open: member coherence (raised by the 7/28 motion draft)
 
 Per-frame member re-rolls make the cloud fringes boil. Tessera's position:
