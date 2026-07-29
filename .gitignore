@@ -16,3 +16,12 @@ test_spin_*/
 # Deep-time model data (vendoring decision pending — see logs/2026-07-13)
 data/deep-time/
 check_*/
+
+# Local artifact dirs (regenerable; v7 frames also live on Amber ~/globe-render)
+render_frames_v7/
+test_deeptime/
+test_flat_morph/
+test_flat_morph_hd/
+test_recenter_check/
+render_v7.log
+data/plate-models/cao2024/
