@@ -228,6 +228,7 @@ ffmpeg_cmd = [
     "-c:v", "libx264",
     "-crf", "18",
     "-pix_fmt", "yuv420p",
+    "-movflags", "+faststart",
     OUTPUT_PATH
 ]
 
@@ -254,6 +255,7 @@ else:
         "-c:v", "libx264",
         "-crf", "18",
         "-pix_fmt", "yuv420p",
+        "-movflags", "+faststart",
         OUTPUT_PATH
     ]
     result2 = subprocess.run(ffmpeg_cmd_plain, capture_output=True, text=True)
