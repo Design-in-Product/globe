@@ -62,8 +62,18 @@ xian, same evening, by phone:
 - Memo to Pard delivered (mediajunkie repo): standup complete + the memory-wipe seam flagged for the migration checklist + long-render heads-up.
 - xian offered connector help; standing instruction: batch questions, duty-cycle until no unblocked work or unread mail; Janus relays when xian is away.
 
-## Still open
+## Duty cycle, second leg — cycle wound down clean
 
-1. Flat-v7: draft arc → xian assessment → production wiring into render_flat.py (which also needs `-movflags +faststart` added — it predates the convention).
-2. Prequel production design (pacing across 1.8 Gyr, Nuna hold placement — hand-frame it, lesson 4).
-3. Gmail connector cleanup (account-scoped; may be moot on designinproduct.com — check before bothering xian).
+- **Flat-v7 lens-arc draft DELIVERED** (48 s, four lenses on the real v8 holds). Findings en route: repo `frames/` on Amber = unsmudged LFS pointers (real textures in `~/globe-render/frames/` — memory note added); Homebrew ffmpeg 8 lacks drawtext (labels stamped via PIL instead). Ortho-limb speckle is draft-res mesh subsampling; production supersamples.
+- **`render_flat.py` faststart fix** committed (predated the convention).
+- **Prequel production design doc** written and pushed (`docs/design/prequel-production-design-2026-07-28.md`): cao2024 + confirmed ensemble treatment, 1 Ma cadence default, two hand-framed holds (Nuna + terminal Rodinia convergence matching the main film's opening frame), measured render budget (~10 s/member cold, ~8 s/geo-frame warm — 7,200 member renders ≈ hours, parallelizable), three-step draft ladder, four batched questions with defaults.
+- **Draft-ladder step 1 DELIVERED**: ensemble motion draft (1550→1500 Ma, 51 frames, ~main-film tempo). The test did its job — surfaced that per-frame member re-rolls make the cloud fringes *boil* in motion. xian's call: keep the organic boil vs build coherent member trajectories before the full-span draft.
+- **Gmail connector: moot** — verified working on the designinproduct.com account; the dead one died with the old seat.
+- Stopped at the ladder rung per lesson 1 (draft → judge → extend ONE axis): steps 2–3 wait for xian's verdicts rather than running ahead.
+- Duty-cycle report memo delivered to Janus (designinproduct repo) for the relay dashboard.
+
+## Awaiting xian (batched; nothing stuck)
+
+1. Flat-v7 lens-arc draft assessment → production wiring into render_flat.py.
+2. Motion draft: (a) keep boiling fringes or (b) coherent member trajectories.
+3. Prequel design doc's four questions (each has a stated default).
