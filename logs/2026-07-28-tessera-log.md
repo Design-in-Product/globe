@@ -77,3 +77,7 @@ xian, same evening, by phone:
 1. Flat-v7 lens-arc draft assessment → production wiring into render_flat.py.
 2. Motion draft: (a) keep boiling fringes or (b) coherent member trajectories.
 3. Prequel design doc's four questions (each has a stated default).
+
+---
+
+*Log closed 2026-07-29 05:36 — xian answered all four design questions (defaults confirmed) and opened the boil-vs-coherent discussion first thing. Migration day ended with a working seat, a confirmed uncertainty treatment, three deliverables in xian's queue, and zero lost frames. Continues in `2026-07-29-tessera-log.md`.*

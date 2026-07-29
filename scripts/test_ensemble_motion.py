@@ -9,6 +9,7 @@ Run (nohup-detached; ~77 min for 459 member renders at ~10 s each):
   nohup .venv/bin/python scripts/test_ensemble_motion.py > motion_draft.log 2>&1 &
 """
 
+import argparse
 import os
 import subprocess
 import numpy as np
@@ -18,9 +19,16 @@ import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 from PIL import Image
 
+ap = argparse.ArgumentParser()
+ap.add_argument("--coherent", action="store_true",
+                help="fixed per-member perturbations (smooth parallel worlds) "
+                     "instead of per-frame re-rolls (boiling fringes)")
+args = ap.parse_args()
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(ROOT, "data", "plate-models")
-OUT_DIR = os.path.join(ROOT, "test_deeptime", "motion")
+VARIANT = "motion_coherent" if args.coherent else "motion"
+OUT_DIR = os.path.join(ROOT, "test_deeptime", VARIANT)
 os.makedirs(OUT_DIR, exist_ok=True)
 
 IMAGE_WIDTH, IMAGE_HEIGHT, DPI = 2048, 1024, 200
@@ -61,8 +69,25 @@ def random_pole():
     return np.degrees(np.arcsin(z)), lon
 
 
+# Coherent mode: each member's perturbation is drawn ONCE (unit-scale) and
+# reused across all frames, scaled by u(t) — nine smooth parallel worlds whose
+# disagreement is the cloud. Reconstruction error is time-correlated, so this
+# samples the joint distribution over time; per-frame re-rolls (default) sample
+# each instant independently and the fringes boil.
+member_dt_unit = {}           # member -> unit normal (time jitter)
+member_plate_perturb = {}     # (member, plate_id) -> (pole, angle_unit)
+
+
 def render_member(time_ma, u, member):
-    dt = rng.normal(0, TIME_SIGMA_MA * u) if u > 0 and member > 0 else 0.0
+    if u > 0 and member > 0:
+        if args.coherent:
+            if member not in member_dt_unit:
+                member_dt_unit[member] = rng.normal()
+            dt = member_dt_unit[member] * TIME_SIGMA_MA * u
+        else:
+            dt = rng.normal(0, TIME_SIGMA_MA * u)
+    else:
+        dt = 0.0
     t = max(0.0, time_ma + dt)
 
     reconstructed = []
@@ -84,8 +109,16 @@ def render_member(time_ma, u, member):
         if u > 0 and member > 0:
             pid = rg.get_feature().get_reconstruction_plate_id()
             if pid not in plate_rot:
-                angle = np.radians(rng.normal(0, POLE_SIGMA_DEG * u))
-                plate_rot[pid] = pygplates.FiniteRotation(random_pole(), angle)
+                if args.coherent:
+                    key = (member, pid)
+                    if key not in member_plate_perturb:
+                        member_plate_perturb[key] = (random_pole(), rng.normal())
+                    pole, angle_unit = member_plate_perturb[key]
+                    angle = np.radians(angle_unit * POLE_SIGMA_DEG * u)
+                else:
+                    pole = random_pole()
+                    angle = np.radians(rng.normal(0, POLE_SIGMA_DEG * u))
+                plate_rot[pid] = pygplates.FiniteRotation(pole, angle)
             geom = plate_rot[pid] * geom
         for wp in wrapper.wrap(geom, 2.0):
             pts = wp.get_exterior_points()
@@ -121,7 +154,8 @@ for fi, time_ma in enumerate(times):
 print(f"\n✓ Textures: {n_rendered} rendered, {n_skipped} already on disk, "
       f"of {len(times)} total")
 
-preview = os.path.join(ROOT, "test_deeptime", "motion_draft.mp4")
+preview = os.path.join(ROOT, "test_deeptime",
+                       f"{'motion_draft_coherent' if args.coherent else 'motion_draft'}.mp4")
 cmd = ["ffmpeg", "-y", "-loglevel", "error",
        "-framerate", str(FPS_OUT),
        "-i", os.path.join(OUT_DIR, "motion_%04d.png"),

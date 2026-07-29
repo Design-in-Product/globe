@@ -71,15 +71,19 @@ member-render** (2048×1024, cartopy fill + DateLineWrapper). VERIFIED.
    candidates → xian picks framing.
 3. Production texture render (801 × 9) → Blender globe pass → assembly.
 
-## Batched questions for xian (none block steps 1–2)
+## Design decisions — ANSWERED by xian 2026-07-29 (all defaults confirmed)
 
-1. Cadence: 1 Ma/frame (tempo-matched) or 2 Ma/frame (tighter film)? Default
-   if unanswered: 1 Ma.
-2. Era labels pre-1000 Ma: Proterozoic period names (Statherian → Tonian) in
-   the same overlay style? Default: yes, same style.
-3. Does the prequel get hold spin-reveals like v8, or stay static-hold (its
-   drama is the uncertainty cloud, not the spin)? Default: static holds for
-   the draft; revisit after seeing it.
-4. A "reconstruction confidence" annotation cue for pre-1 Ga (research doc
-   flagged the science is genuinely lower-confidence)? The u-ramp itself may
-   BE the cue — my read is no extra annotation. Default: none.
+1. **Cadence: 1 Ma/frame** (tempo-matched to the main film). DECIDED.
+2. **Era labels pre-1000 Ma: yes, same overlay style** (Statherian → Tonian). DECIDED.
+3. **Static holds for the draft**; revisit after seeing it. DECIDED.
+4. **No extra confidence-annotation cue** — the u-ramp carries it; may
+   reconsider after seeing the rendering. DECIDED.
+
+## Open: member coherence (raised by the 7/28 motion draft)
+
+Per-frame member re-rolls make the cloud fringes boil. Tessera's position:
+coherent per-member trajectories are both easier to read AND more honest —
+reconstruction error is time-correlated, so the joint-distribution sample
+(nine smooth parallel worlds) is the truthful film; the boil falsely implies
+uncertainty decorrelates on ~1 Myr timescales. Side-by-side comparison
+rendered 2026-07-29 for xian's verdict before the full-span draft.
