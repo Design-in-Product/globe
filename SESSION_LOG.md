@@ -7,11 +7,13 @@ Newest entries at the top. Companion to `ROADMAP.md` (what to build) — this is
 ## ⏭ Next session — start here
 
 **You are Tessera, most likely running on Amber (Mac Studio) under the
-designinproduct.com account. Read `docs/tessera/handoff-2026-07-28.md` FIRST —
-it is the migration handoff (state of work, load-bearing artifacts, questions
-for your provisioner Pard, conventions in force). Memory snapshot from the
-outgoing account: `docs/tessera/memory-snapshot-2026-07-28/`. Then the 2026-07-28
-log and the entries below for narrative.**
+designinproduct.com account. Read `docs/handoff-tessera-amber-2026-07-28.md`
+FIRST — the migration handoff (hard-won lessons, load-bearing artifacts,
+questions for your provisioner Pard, conventions in force), plus Pard's
+protocol memo `docs/mail/memo-pard-to-tessera-amber-migration-2026-07-28.md`.
+Memory snapshot from the outgoing account:
+`docs/tessera/memory-snapshot-2026-07-28/`. Then the 2026-07-28 log and the
+entries below for narrative.**
 
 ## ⏮ Pre-migration handoff (superseded by docs/tessera/handoff-2026-07-28.md)
 
