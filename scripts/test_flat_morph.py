@@ -32,6 +32,9 @@ ap.add_argument("--resx", type=int, default=960)
 ap.add_argument("--resy", type=int, default=480)
 ap.add_argument("--nlon", type=int, default=512, help="mesh cells (lon); ≈resx for per-pixel quality")
 ap.add_argument("--nlat", type=int, default=256, help="mesh cells (lat); ≈resy for per-pixel quality")
+ap.add_argument("--lens", default="mollweide",
+                choices=["mollweide", "sinusoidal", "azimuthal-s", "ortho"],
+                help="target projection for the morph (lens-per-hold arc)")
 args = ap.parse_args()
 
 SOURCE = args.source
@@ -77,11 +80,37 @@ LON, LAT = np.meshgrid(lon_edges, lat_edges)
 EQ_X = LON / 180.0
 EQ_Y = LAT / 90.0
 
-# Mollweide vertex positions, normalized to the same [-1, 1] envelope
-theta_edges = mollweide_theta(np.radians(lat_edges))
-THETA = np.repeat(theta_edges[:, None], NLON + 1, axis=1)
-MO_X = (2 * np.sqrt(2) / np.pi) * np.radians(LON) * np.cos(THETA) / (2 * np.sqrt(2) / np.pi * np.pi)
-MO_Y = np.sqrt(2) * np.sin(THETA) / np.sqrt(2)
+# Target-lens vertex positions, normalized to the same [-1, 1] envelope.
+# The display frame is 2:1, so circular lenses (azimuthal-s, ortho) scale
+# x by 0.5 in data units to render as true circles.
+if args.lens == "mollweide":
+    theta_edges = mollweide_theta(np.radians(lat_edges))
+    THETA = np.repeat(theta_edges[:, None], NLON + 1, axis=1)
+    TG_X = (2 * np.sqrt(2) / np.pi) * np.radians(LON) * np.cos(THETA) / (2 * np.sqrt(2) / np.pi * np.pi)
+    TG_Y = np.sqrt(2) * np.sin(THETA) / np.sqrt(2)
+elif args.lens == "sinusoidal":
+    TG_X = (LON / 180.0) * np.cos(np.radians(LAT))
+    TG_Y = LAT / 90.0
+elif args.lens == "azimuthal-s":
+    # Lambert azimuthal equal-area centered on the south pole: the south
+    # pole is the disk center, the north pole its rim. lon 0 points up.
+    r = np.sin(np.radians((90.0 + LAT) / 2.0))   # 0 at S pole → 1 at N pole
+    TG_X = 0.5 * r * np.sin(np.radians(LON))
+    TG_Y = r * np.cos(np.radians(LON))
+elif args.lens == "ortho":
+    # Orthographic hemisphere centered on lon 0 — the flat view converging
+    # to the globe view. The far hemisphere folds onto the same disk, so it
+    # fades out as the morph completes (alpha handled per-cell below).
+    TG_X = 0.5 * np.cos(np.radians(LAT)) * np.sin(np.radians(LON))
+    TG_Y = np.sin(np.radians(LAT))
+
+# Per-cell near-hemisphere mask (only the ortho lens hides its far side)
+NEAR = None
+if args.lens == "ortho":
+    lon_cc = (lon_edges[:-1] + lon_edges[1:]) / 2
+    lat_cc = (lat_edges[:-1] + lat_edges[1:]) / 2
+    LON_CC, LAT_CC = np.meshgrid(lon_cc, lat_cc)
+    NEAR = np.abs(LON_CC) < 90.0
 
 # Texture-sampling grid at cell centers
 lon_c = (lon_edges[:-1] + lon_edges[1:]) / 2
@@ -124,8 +153,8 @@ for phase, dur in enumerate(PHASES):
 print(f"Rendering {len(frames)} morph frames ({sum(PHASES):.1f}s at {FPS}fps)...")
 
 for i, (s, lon0) in enumerate(frames):
-    X = (1 - s) * EQ_X + s * MO_X
-    Y = (1 - s) * EQ_Y + s * MO_Y
+    X = (1 - s) * EQ_X + s * TG_X
+    Y = (1 - s) * EQ_Y + s * TG_Y
     C = sample_colors(lon0)
 
     fig = plt.figure(figsize=(RES_X / 100, RES_Y / 100), dpi=100)
@@ -134,7 +163,19 @@ for i, (s, lon0) in enumerate(frames):
     ax.set_ylim(-1.03, 1.03)
     ax.set_axis_off()
     fig.patch.set_facecolor('black')
-    ax.pcolormesh(X, Y, C, shading='flat', rasterized=True)
+    if NEAR is None:
+        ax.pcolormesh(X, Y, C, shading='flat', rasterized=True)
+    else:
+        # Ortho: far hemisphere fades with the morph and draws FIRST so the
+        # near side always wins where the fold overlaps it.
+        far = np.empty((*C.shape[:2], 4), dtype=np.float32)
+        far[..., :3] = C
+        far[..., 3] = np.where(NEAR, 0.0, 1.0 - s)
+        near = np.empty_like(far)
+        near[..., :3] = C
+        near[..., 3] = np.where(NEAR, 1.0, 0.0)
+        ax.pcolormesh(X, Y, far, shading='flat', rasterized=True)
+        ax.pcolormesh(X, Y, near, shading='flat', rasterized=True)
     fig.savefig(os.path.join(OUT_DIR, f"morph_{i:04d}.png"),
                 dpi=100, facecolor='black')
     plt.close(fig)

@@ -51,7 +51,19 @@ Findings adopted into Globe practice:
 - **Daily two-way sync discipline** (xian directive): session-start ritual added to CLAUDE.md — pull main before anything, push as work lands. Kept as ritual, not automation, for now.
 - Task list re-seeded on Amber (L4 doesn't migrate, per the 7/22 five-layer model — re-seeded from the handoff's §3, as designed).
 
-## Still open (unchanged from migration list)
+## Duty cycle (same evening) — both 7/15 verdicts LANDED
 
-1. Two xian verdicts (ensemble strip; lens arc) — re-surfaced to xian this session.
-2. Flat-v7 production build. 3. Prequel production design. 4. Gmail connector cleanup (account-scoped; needs xian).
+xian, same evening, by phone:
+
+- **PNG validation:** directed "plan and/or do next" → **done**: `png_complete()` IEND-trailer check in `render_globe.py` + `render_remaining.py`; truncated frames named loudly and re-rendered. Validator tested against real v7 frames (good/truncated/empty/missing).
+- **Ensemble superposition: "This is pretty much what I envisioned!"** — VERDICT LANDED (13 days out). Fresh strip rendered on Amber to get it: built `.venv` in-repo (Python 3.12 — 3.14 has no pygplates wheel; the first build's failure was masked by a `| tail` pipe, the exact 7/27-brief exit-code gotcha), cao2024 auto-downloaded, 46 member renders, strip delivered to xian's phone. The uncertainty treatment for the prequel is confirmed.
+- **Lens-per-hold arc: APPROVED for now** ("I approve it for now and we can assess"). Flat-v7 production unblocked.
+- Flat-v7 draft rung in progress: `test_flat_morph.py` extended with `--lens {mollweide,sinusoidal,azimuthal-s,ortho}` (Mollweide default, backward compatible; circular lenses x-scaled 0.5 for the 2:1 frame; ortho far-hemisphere fades with the morph, near side draws on top). Draft arc rendering across the four real v8 holds: Rodinia/sinusoidal, Gondwana/azimuthal-s, Pangaea/Mollweide, Present/ortho.
+- Memo to Pard delivered (mediajunkie repo): standup complete + the memory-wipe seam flagged for the migration checklist + long-render heads-up.
+- xian offered connector help; standing instruction: batch questions, duty-cycle until no unblocked work or unread mail; Janus relays when xian is away.
+
+## Still open
+
+1. Flat-v7: draft arc → xian assessment → production wiring into render_flat.py (which also needs `-movflags +faststart` added — it predates the convention).
+2. Prequel production design (pacing across 1.8 Gyr, Nuna hold placement — hand-frame it, lesson 4).
+3. Gmail connector cleanup (account-scoped; may be moot on designinproduct.com — check before bothering xian).
