@@ -22,3 +22,12 @@
 ## Work log
 
 - 7/28 log closed; this one opened.
+- Design doc: four decisions recorded; ICS Proterozoic period boundaries added
+  for the era-label track (Statherian → Stenian).
+- `test_ensemble_motion.py --coherent`: per-member perturbations drawn once
+  (unit-scale, scaled by u(t)) — nine smooth parallel worlds. Rendered the same
+  1550→1500 Ma window (~7 min) and delivered a stacked **boil-vs-coherent
+  comparison** to xian. Stills are statistically identical between modes, as
+  they should be — the difference exists only in motion.
+- Next: xian's coherence verdict → full-span pacing draft (step 2) in the
+  winning mode → Nuna hold candidates.
