@@ -41,18 +41,40 @@ total_anim_frames = len(path_frames)
 frame_files = sorted(glob.glob(os.path.join(FRAMES_DIR, "globe_frame_*.png")))
 geo_frame_count = len(frame_files)
 
-# Find which frames are already rendered
+def png_complete(path):
+    """True only for a fully-written PNG (valid IEND trailer) — a render
+    killed mid-write leaves a truncated file that a name-only check would
+    wrongly count as done."""
+    try:
+        if os.path.getsize(path) < 100:
+            return False
+        with open(path, "rb") as f:
+            f.seek(-12, os.SEEK_END)
+            return f.read(12) == b"\x00\x00\x00\x00IEND\xaeB`\x82"
+    except OSError:
+        return False
+
+
+# Find which frames are already rendered (and actually complete on disk)
 existing = set()
+truncated = []
 for fn in os.listdir(RENDER_DIR):
     if fn.startswith("render_") and fn.endswith(".png"):
         try:
             num = int(fn.replace("render_", "").replace(".png", ""))
-            existing.add(num)
         except ValueError:
-            pass
+            continue
+        if png_complete(os.path.join(RENDER_DIR, fn)):
+            existing.add(num)
+        else:
+            truncated.append(fn)
+
+if truncated:
+    print(f"⚠ {len(truncated)} truncated PNG(s) found and queued for re-render: "
+          f"{', '.join(sorted(truncated)[:10])}{' …' if len(truncated) > 10 else ''}")
 
 remaining = [pf for pf in path_frames if (pf["anim_frame"] + 1) not in existing]
-print(f"Total frames: {total_anim_frames}, already rendered: {len(existing)}, remaining: {len(remaining)}")
+print(f"Total frames: {total_anim_frames}, complete on disk: {len(existing)}, remaining: {len(remaining)}")
 
 if len(remaining) == 0:
     print("All frames already rendered! Jumping to MP4 assembly.")

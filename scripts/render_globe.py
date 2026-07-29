@@ -31,6 +31,23 @@ OUTPUT_PATH = os.path.abspath(os.environ.get("OUTPUT_PATH", "./tectonic_globe_v6
 # skipped when a range is set (assemble on the machine that has all frames).
 FRAME_START = int(os.environ.get("FRAME_START", "0")) or None
 FRAME_END = int(os.environ.get("FRAME_END", "0")) or None
+
+
+def png_complete(path):
+    """True only for a fully-written PNG (valid IEND trailer).
+
+    A render killed mid-write leaves a truncated PNG on disk; a bare
+    exists/size check would skip it on resume and the corrupt frame
+    would survive silently into assembly.
+    """
+    try:
+        if os.path.getsize(path) < 100:
+            return False
+        with open(path, "rb") as f:
+            f.seek(-12, os.SEEK_END)
+            return f.read(12) == b"\x00\x00\x00\x00IEND\xaeB`\x82"
+    except OSError:
+        return False
 CROSSFADE_HALF = 1  # frames from each side of transition = 2-frame crossfade window
 
 # Renderer: set to True for fast drafts, False for final quality
@@ -370,11 +387,15 @@ for i, pf in enumerate(path_frames):
         continue
     # Render this frame (skip if already on disk — makes long runs resumable)
     out_png = os.path.join(RENDER_DIR, f"render_{anim_f:04d}.png")
-    if os.path.exists(out_png) and os.path.getsize(out_png) > 0:
-        n_skipped_existing += 1
-        if (i + 1) % 200 == 0:
-            print(f"  [{i+1}/{total_anim_frames}] Frame {anim_f}: exists, skipping")
-        continue
+    if os.path.exists(out_png):
+        if png_complete(out_png):
+            n_skipped_existing += 1
+            if (i + 1) % 200 == 0:
+                print(f"  [{i+1}/{total_anim_frames}] Frame {anim_f}: exists, skipping")
+            continue
+        # Name the defect loudly, then fall through and re-render it
+        print(f"  [{i+1}/{total_anim_frames}] Frame {anim_f}: TRUNCATED PNG on disk "
+              f"({os.path.getsize(out_png)} bytes) — re-rendering")
     scene.frame_set(anim_f)
     scene.render.filepath = os.path.join(RENDER_DIR, f"render_{anim_f:04d}")
     bpy.ops.render.render(write_still=True)
