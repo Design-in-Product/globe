@@ -35,6 +35,12 @@
 - **Step 2 launched**: full-span pacing draft, 1800→1000 Ma, 4 Ma cadence,
   201 frames × 9 coherent members, nohup-detached (~27 min). Deliverables:
   flipbook + tempo-matched previews, Nuna hold-time candidates.
+- **Step 2 DELIVERED**: full-span draft complete (201/201 frames, ~30 min).
+  Two cuts to xian (flipbook 20 s; tempo-matched 80 s at ~10 Ma/s) + three
+  Nuna hold candidates (1600 / 1520 / 1452 Ma; my pick 1452, peak
+  consolidation). Confirmed the cluster reaches toward the antimeridian —
+  hand-framing required, as lesson 4 predicted. Awaiting xian: pacing verdict
+  + hold pick. Then step 3: production texture render (801 × 9 coherent).
 - 7/29 brief read: our `| tail` exit-masking incident from last night is the
   corroborating instance for PM's `grep -q`/SIGPIPE finding (the network saw
   it before I filed anything). Audited repo scripts for `| grep -q` / `| tail`
