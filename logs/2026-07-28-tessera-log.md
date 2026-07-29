@@ -22,3 +22,36 @@
 1. xian verdicts outstanding since 7/15: ensemble-superposition strip; lens-per-hold arc.
 2. Flat-v7 production build (morph → render_flat.py).
 3. Prequel production design (pacing, Nuna hold, ensemble treatment integration).
+
+---
+
+# Amber arrival — first resident session (same date, evening)
+
+**Session:** First Tessera session ON Amber, designinproduct.com account. Read my own handoff, Pard's migration memo, and Pard's reviewer pass; then verified the environment by running commands, not reading docs (per the 7/23 brief finding — and it paid off immediately, see memory note below).
+
+## Environment verification (independent, not inherited from the reviewer pass)
+
+All six §4 answers **confirmed live**: `~/globe-render/` intact — 3,744 PNGs = 1,006 textures (`frames/`) + 2,738 v7 renders (`render_frames_v7/`), exactly the handoff's numbers, nothing lost. ffmpeg 8.1.2 at `/opt/homebrew/bin/`. Blender 5.1.2 at `/Applications/Blender.app` (not on PATH). M1 Max / 64 GB, ~300 GB free. Checkout `~/Development/globe` on main, clean, synced with origin. Git identity set repo-local: `Tessera (Tectonic Globe) <tessera@tectonicglobe.local>`.
+
+One finding the reviewer pass couldn't have made: **my live memory directory on Amber was empty** — the account switch wiped it, exactly as the 7/25 brief predicted ("switching Anthropic accounts empties Claude Code memory completely; git export is the only safe carrier"). Re-seeded from `docs/tessera/memory-snapshot-2026-07-28/`, but **rewritten, not copied**: half the snapshot described the laptop/Studio split (ssh, "no ffmpeg on the Studio", laptop assembly) that is now false. Five memories written, every claim re-verified on this host today. Detail worth keeping: `pmset -g custom` on Amber has no `lowpowermode` key at all, so the laptop-era "grep for lowpowermode" check passes vacuously here — silence ≠ off.
+
+## Brief catch-up: 10 briefs read (7/18–7/28), synthesis
+
+Findings adopted into Globe practice:
+
+- **m-44, "clear is not a measurement" (7/28, PM):** a check must name what it examined; five states collapse into one "clear". Audited our pipeline for it and found two instances in `scripts/render_globe.py`: (1) the final "✓ Frames rendered" line claimed the full frame count even on a resume run that rendered 3 frames and skipped 2,735 — **fixed**: summary now reports rendered / already-on-disk / out-of-range counts and warns on accounting mismatch; (2) the skip-existing check accepts any >0-byte PNG, so a frame truncated by a killed render silently survives into assembly — **logged as latent risk**, not fixed (a cheap size threshold would be arbitrary; a real fix is PNG IEND validation — do it before the next multi-hour production run).
+- **Verify migrations by running commands, not reading prose (7/23, Pard):** applied this session, top to bottom.
+- **Account switch = memory wipe; git export is the carrier (7/25, PM/Pard):** hit it live, survived it because the export existed.
+- **`claude -p` scheduled jobs need LaunchAgent not cron; pure git jobs are cron-safe (7/27, Pard):** relevant if we ever automate the daily sync beyond ritual.
+- **`git log` after fetch reads stale HEAD — name `origin/main` explicitly on sibling repos (7/27, Janus):** already in the handoff conventions; reconfirmed.
+- Noted for the prequel/flat work, no action yet: capability-inventory pass before declaring a gate clear (7/21, Klatch) — worth running against flat-v7 before calling it shipped; fabricated-vs-dead code distinction (7/19, PM) — the old fallback renderer in `generate_frames.py` with its antimeridian bug is exactly a "lies when reached" path; either fix or make it raise loudly.
+
+## Operating changes
+
+- **Daily two-way sync discipline** (xian directive): session-start ritual added to CLAUDE.md — pull main before anything, push as work lands. Kept as ritual, not automation, for now.
+- Task list re-seeded on Amber (L4 doesn't migrate, per the 7/22 five-layer model — re-seeded from the handoff's §3, as designed).
+
+## Still open (unchanged from migration list)
+
+1. Two xian verdicts (ensemble strip; lens arc) — re-surfaced to xian this session.
+2. Flat-v7 production build. 3. Prequel production design. 4. Gmail connector cleanup (account-scoped; needs xian).

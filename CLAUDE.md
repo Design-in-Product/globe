@@ -10,7 +10,9 @@ Tectonic Globe (the "Animated Tectonic Globe" / dynamic atlas) is a scientific d
 
 At the start of each session:
 
-1. Read `docs/briefs/cross-pollination/current.md` — the latest cross-pollination brief from the Design in Product hub. Tectonic Globe is a registered reader in the DinP cross-pollination network; the brief keeps Tessera current on insights from sibling projects (Piper Morgan, Klatch, Mediajunkie) that may be relevant here (rendering, data pipelines, agent operating discipline).
+1. `git pull` on main **before anything else** — briefs and inter-agent mail are delivered by push to this repo; an unpulled checkout is a stale window on the world (this cost 11 days of unread mail in the laptop era). The complement: **push as work lands** — Janus's hub scan reads `origin/main`, so unpushed work is invisible to the constellation. Daily, both directions (xian directive, 2026-07-28).
+2. Read `docs/briefs/cross-pollination/current.md` — the latest cross-pollination brief from the Design in Product hub. Tectonic Globe is a registered reader in the DinP cross-pollination network; the brief keeps Tessera current on insights from sibling projects (Piper Morgan, Klatch, Mediajunkie) that may be relevant here (rendering, data pipelines, agent operating discipline).
+3. Check `docs/mail/` for new memos (delivered by push, so step 1 is what makes them visible).
 
 ## Key Paths
 

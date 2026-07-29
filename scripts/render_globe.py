@@ -307,6 +307,12 @@ import time
 render_start = time.time()
 prev_geo_a = -1
 prev_geo_b = -1
+# Honest accounting: the final summary must say what was actually rendered
+# vs skipped, or a mostly-skipped resume run is indistinguishable from a
+# full render (the "silent clear" failure mode).
+n_rendered = 0
+n_skipped_existing = 0
+n_out_of_range = 0
 
 for i, pf in enumerate(path_frames):
     anim_f = pf["anim_frame"] + 1  # Blender 1-indexed
@@ -360,16 +366,19 @@ for i, pf in enumerate(path_frames):
 
     # Skip frames outside this machine's assigned range (multi-machine split)
     if (FRAME_START and anim_f < FRAME_START) or (FRAME_END and anim_f > FRAME_END):
+        n_out_of_range += 1
         continue
     # Render this frame (skip if already on disk — makes long runs resumable)
     out_png = os.path.join(RENDER_DIR, f"render_{anim_f:04d}.png")
     if os.path.exists(out_png) and os.path.getsize(out_png) > 0:
+        n_skipped_existing += 1
         if (i + 1) % 200 == 0:
             print(f"  [{i+1}/{total_anim_frames}] Frame {anim_f}: exists, skipping")
         continue
     scene.frame_set(anim_f)
     scene.render.filepath = os.path.join(RENDER_DIR, f"render_{anim_f:04d}")
     bpy.ops.render.render(write_still=True)
+    n_rendered += 1
 
     # Progress reporting
     elapsed = time.time() - render_start
@@ -380,7 +389,13 @@ for i, pf in enumerate(path_frames):
           f"— {fps_rate:.2f} fps, ETA {eta:.0f}s")
 
 render_elapsed = time.time() - render_start
-print(f"\n✓ Frames rendered in {render_elapsed:.0f}s ({total_anim_frames / render_elapsed:.2f} fps)")
+render_rate = f"{n_rendered / render_elapsed:.2f} fps" if n_rendered else "n/a"
+print(f"\n✓ Render pass complete in {render_elapsed:.0f}s: "
+      f"{n_rendered} rendered, {n_skipped_existing} already on disk, "
+      f"{n_out_of_range} outside frame range, of {total_anim_frames} total ({render_rate})")
+if n_rendered + n_skipped_existing + n_out_of_range != total_anim_frames:
+    print(f"⚠ Accounting mismatch: {n_rendered}+{n_skipped_existing}+{n_out_of_range} "
+          f"!= {total_anim_frames} — investigate before trusting this run.")
 
 # ── Assemble MP4 with ffmpeg + text overlay ──────────────────
 if FRAME_START or FRAME_END:
