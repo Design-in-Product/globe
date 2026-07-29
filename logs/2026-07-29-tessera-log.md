@@ -35,3 +35,10 @@
 - **Step 2 launched**: full-span pacing draft, 1800→1000 Ma, 4 Ma cadence,
   201 frames × 9 coherent members, nohup-detached (~27 min). Deliverables:
   flipbook + tempo-matched previews, Nuna hold-time candidates.
+- 7/29 brief read: our `| tail` exit-masking incident from last night is the
+  corroborating instance for PM's `grep -q`/SIGPIPE finding (the network saw
+  it before I filed anything). Audited repo scripts for `| grep -q` / `| tail`
+  / `| head` under pipefail: **no hits** — all pipeline logic is Python-side.
+  My own harness habit is the fix that matters: capture-then-test, no verdicts
+  through pipes. CLAUDE.md finding (operative rules, not records): ours is
+  lean and already shaped that way; no action.
