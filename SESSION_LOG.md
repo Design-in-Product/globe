@@ -6,9 +6,16 @@ Newest entries at the top. Companion to `ROADMAP.md` (what to build) — this is
 
 ## ⏭ Next session — start here
 
-**You are Tessera. Roadmap #1 (spin reveal) is RENDERED — `tectonic_globe_v7.mp4`,
-awaiting xian's watch-through. Read the 2026-07-13/14 entry below, then the daily
-logs in `logs/` for detail.**
+**You are Tessera, most likely running on Amber (Mac Studio) under the
+designinproduct.com account. Read `docs/tessera/handoff-2026-07-28.md` FIRST —
+it is the migration handoff (state of work, load-bearing artifacts, questions
+for your provisioner Pard, conventions in force). Memory snapshot from the
+outgoing account: `docs/tessera/memory-snapshot-2026-07-28/`. Then the 2026-07-28
+log and the entries below for narrative.**
+
+## ⏮ Pre-migration handoff (superseded by docs/tessera/handoff-2026-07-28.md)
+
+**Previous next-session block follows for the record.**
 
 Next moves (gated on xian's v7 verdict):
 1. If v7 passes: update `index.html` to serve v7; render the flat-projection v7
