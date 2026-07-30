@@ -33,6 +33,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 CAMERA_PATH_FILE = os.path.abspath(os.environ.get("CAMERA_PATH_FILE", "./camera_path.json"))
 FRAMES_DIR = os.path.abspath(os.path.expanduser(os.environ.get("FRAMES_DIR", "./frames")))
 OUTPUT_PATH = os.path.abspath(os.environ.get("OUTPUT_PATH", "./tectonic_flat_v6.mp4"))
+FRAME_PREFIX = os.environ.get("FRAME_PREFIX", "globe_frame_")  # prequel: prequel_frame_
 FPS = 24
 RES_X = 1920
 RES_Y = 960  # 2:1 equirectangular aspect ratio
@@ -176,7 +177,7 @@ prev_dst = None
 def load_resized(geo_idx):
     """Source texture resized to output resolution (cached)."""
     if geo_idx not in image_cache:
-        im = Image.open(os.path.join(FRAMES_DIR, f"globe_frame_{geo_idx:04d}.png"))
+        im = Image.open(os.path.join(FRAMES_DIR, f"{FRAME_PREFIX}{geo_idx:04d}.png"))
         image_cache[geo_idx] = im.convert("RGB").resize((RES_X, RES_Y), Image.LANCZOS)
     return image_cache[geo_idx]
 
@@ -190,7 +191,7 @@ for i, pf in enumerate(path_frames):
         lens, s, lon0, geo_idx = morph_map[i]
         fm = morphers[lens]
         if morph_loaded_geo.get(lens) != geo_idx:
-            fm.load_texture(os.path.join(FRAMES_DIR, f"globe_frame_{geo_idx:04d}.png"))
+            fm.load_texture(os.path.join(FRAMES_DIR, f"{FRAME_PREFIX}{geo_idx:04d}.png"))
             morph_loaded_geo[lens] = geo_idx
         fm.render(s, lon0, dst)
         stamp_overlay(Image.open(dst).convert("RGB"), time_ma, era).save(dst)
