@@ -1,17 +1,24 @@
 #!/usr/bin/env python3
 """
-Assemble flat-projection (equirectangular) companion video with crossfade blending.
+Assemble flat-projection (equirectangular) companion video with crossfade
+blending and (flat-v7) lens-per-hold projection-morph reveals.
 
-No Blender needed — reads source PNGs from frames/ and uses
-camera_path.json for timing + subtitle data. Crossfades between
-consecutive geological frames using PIL alpha-blending for smooth transitions.
+No Blender needed — reads source PNGs and camera-path timing; crossfades
+between geological frames with PIL, renders hold-window morphs via
+flat_morph.py (numpy/scipy/matplotlib — run with the repo .venv).
 
-Usage:
-    python3 scripts/render_flat.py
+Flat-v7 production (v8 spin path, lens arc on the four holds):
+    CAMERA_PATH_FILE=camera_path_spin_v8.json \
+    FRAMES_DIR=~/globe-render/frames \
+    OUTPUT_PATH=./tectonic_flat_v7.mp4 \
+    .venv/bin/python scripts/render_flat.py
+
+Legacy plain build: LENS_HOLDS=0 python3 scripts/render_flat.py
 """
 
 import json
 import os
+import sys
 import subprocess
 import tempfile
 import shutil
@@ -19,15 +26,26 @@ import time
 
 from PIL import Image
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 # ── Configuration ─────────────────────────────────────────────
-CAMERA_PATH_FILE = os.path.abspath("./camera_path.json")
-FRAMES_DIR = os.path.abspath("./frames")
-OUTPUT_PATH = os.path.abspath("./tectonic_flat_v6.mp4")
+# Env-overridable (matches render_globe.py) so v8-path runs need no edits.
+CAMERA_PATH_FILE = os.path.abspath(os.environ.get("CAMERA_PATH_FILE", "./camera_path.json"))
+FRAMES_DIR = os.path.abspath(os.path.expanduser(os.environ.get("FRAMES_DIR", "./frames")))
+OUTPUT_PATH = os.path.abspath(os.environ.get("OUTPUT_PATH", "./tectonic_flat_v6.mp4"))
 OVERLAY_SCRIPT = os.path.abspath("./overlay_flat.ass")
 FPS = 24
 RES_X = 1920
 RES_Y = 960  # 2:1 equirectangular aspect ratio
 CROSSFADE_HALF = 1  # frames from each side of transition = 2-frame crossfade window
+
+# Lens-per-hold reveals (flat-v7, xian-approved arc). Holds are detected as
+# runs of ≥ MIN_HOLD frames at constant time_ma; lenses are assigned in arc
+# order. Disable (plain flat film) with LENS_HOLDS=0.
+LENS_HOLDS = os.environ.get("LENS_HOLDS", "1") != "0"
+LENS_ARC = ["sinusoidal", "azimuthal-s", "mollweide", "ortho"]
+MIN_HOLD = 100
+MORPH_FRAMES = 24  # each side; remainder of the hold is the 360° rotate-under
 
 
 # ── Crossfade schedule computation ────────────────────────────
@@ -86,6 +104,37 @@ crossfade_map = compute_crossfade_schedule(path_frames, CROSSFADE_HALF)
 n_geo_frames = len(set(pf["geo_frame_idx"] for pf in path_frames))
 print(f"  Crossfade frames: {len(crossfade_map)} (across {n_geo_frames - 1} transitions)")
 
+# ── Detect holds and build the lens-morph schedule ────────────
+# morph_map: anim frame index -> (lens, s, lon0, geo_idx)
+morph_map = {}
+if LENS_HOLDS:
+    from flat_morph import FlatMorph, hold_schedule
+
+    holds = []
+    run_start, prev_t = 0, path_frames[0]["time_ma"]
+    for i, pf in enumerate(path_frames):
+        if pf["time_ma"] != prev_t:
+            if i - run_start >= MIN_HOLD:
+                holds.append((run_start, i))
+            run_start, prev_t = i, pf["time_ma"]
+    if len(path_frames) - run_start >= MIN_HOLD:
+        holds.append((run_start, len(path_frames)))
+
+    if len(holds) != len(LENS_ARC):
+        print(f"⚠ {len(holds)} holds detected but {len(LENS_ARC)} lenses in the arc"
+              f" — pairing in order, extras get no lens.")
+    morphers = {}
+    for (start, end), lens in zip(holds, LENS_ARC):
+        sched = hold_schedule(end - start, MORPH_FRAMES)
+        geo_idx = path_frames[start]["geo_frame_idx"]
+        for k, (s, lon0) in enumerate(sched):
+            morph_map[start + k] = (lens, s, lon0, geo_idx)
+        if lens not in morphers:
+            morphers[lens] = FlatMorph(lens, resx=RES_X, resy=RES_Y)
+        print(f"  Hold {path_frames[start]['time_ma']:.0f} Ma "
+              f"(frames {start}-{end}, {end - start}f) → {lens}")
+    print(f"  Lens-morph frames: {len(morph_map)}")
+
 # ── Create temp directory with frames ─────────────────────────
 # Non-crossfade frames: symlink to source PNG
 # Crossfade frames: PIL-blended PNG saved to temp dir
@@ -97,10 +146,22 @@ blend_start = time.time()
 image_cache = {}  # geo_idx -> PIL Image
 blend_count = 0
 
+morph_count = 0
+morph_loaded_geo = {}  # lens -> geo_idx currently loaded
+
 for i, pf in enumerate(path_frames):
     dst = os.path.join(tmp_dir, f"frame_{i + 1:04d}.png")
 
-    if i in crossfade_map:
+    if i in morph_map:
+        # Lens-morph hold frame (takes precedence; holds never crossfade)
+        lens, s, lon0, geo_idx = morph_map[i]
+        fm = morphers[lens]
+        if morph_loaded_geo.get(lens) != geo_idx:
+            fm.load_texture(os.path.join(FRAMES_DIR, f"globe_frame_{geo_idx:04d}.png"))
+            morph_loaded_geo[lens] = geo_idx
+        fm.render(s, lon0, dst)
+        morph_count += 1
+    elif i in crossfade_map:
         geo_a, geo_b, alpha = crossfade_map[i]
 
         # Load images into cache if not already there
@@ -136,7 +197,8 @@ for i, pf in enumerate(path_frames):
 # Clear image cache
 image_cache.clear()
 blend_elapsed = time.time() - blend_start
-print(f"  Created {total_frames} frames ({blend_count} crossfade blends in {blend_elapsed:.1f}s)")
+print(f"  Created {total_frames} frames ({blend_count} crossfade blends, "
+      f"{morph_count} lens-morph renders in {blend_elapsed:.1f}s)")
 
 # ── Generate ASS subtitle file ────────────────────────────────
 # Same logic as render_globe.py but adjusted for 1920x960 resolution
