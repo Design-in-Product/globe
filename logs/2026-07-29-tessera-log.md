@@ -41,6 +41,25 @@
   consolidation). Confirmed the cluster reaches toward the antimeridian —
   hand-framing required, as lesson 4 predicted. Awaiting xian: pacing verdict
   + hold pick. Then step 3: production texture render (801 × 9 coherent).
+## Production day — all three verdicts in
+
+xian (mid-morning): lens arc plays well · no compression (1 Ma stands) ·
+Nuna hold at 1452 Ma. Every gate open.
+
+- **Prequel step 3 LAUNCHED**: `scripts/generate_prequel_frames.py` — 801
+  frames × 9 coherent members to `~/globe-render/prequel_frames/`.
+  Perturbations now derived from `SeedSequence((seed, member, plate_id))`,
+  not draw order — resume/split renders are byte-identical (VERIFIED by cmp
+  on a deleted-and-re-rendered frame; the motion script's lazy draws would
+  have silently broken coherence on resume). Measured ~600 f/h → ~80 min.
+- **Flat-v7 production LAUNCHED**: morph math promoted to `scripts/flat_morph.py`
+  (canonical); `render_flat.py` gained env paths + hold detection + lens-arc
+  assignment (24f morph / 84f rotate / 24f morph inside each 132-frame v8
+  hold). Production mesh 1024×512: ortho limb clean at 1920×960, 0.4 s/frame.
+  Building `tectonic_flat_v7.mp4` from `~/globe-render/frames/`.
+- `previews/` page added: globe.dinp.xyz/previews (unlisted, noindex) after
+  xian asked where previews live. (Chat cards DO play — page kept as the
+  durable review surface.) xian on the full-span draft: "super cool."
 - 7/29 brief read: our `| tail` exit-masking incident from last night is the
   corroborating instance for PM's `grep -q`/SIGPIPE finding (the network saw
   it before I filed anything). Audited repo scripts for `| grep -q` / `| tail`
