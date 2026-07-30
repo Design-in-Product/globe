@@ -88,3 +88,14 @@ Nuna hold at 1452 Ma. Every gate open.
   My own harness habit is the fix that matters: capture-then-test, no verdicts
   through pipes. CLAUDE.md finding (operative rules, not records): ours is
   lean and already shaped that way; no action.
+- Terminal-seam crossfade built as a 6.5 s comparison clip and delivered —
+  the call is now concrete (watch it) rather than abstract (imagine it).
+
+## Cycle wound down (evening)
+
+No replies pending processing; no unread mail. All open work xian-gated:
+(1) prequel 91 s draft review, (2) terminal-crossfade yes/no, (3) Blender
+globe-pass go-ahead (needs Pard memo, >2h render, + hand-framed Nuna camera
+from frame 348). Any answer restarts production within the hour. A full
+production day: flat-v7 SHIPPED; prequel from decided-design to assembled,
+verified, watchable draft.
