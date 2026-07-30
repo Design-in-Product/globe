@@ -71,6 +71,16 @@ Nuna hold at 1452 Ma. Every gate open.
 - **FLAT-V7 SHIPPED** (xian: "Yes looks good") — hero toggle on globe.dinp.xyz
   now serves it. Free win: both hero films share the v8 timeline, so the
   time-preserving toggle maps 1:1 between globe spin and lens morph.
+- **PREQUEL TEXTURES COMPLETE + FIRST ASSEMBLED DRAFT DELIVERED.** 801/801
+  frames verified (png_complete sweep, no gaps, accounting reconciles).
+  `compute_prequel_path.py` → 2186-frame path (91 s: tempo-matched 2.4×,
+  static 132f holds at Nuna 1452 + convergence 1000, ICS period labels);
+  `render_flat.py` gained FRAME_PREFIX; draft film assembled, both holds
+  spot-verified, delivered to xian + previews page. Open design call
+  (batched, default stated): terminal-hold style seam — prequel is
+  continents-only vs main film's textured+boundaries 1000 Ma; proposal is
+  a crossfade during the hold. Remaining to shippable: seam decision +
+  Blender globe pass (globe-side prequel).
 - 7/29 brief read: our `| tail` exit-masking incident from last night is the
   corroborating instance for PM's `grep -q`/SIGPIPE finding (the network saw
   it before I filed anything). Audited repo scripts for `| grep -q` / `| tail`
