@@ -68,6 +68,9 @@ Nuna hold at 1452 Ma. Every gate open.
   the m-44 shape again, in our own pipeline. Fix: overlay burned via PIL at
   frame creation; the silent fallback is deleted (assemble labeled or fail
   loudly). Spot-frames verified at all four lens holds.
+- **FLAT-V7 SHIPPED** (xian: "Yes looks good") — hero toggle on globe.dinp.xyz
+  now serves it. Free win: both hero films share the v8 timeline, so the
+  time-preserving toggle maps 1:1 between globe spin and lens morph.
 - 7/29 brief read: our `| tail` exit-masking incident from last night is the
   corroborating instance for PM's `grep -q`/SIGPIPE finding (the network saw
   it before I filed anything). Audited repo scripts for `| grep -q` / `| tail`
