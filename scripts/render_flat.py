@@ -24,7 +24,7 @@ import tempfile
 import shutil
 import time
 
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -33,7 +33,6 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 CAMERA_PATH_FILE = os.path.abspath(os.environ.get("CAMERA_PATH_FILE", "./camera_path.json"))
 FRAMES_DIR = os.path.abspath(os.path.expanduser(os.environ.get("FRAMES_DIR", "./frames")))
 OUTPUT_PATH = os.path.abspath(os.environ.get("OUTPUT_PATH", "./tectonic_flat_v6.mp4"))
-OVERLAY_SCRIPT = os.path.abspath("./overlay_flat.ass")
 FPS = 24
 RES_X = 1920
 RES_Y = 960  # 2:1 equirectangular aspect ratio
@@ -46,6 +45,27 @@ LENS_HOLDS = os.environ.get("LENS_HOLDS", "1") != "0"
 LENS_ARC = ["sinusoidal", "azimuthal-s", "mollweide", "ortho"]
 MIN_HOLD = 100
 MORPH_FRAMES = 24  # each side; remainder of the hold is the 360° rotate-under
+
+# Overlay is burned in with PIL at frame-creation time. (Amber's Homebrew
+# ffmpeg ships without libass/freetype — no ass/subtitles/drawtext filters —
+# so the old ASS pass silently fell back to no overlay. PIL removes the
+# dependency entirely.)
+_FONT_PATH = "/System/Library/Fonts/Helvetica.ttc"
+_TIME_FONT = ImageFont.truetype(_FONT_PATH, 44)
+_ERA_FONT = ImageFont.truetype(_FONT_PATH, 28)
+
+
+def stamp_overlay(im, time_ma, era):
+    """Burn the time + era labels onto a RES_X x RES_Y frame (bottom-left,
+    matching the v6 ASS style: white time over grey era, black outline)."""
+    d = ImageDraw.Draw(im)
+    time_str = f"{int(time_ma)} Ma"
+    d.text((40, RES_Y - 30 - 52), time_str, font=_TIME_FONT,
+           fill=(255, 255, 255), stroke_width=3, stroke_fill=(0, 0, 0))
+    if era:
+        d.text((40, RES_Y - 30 - 52 - 40), era, font=_ERA_FONT,
+               fill=(204, 204, 204), stroke_width=2, stroke_fill=(0, 0, 0))
+    return im
 
 
 # ── Crossfade schedule computation ────────────────────────────
@@ -147,10 +167,23 @@ image_cache = {}  # geo_idx -> PIL Image
 blend_count = 0
 
 morph_count = 0
+link_count = 0
 morph_loaded_geo = {}  # lens -> geo_idx currently loaded
+prev_static = None     # (geo_idx, time_ma, era) -> hardlink identical repeats
+prev_dst = None
+
+
+def load_resized(geo_idx):
+    """Source texture resized to output resolution (cached)."""
+    if geo_idx not in image_cache:
+        im = Image.open(os.path.join(FRAMES_DIR, f"globe_frame_{geo_idx:04d}.png"))
+        image_cache[geo_idx] = im.convert("RGB").resize((RES_X, RES_Y), Image.LANCZOS)
+    return image_cache[geo_idx]
+
 
 for i, pf in enumerate(path_frames):
     dst = os.path.join(tmp_dir, f"frame_{i + 1:04d}.png")
+    time_ma, era = pf["time_ma"], pf.get("era_label", "")
 
     if i in morph_map:
         # Lens-morph hold frame (takes precedence; holds never crossfade)
@@ -160,133 +193,56 @@ for i, pf in enumerate(path_frames):
             fm.load_texture(os.path.join(FRAMES_DIR, f"globe_frame_{geo_idx:04d}.png"))
             morph_loaded_geo[lens] = geo_idx
         fm.render(s, lon0, dst)
+        stamp_overlay(Image.open(dst).convert("RGB"), time_ma, era).save(dst)
         morph_count += 1
+        prev_static = None
     elif i in crossfade_map:
         geo_a, geo_b, alpha = crossfade_map[i]
-
-        # Load images into cache if not already there
-        if geo_a not in image_cache:
-            image_cache[geo_a] = Image.open(
-                os.path.join(FRAMES_DIR, f"globe_frame_{geo_a:04d}.png")
-            )
-        if geo_b not in image_cache:
-            image_cache[geo_b] = Image.open(
-                os.path.join(FRAMES_DIR, f"globe_frame_{geo_b:04d}.png")
-            )
-
-        # Alpha-blend between the two geological frames
-        blended = Image.blend(image_cache[geo_a], image_cache[geo_b], alpha)
-        blended.save(dst)
+        blended = Image.blend(load_resized(geo_a), load_resized(geo_b), alpha)
+        stamp_overlay(blended, time_ma, era).save(dst)
         blend_count += 1
-
+        prev_static = None
         # Evict cache entries no longer needed (keep only current pair)
         for cached_idx in list(image_cache.keys()):
             if cached_idx != geo_a and cached_idx != geo_b:
                 del image_cache[cached_idx]
     else:
-        # No crossfade — symlink to source PNG
+        # Static frame: identical repeats within a run hardlink the previous
         geo_idx = pf["geo_frame_idx"]
-        src = os.path.join(FRAMES_DIR, f"globe_frame_{geo_idx:04d}.png")
-        os.symlink(src, dst)
+        key = (geo_idx, time_ma, era)
+        if key == prev_static and prev_dst:
+            os.link(prev_dst, dst)
+            link_count += 1
+        else:
+            frame = load_resized(geo_idx).copy()
+            stamp_overlay(frame, time_ma, era).save(dst)
+            prev_static, prev_dst = key, dst
 
     # Progress reporting every 200 frames
     if (i + 1) % 200 == 0:
         elapsed = time.time() - blend_start
-        print(f"  [{i+1}/{total_frames}] {blend_count} blends so far ({elapsed:.1f}s)")
+        print(f"  [{i+1}/{total_frames}] {blend_count} blends, {morph_count} morphs, "
+              f"{link_count} links so far ({elapsed:.1f}s)", flush=True)
 
 # Clear image cache
 image_cache.clear()
 blend_elapsed = time.time() - blend_start
 print(f"  Created {total_frames} frames ({blend_count} crossfade blends, "
-      f"{morph_count} lens-morph renders in {blend_elapsed:.1f}s)")
+      f"{morph_count} lens-morph renders, {link_count} hardlinked repeats "
+      f"in {blend_elapsed:.1f}s)", flush=True)
+if blend_count + morph_count + link_count > total_frames:
+    print("⚠ Accounting mismatch in frame creation — investigate.")
 
-# ── Generate ASS subtitle file ────────────────────────────────
-# Same logic as render_globe.py but adjusted for 1920x960 resolution
-print(f"\nGenerating subtitle overlay...")
-
-ass_header = f"""[Script Info]
-Title: Tectonic Globe Flat Projection Overlay
-ScriptType: v4.00+
-WrapStyle: 0
-PlayResX: {RES_X}
-PlayResY: {RES_Y}
-
-[V4+ Styles]
-Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: TimeLabel,Arial,44,&H00FFFFFF,&H000000FF,&H00000000,&H80000000,-1,0,0,0,100,100,0,0,1,3,0,1,40,40,30,1
-Style: EraLabel,Arial,28,&H00CCCCCC,&H000000FF,&H00000000,&H80000000,0,0,0,0,100,100,0,0,1,2,0,1,40,40,85,1
-
-[Events]
-Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
-"""
-
-
-def frame_to_ass_time(frame_num, fps):
-    """Convert frame number to ASS timestamp (H:MM:SS.CC)."""
-    total_seconds = frame_num / fps
-    h = int(total_seconds // 3600)
-    m = int((total_seconds % 3600) // 60)
-    s = total_seconds % 60
-    return f"{h}:{m:02d}:{s:05.2f}"
-
-
-ass_events = []
-prev_time_ma = None
-prev_era = None
-block_start_frame = 0
-
-# Group consecutive frames with the same time_ma and era
-for pf in path_frames:
-    anim_f = pf["anim_frame"]
-    time_ma = pf["time_ma"]
-    era = pf.get("era_label", "")
-
-    if time_ma != prev_time_ma or era != prev_era:
-        # Close previous block
-        if prev_time_ma is not None:
-            start_ts = frame_to_ass_time(block_start_frame, FPS)
-            end_ts = frame_to_ass_time(anim_f, FPS)
-            time_str = f"{int(prev_time_ma)} Ma" if prev_time_ma == int(prev_time_ma) else f"{prev_time_ma:.1f} Ma"
-            ass_events.append(
-                f"Dialogue: 0,{start_ts},{end_ts},TimeLabel,,0,0,0,,{time_str}"
-            )
-            if prev_era:
-                ass_events.append(
-                    f"Dialogue: 0,{start_ts},{end_ts},EraLabel,,0,0,0,,{prev_era}"
-                )
-        block_start_frame = anim_f
-        prev_time_ma = time_ma
-        prev_era = era
-
-# Close final block
-if prev_time_ma is not None:
-    start_ts = frame_to_ass_time(block_start_frame, FPS)
-    end_ts = frame_to_ass_time(total_frames, FPS)
-    time_str = f"{int(prev_time_ma)} Ma"
-    ass_events.append(
-        f"Dialogue: 0,{start_ts},{end_ts},TimeLabel,,0,0,0,,{time_str}"
-    )
-    if prev_era:
-        ass_events.append(
-            f"Dialogue: 0,{start_ts},{end_ts},EraLabel,,0,0,0,,{prev_era}"
-        )
-
-with open(OVERLAY_SCRIPT, 'w') as f:
-    f.write(ass_header)
-    f.write("\n".join(ass_events))
-    f.write("\n")
-
-print(f"  Subtitle file: {OVERLAY_SCRIPT} ({len(ass_events)} events)")
 
 # ── Assemble MP4 with ffmpeg ──────────────────────────────────
 print(f"\nAssembling MP4: {OUTPUT_PATH}")
 start_time = time.time()
 
+# Frames are already RES_X x RES_Y with the overlay burned in — no filters.
 ffmpeg_cmd = [
     "ffmpeg", "-y",
     "-framerate", str(FPS),
     "-i", os.path.join(tmp_dir, "frame_%04d.png"),
-    "-vf", f"scale={RES_X}:{RES_Y}:flags=lanczos,ass={OVERLAY_SCRIPT}",
     "-c:v", "libx264",
     "-crf", "18",
     "-pix_fmt", "yuv420p",
@@ -302,34 +258,14 @@ if result.returncode == 0:
     print(f"\n✓ Flat projection video complete!")
     print(f"  Output: {OUTPUT_PATH}")
     print(f"  Duration: {duration_sec:.1f}s ({total_frames} frames at {FPS}fps)")
-    print(f"  Resolution: {RES_X}×{RES_Y}")
+    print(f"  Resolution: {RES_X}×{RES_Y}, overlay burned in (PIL)")
     print(f"  File size: {file_size:.1f} MB")
     print(f"  Assembly time: {elapsed:.1f}s")
-    print(f"  Crossfade blends: {blend_count}")
+    print(f"  Crossfade blends: {blend_count}; lens morphs: {morph_count}")
 else:
-    print(f"\n✗ ffmpeg with subtitles failed: {result.stderr[:500]}")
-    print("  Trying without subtitles...")
-    ffmpeg_cmd_plain = [
-        "ffmpeg", "-y",
-        "-framerate", str(FPS),
-        "-i", os.path.join(tmp_dir, "frame_%04d.png"),
-        "-vf", f"scale={RES_X}:{RES_Y}:flags=lanczos",
-        "-c:v", "libx264",
-        "-crf", "18",
-        "-pix_fmt", "yuv420p",
-        "-movflags", "+faststart",
-        OUTPUT_PATH
-    ]
-    result2 = subprocess.run(ffmpeg_cmd_plain, capture_output=True, text=True)
-    if result2.returncode == 0:
-        elapsed = time.time() - start_time
-        file_size = os.path.getsize(OUTPUT_PATH) / (1024 * 1024)
-        print(f"\n✓ Flat projection video complete (no overlay)!")
-        print(f"  File size: {file_size:.1f} MB")
-    else:
-        print(f"\n✗ ffmpeg failed: {result2.stderr[:500]}")
-        shutil.rmtree(tmp_dir)
-        raise SystemExit(1)
+    print(f"\n✗ ffmpeg failed: {result.stderr[-800:]}")
+    shutil.rmtree(tmp_dir)
+    raise SystemExit(1)
 
 # ── Cleanup ───────────────────────────────────────────────────
 shutil.rmtree(tmp_dir)
