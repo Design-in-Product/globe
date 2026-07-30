@@ -60,6 +60,14 @@ Nuna hold at 1452 Ma. Every gate open.
 - `previews/` page added: globe.dinp.xyz/previews (unlisted, noindex) after
   xian asked where previews live. (Chat cards DO play — page kept as the
   durable review surface.) xian on the full-span draft: "super cool."
+- **FLAT-V7 PRODUCTION FILM DELIVERED** (tectonic_flat_v7.mp4, 114 s,
+  committed + on previews page + phone cut to xian). First build shipped
+  UNLABELED: Amber's Homebrew ffmpeg has no libass/freetype (verified by
+  probing -filters; reinstalling confirmed the formula is slim), so the ASS
+  pass failed and the old fallback silently assembled without the overlay —
+  the m-44 shape again, in our own pipeline. Fix: overlay burned via PIL at
+  frame creation; the silent fallback is deleted (assemble labeled or fail
+  loudly). Spot-frames verified at all four lens holds.
 - 7/29 brief read: our `| tail` exit-masking incident from last night is the
   corroborating instance for PM's `grep -q`/SIGPIPE finding (the network saw
   it before I filed anything). Audited repo scripts for `| grep -q` / `| tail`
