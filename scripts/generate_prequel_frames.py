@@ -26,6 +26,7 @@ Split across workers with FRAME_START/FRAME_END env vars (inclusive indices).
 import os
 import time
 import numpy as np
+from scipy.ndimage import map_coordinates
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -111,6 +112,40 @@ rotation_model = pygplates.RotationModel(model_data.get_rotation_model())
 continents_file = model_data.get_layer("ContinentalPolygons")
 print("✓ model loaded")
 
+# ── Frame registration (per-plate) ────────────────────────────
+# cao2024's reference frame at 1000 Ma is rotated ~9.85° from Merdith2021's
+# (the main film's model); a few terranes are also genuinely repositioned.
+# During the crystallization window each plate slerps onto Merdith's exact
+# 1000 Ma position — unless its required move exceeds MAX_REG_DISP_DEG
+# (a genuine model disagreement; dragging it would be worse than letting the
+# terminal dissolve show the disagreement).
+MAX_REG_DISP_DEG = 20.0
+mer_model_data = PlateModelManager().get_model("Merdith2021", data_dir=DATA_DIR)
+mer_rotation_model = pygplates.RotationModel(mer_model_data.get_rotation_model())
+_reg_cache = {}
+
+
+def registration_rotation(pid, w, sample_point):
+    """w-weighted corrective rotation for plate pid (None = leave alone)."""
+    if pid not in _reg_cache:
+        try:
+            Rc = rotation_model.get_rotation(1000.0, pid)
+            Rm = mer_rotation_model.get_rotation(1000.0, pid)
+            Rcorr = Rm * Rc.get_inverse()
+            plat, plon, ang = Rcorr.get_lat_lon_euler_pole_and_angle_degrees()
+            moved = Rcorr * sample_point
+            disp = np.degrees(np.arccos(np.clip(
+                np.dot(moved.to_xyz(), sample_point.to_xyz()), -1, 1)))
+            _reg_cache[pid] = (plat, plon, ang) if disp <= MAX_REG_DISP_DEG else None
+        except Exception:
+            _reg_cache[pid] = None
+    entry = _reg_cache[pid]
+    if entry is None or w <= 0.0:
+        return None
+    plat, plon, ang = entry
+    return pygplates.FiniteRotation((plat, plon), np.radians(ang * w))
+
+
 # Topology plotting (boundary fade-in) via gplately, same as generate_frames.py
 import gplately
 _gplot_model = gplately.PlateReconstruction(
@@ -126,6 +161,39 @@ gplot = gplately.PlotTopologies(
 print("✓ topology plotter ready")
 
 wrapper = pygplates.DateLineWrapper(0.0)
+
+
+# Common rigid component of the frame offset (measured from the major
+# cratons — identical across all of them): used to rotate the boundary-layer
+# raster so boundaries track their per-plate-corrected continents.
+REG_POLE_LAT, REG_POLE_LON, REG_ANGLE = 37.238544, -130.032507, 9.847544
+
+
+def _rot_matrix(pole_lat, pole_lon, angle_deg):
+    la, lo, th = map(np.radians, (pole_lat, pole_lon, angle_deg))
+    k = np.array([np.cos(la) * np.cos(lo), np.cos(la) * np.sin(lo), np.sin(la)])
+    K = np.array([[0, -k[2], k[1]], [k[2], 0, -k[0]], [-k[1], k[0], 0]])
+    return np.eye(3) + np.sin(th) * K + (1 - np.cos(th)) * (K @ K)
+
+
+def raster_rotate(img, w):
+    """Rotate an equirect raster by w x the common registration rotation."""
+    H, W = img.shape[:2]
+    lon = np.radians((np.arange(W) + 0.5) / W * 360.0 - 180.0)
+    lat = np.radians(90.0 - (np.arange(H) + 0.5) / H * 180.0)
+    LON, LAT = np.meshgrid(lon, lat)
+    xyz = np.stack([np.cos(LAT) * np.cos(LON),
+                    np.cos(LAT) * np.sin(LON), np.sin(LAT)])
+    Rinv = _rot_matrix(REG_POLE_LAT, REG_POLE_LON, -REG_ANGLE * w)
+    v = np.einsum('ij,jhw->ihw', Rinv, xyz)
+    row = np.clip((90.0 - np.degrees(np.arcsin(np.clip(v[2], -1, 1)))) / 180.0 * H - 0.5, 0, H - 1)
+    col = ((np.degrees(np.arctan2(v[1], v[0])) + 180.0) / 360.0 * W - 0.5) % W
+    coords = np.stack([row.ravel(), col.ravel()])
+    out = np.empty_like(img)
+    for c in range(img.shape[2]):
+        out[..., c] = map_coordinates(img[..., c], coords, order=1,
+                                      mode='grid-wrap').reshape(H, W)
+    return out
 
 
 def render_boundary_layer(time_ma):
@@ -166,12 +234,17 @@ def render_member(time_ma, u, member):
     ax.set_facecolor(OCEAN_COLOR)
     ax.patch.set_facecolor(OCEAN_COLOR)
 
+    reg_w = boundary_alpha(time_ma)   # registration rides the same ramp
     for rg in reconstructed:
         geom = rg.get_reconstructed_geometry()
         if geom is None:
             continue
+        pid = rg.get_feature().get_reconstruction_plate_id()
+        if reg_w > 0.0:
+            reg = registration_rotation(pid, reg_w, geom.get_boundary_centroid())
+            if reg is not None:
+                geom = reg * geom
         if u > 0 and member > 0:
-            pid = rg.get_feature().get_reconstruction_plate_id()
             if pid not in plate_rot:
                 pole, angle_unit = member_plate_perturb(member, pid)
                 angle = np.radians(angle_unit * POLE_SIGMA_DEG * u)
@@ -218,8 +291,9 @@ for idx in indices:
     mean = acc / n
     b_alpha = boundary_alpha(time_ma)
     if b_alpha > 0.0:
-        # Composite the crystallizing map over the averaged ensemble
-        layer = render_boundary_layer(time_ma)
+        # Composite the crystallizing map over the averaged ensemble;
+        # rotate the layer so boundaries track the registered continents
+        layer = raster_rotate(render_boundary_layer(time_ma), b_alpha)
         a = (layer[..., 3:4] / 255.0) * b_alpha
         mean = mean * (1 - a) + layer[..., :3] * a
     Image.fromarray(mean.astype(np.uint8)).save(out)
