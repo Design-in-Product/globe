@@ -47,6 +47,12 @@ LENS_ARC = ["sinusoidal", "azimuthal-s", "mollweide", "ortho"]
 MIN_HOLD = 100
 MORPH_FRAMES = 24  # each side; remainder of the hold is the 360° rotate-under
 
+# Terminal blend (prequel): over the film's last TERMINAL_BLEND_FRAMES, blend
+# into TERMINAL_BLEND_SRC (the main film's opening frame) so the prequel's
+# final frame IS the main film's first. Empty src disables.
+TERMINAL_BLEND_SRC = os.path.expanduser(os.environ.get("TERMINAL_BLEND_SRC", ""))
+TERMINAL_BLEND_FRAMES = int(os.environ.get("TERMINAL_BLEND_FRAMES", "72"))
+
 # Overlay is burned in with PIL at frame-creation time. (Amber's Homebrew
 # ffmpeg ships without libass/freetype — no ass/subtitles/drawtext filters —
 # so the old ASS pass silently fell back to no overlay. PIL removes the
@@ -182,9 +188,26 @@ def load_resized(geo_idx):
     return image_cache[geo_idx]
 
 
+terminal_img = None
+if TERMINAL_BLEND_SRC:
+    terminal_img = Image.open(TERMINAL_BLEND_SRC).convert("RGB").resize(
+        (RES_X, RES_Y), Image.LANCZOS)
+    print(f"  Terminal blend: last {TERMINAL_BLEND_FRAMES} frames → "
+          f"{TERMINAL_BLEND_SRC}")
+
 for i, pf in enumerate(path_frames):
     dst = os.path.join(tmp_dir, f"frame_{i + 1:04d}.png")
     time_ma, era = pf["time_ma"], pf.get("era_label", "")
+
+    if terminal_img is not None and i >= total_frames - TERMINAL_BLEND_FRAMES:
+        # Terminal blend into the main film's opening frame
+        alpha = (i - (total_frames - TERMINAL_BLEND_FRAMES) + 1) / (TERMINAL_BLEND_FRAMES + 1)
+        geo_idx = pf["geo_frame_idx"]
+        frame = Image.blend(load_resized(geo_idx), terminal_img, alpha)
+        stamp_overlay(frame, time_ma, era).save(dst)
+        blend_count += 1
+        prev_static = None
+        continue
 
     if i in morph_map:
         # Lens-morph hold frame (takes precedence; holds never crossfade)

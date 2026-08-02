@@ -45,6 +45,23 @@ TIME_SIGMA_MA = 25.0
 SEED = 42
 IMAGE_WIDTH, IMAGE_HEIGHT, DPI = 2048, 1024, 200
 
+# The map crystallizes in (xian + Tessera, 2026-08-01): plate boundaries in
+# the main film's style fade from 0 to full opacity as u -> 0, so the
+# prequel's terminal frame converges on the main film's opening STYLE, not
+# just its geometry. Boundaries are the very thing the deep-time model can't
+# constrain — they appear as the science firms up.
+BOUNDARY_FADE_START = 1150.0         # Ma; alpha 0 here -> 1 at 1000 Ma
+RIDGE_COLOR = '#ff6b35'
+TRENCH_COLOR = '#e63946'
+# Main film draws at 4096 wide; we draw at 2048, so halve linewidths to keep
+# the same on-screen weight after assembly scales both to output width.
+BOUNDARY_LW = dict(ridges=0.4, transforms=0.3, trenches=0.4)
+
+
+def boundary_alpha(t):
+    return max(0.0, min(1.0, (BOUNDARY_FADE_START - t) /
+                        (BOUNDARY_FADE_START - float(T_END))))
+
 FRAME_START = int(os.environ.get("FRAME_START", "-1"))
 FRAME_END = int(os.environ.get("FRAME_END", "-1"))
 
@@ -94,7 +111,40 @@ rotation_model = pygplates.RotationModel(model_data.get_rotation_model())
 continents_file = model_data.get_layer("ContinentalPolygons")
 print("✓ model loaded")
 
+# Topology plotting (boundary fade-in) via gplately, same as generate_frames.py
+import gplately
+_gplot_model = gplately.PlateReconstruction(
+    model_data.get_rotation_model(),
+    model_data.get_topologies(),
+    model_data.get_static_polygons(),
+)
+gplot = gplately.PlotTopologies(
+    _gplot_model,
+    coastlines=model_data.get_layer("Coastlines"),
+    continents=continents_file,
+)
+print("✓ topology plotter ready")
+
 wrapper = pygplates.DateLineWrapper(0.0)
+
+
+def render_boundary_layer(time_ma):
+    """Plate boundaries (main-film style) on a transparent layer, as RGBA."""
+    fig = plt.figure(figsize=(IMAGE_WIDTH / DPI, IMAGE_HEIGHT / DPI), dpi=DPI)
+    ax = fig.add_axes([0, 0, 1, 1], projection=ccrs.PlateCarree(central_longitude=0))
+    ax.set_global()
+    ax.set_axis_off()
+    ax.patch.set_alpha(0.0)
+    fig.patch.set_alpha(0.0)
+    gplot.time = time_ma
+    gplot.plot_ridges(ax, color=RIDGE_COLOR, linewidth=BOUNDARY_LW['ridges'])
+    gplot.plot_transforms(ax, color=RIDGE_COLOR, linewidth=BOUNDARY_LW['transforms'], alpha=0.7)
+    gplot.plot_trenches(ax, color=TRENCH_COLOR, linewidth=BOUNDARY_LW['trenches'])
+    gplot.plot_subduction_teeth(ax, color=TRENCH_COLOR)
+    fig.canvas.draw()
+    buf = np.asarray(fig.canvas.buffer_rgba()).astype(np.float32)
+    plt.close(fig)
+    return buf
 
 
 def render_member(time_ma, u, member):
@@ -165,7 +215,14 @@ for idx in indices:
     for m in range(n):
         buf = render_member(time_ma, u, m)
         acc = buf if acc is None else acc + buf
-    Image.fromarray((acc / n).astype(np.uint8)).save(out)
+    mean = acc / n
+    b_alpha = boundary_alpha(time_ma)
+    if b_alpha > 0.0:
+        # Composite the crystallizing map over the averaged ensemble
+        layer = render_boundary_layer(time_ma)
+        a = (layer[..., 3:4] / 255.0) * b_alpha
+        mean = mean * (1 - a) + layer[..., :3] * a
+    Image.fromarray(mean.astype(np.uint8)).save(out)
     n_rendered += 1
     done = n_rendered
     rate = done / (time.time() - t0)
