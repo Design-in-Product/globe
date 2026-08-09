@@ -39,8 +39,25 @@ def era_label(time_ma, geo_idx):
     return PERIODS[-1][2]
 
 
+# Camera track (hand-framed, Tessera 2026-08-09; xian delegated the framing).
+# Keys are (geo_idx, lon, lat); lon unwrapped westward so the sweep crosses
+# the antimeridian WITH the migrating landmass (mass stays near lon -110
+# through ~1250 Ma, then crosses to +115-ish by 1100 — verified against the
+# full-span draft frames). Terminal camera = v8's opening exactly, so the
+# globe prequel hands into the main globe film's first shot.
+# Hold cameras are pinned constant by duplicate keys at hold start/end.
+CAM_KEYS = [
+    (0,   -110.0, 10.0),                       # 1800 Ma — early cluster
+    (348, -120.0, 15.0),                       # Nuna hold (hand-framed)
+    (548, -115.0, 10.0),                       # 1252 Ma — mass still west
+    (700, -240.0, -8.0),                       # 1100 Ma — crossed with the mass
+    (800, 115.054649 - 360.0, -12.341535),     # 1000 Ma — v8 opening, exact
+]
+
+
 frames = []
 anim = 0
+geo_anim_range = {}   # geo_idx -> (first_anim, last_anim)
 for geo_idx in range(T_START - T_END + 1):          # 0..800
     time_ma = float(T_START - geo_idx)
     # Tempo-matched repeat count (2/3 alternation averaging TEMPO) …
@@ -48,22 +65,43 @@ for geo_idx in range(T_START - T_END + 1):          # 0..800
     # … plus a static hold extension at the hold frames.
     if geo_idx in HOLDS:
         n += HOLD_FRAMES
+    geo_anim_range[geo_idx] = (anim, anim + n - 1)
     for _ in range(n):
         frames.append({
             "anim_frame": anim,
             "time_ma": time_ma,
             "geo_frame_idx": geo_idx,
-            "camera_lon": 0.0,   # flat film; globe pass hand-frames holds later
+            "camera_lon": 0.0,   # filled below from CAM_KEYS
             "camera_lat": 0.0,
             "dispersal": 0.0,
             "era_label": era_label(time_ma, geo_idx),
         })
         anim += 1
 
+# ── Camera interpolation over ANIM frames (smooth, holds pinned) ──
+from scipy.interpolate import PchipInterpolator
+
+knots, lons, lats = [], [], []
+for geo_idx, lon, lat in CAM_KEYS:
+    first, last = geo_anim_range[geo_idx]
+    knots.append(first); lons.append(lon); lats.append(lat)
+    if geo_idx in HOLDS or geo_idx == T_START - T_END:
+        # duplicate key at hold/film end pins the camera through it
+        knots.append(last); lons.append(lon); lats.append(lat)
+lon_f = PchipInterpolator(knots, lons)
+lat_f = PchipInterpolator(knots, lats)
+for f in frames:
+    a = min(max(f["anim_frame"], knots[0]), knots[-1])
+    f["camera_lon"] = ((float(lon_f(a)) + 180.0) % 360.0) - 180.0  # rewrap
+    f["camera_lat"] = float(lat_f(a))
+
 path = {
     "metadata": {
         "description": "Prequel 1800->1000 Ma, tempo-matched, static holds "
                        "at Nuna 1452 Ma and the 1000 Ma convergence",
+        # keys render_globe.py prints at startup
+        "time_range": "1800 Ma to 1000 Ma",
+        "pacing": "tempo-matched (2.4x) + static 132f holds",
         "geo_frames": T_START - T_END + 1,
         "anim_frames": len(frames),
         "fps": FPS,

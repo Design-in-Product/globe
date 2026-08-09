@@ -23,7 +23,8 @@ import math
 # ── Configuration ──────────────────────────────────────────────
 # CAMERA_PATH_FILE / RENDER_DIR / OUTPUT_PATH can be overridden via env vars
 # so alternate paths (e.g. spin-reveal variants) render without editing this file.
-FRAMES_DIR = os.path.abspath("./frames")
+FRAMES_DIR = os.path.abspath(os.path.expanduser(os.environ.get("FRAMES_DIR", "./frames")))
+FRAME_PREFIX = os.environ.get("FRAME_PREFIX", "globe_frame_")  # prequel: prequel_frame_
 CAMERA_PATH_FILE = os.path.abspath(os.environ.get("CAMERA_PATH_FILE", "./camera_path.json"))
 OUTPUT_PATH = os.path.abspath(os.environ.get("OUTPUT_PATH", "./tectonic_globe_v6.mp4"))
 # Optional frame range (1-indexed anim frames, inclusive) for splitting a render
@@ -88,7 +89,7 @@ print(f"Camera path loaded: {total_anim_frames} animation frames")
 print(f"  {meta['time_range']}, {meta['pacing']}")
 
 # ── Discover texture frames ───────────────────────────────────
-frame_files = sorted(glob.glob(os.path.join(FRAMES_DIR, "globe_frame_*.png")))
+frame_files = sorted(glob.glob(os.path.join(FRAMES_DIR, f"{FRAME_PREFIX}*.png")))
 geo_frame_count = len(frame_files)
 
 if geo_frame_count == 0:
