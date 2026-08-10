@@ -118,6 +118,17 @@
             color: var(--text);
         }
 
+        .era-toggle {
+            margin-top: 0.5rem;
+        }
+
+        .chain-note {
+            text-align: center;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-top: 0.45rem;
+        }
+
         .scroll-hint {
             position: absolute;
             bottom: 2rem;
@@ -309,7 +320,7 @@
 <!-- ── Hero ───────────────────────────────────────── -->
 <div class="hero">
     <h1>Tectonic Globe</h1>
-    <p class="tagline">1 billion years of continental drift in two minutes</p>
+    <p class="tagline">1.8 billion years of continental drift &mdash; from probability cloud to the present day</p>
 
     <div class="hero-video-wrap">
         <video id="hero-video"
@@ -320,9 +331,14 @@
                preload="metadata">
         </video>
         <div class="video-toggle">
-            <button class="active" id="btn-globe" onclick="switchVideo('globe')">3D Globe</button>
-            <button id="btn-flat" onclick="switchVideo('flat')">Flat Projection</button>
+            <button class="active" id="btn-globe" onclick="switchView('globe')">3D Globe</button>
+            <button id="btn-flat" onclick="switchView('flat')">Flat Projection</button>
         </div>
+        <div class="video-toggle era-toggle">
+            <button id="btn-deep" onclick="startEra('deep')">&#9654; Begin in deep time (1800&nbsp;Ma)</button>
+            <button class="active" id="btn-main" onclick="startEra('main')">&#9654; Begin at Rodinia (1000&nbsp;Ma)</button>
+        </div>
+        <p class="chain-note" id="chain-note">Deep time plays straight through into the main film &mdash; one continuous journey.</p>
     </div>
 
     <a href="#about" class="scroll-hint" aria-label="Scroll down">Scroll</a>
@@ -405,28 +421,45 @@
 
 <!-- ── Script ─────────────────────────────────────── -->
 <script>
-    function switchVideo(type) {
-        const video = document.getElementById('hero-video');
-        const btnGlobe = document.getElementById('btn-globe');
-        const btnFlat = document.getElementById('btn-flat');
-        const wasPlaying = !video.paused;
-        const currentTime = video.currentTime;
+    // The series plays end-to-end: deep time (1800→1000 Ma) chains straight
+    // into the main film (1000 Ma→present). Films stay separate assets; the
+    // terminal dissolve makes the junction seamless.
+    const FILMS = {
+        deep: { globe: 'tectonic_prequel_globe_v1.mp4', flat: 'tectonic_prequel_v1.mp4' },
+        main: { globe: 'tectonic_globe_v7.mp4',         flat: 'tectonic_flat_v7.mp4' },
+    };
+    let era = 'main';
+    let view = 'globe';
 
-        if (type === 'globe') {
-            video.src = 'tectonic_globe_v7.mp4';
-            video.poster = 'poster_v7.png';
-            btnGlobe.classList.add('active');
-            btnFlat.classList.remove('active');
-        } else {
-            video.src = 'tectonic_flat_v7.mp4';
-            video.poster = '';
-            btnFlat.classList.add('active');
-            btnGlobe.classList.remove('active');
-        }
+    const video = document.getElementById('hero-video');
 
-        video.currentTime = currentTime;
-        if (wasPlaying) video.play();
+    function setActive(id, group) {
+        group.forEach(b => document.getElementById(b).classList.remove('active'));
+        document.getElementById(id).classList.add('active');
     }
+
+    function load(newEra, newView, t, play) {
+        era = newEra; view = newView;
+        video.src = FILMS[era][view];
+        video.poster = (era === 'main' && view === 'globe') ? 'poster_v7.png' : '';
+        setActive(view === 'globe' ? 'btn-globe' : 'btn-flat', ['btn-globe', 'btn-flat']);
+        setActive(era === 'deep' ? 'btn-deep' : 'btn-main', ['btn-deep', 'btn-main']);
+        if (t) video.currentTime = t;
+        if (play) video.play();
+    }
+
+    function switchView(v) {
+        // same era, other projection — timelines are frame-identical
+        load(era, v, video.currentTime, !video.paused);
+    }
+
+    function startEra(e) {
+        load(e, view, 0, true);
+    }
+
+    video.addEventListener('ended', () => {
+        if (era === 'deep') load('main', view, 0, true);
+    });
 </script>
 
 </body>
