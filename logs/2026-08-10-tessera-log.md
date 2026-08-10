@@ -18,3 +18,12 @@ decision: option A (continuous journey) now, option C (social cut) later.
   junction. If it needs work, candidates: the outlier-terrane settle in the
   dissolve, or the Blender-vs-Blender lighting difference across the blend.
 - Deferred by design: option C social cut (xian will say when).
+
+## Option C — social kit delivered
+
+Built the crystallization-arc cuts (57.5→91.1 s of the globe prequel: cloud
+→ sweep → map fades up → dissolve): 16:9 with a two-beat text hook and end
+card; 9:16 vertical rebuilt from clean frames after catching double-text +
+cropped-card flaws in the first pass. Three caption drafts (hook / science /
+story). Kit in `previews/social/`; silent by design — music is xian's call.
+Posting is xian's move. Task #10 closed.
