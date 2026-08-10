@@ -56,6 +56,12 @@ Options (xian's call, eventually — the drafts will inform it):
   scenario alone (labeled), then let them re-superpose. Longest, most
   didactic; possibly the most satisfying.
 
+**DECIDED (xian, 2026-08-10): (c) — the tour.** Each obtainable scenario
+resolves alone with its name, then they re-superpose. Detail design (order,
+per-scenario dwell, whether the final state is the cloud or fade-out) comes
+from the draft ladder. This raises the value of obtaining ALL four scenarios
+in the research pass.
+
 ## 4 · Research pass (gate for everything downstream)
 
 Scope, mirroring the deep-time research doc that found cao2024:
