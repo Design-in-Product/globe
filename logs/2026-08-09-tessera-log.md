@@ -29,3 +29,15 @@ globe pass go.
     ≈3.5 h. Pard memo delivered (>2h courtesy).
 - On completion: sweep → assemble (PIL overlay; terminal blend into the
   globe film's render_0001) → deliver pair.
+
+## Evening — GLOBE PREQUEL COMPLETE
+
+Render finished 20:14 (2186/2186, 3 h 35 m, honest accounting reconciled,
+png sweep clean). New `scripts/assemble_globe.py` (PIL overlay replaces the
+dead ASS path for globe films too; refuses to assemble gappy frame sets;
+terminal dissolve into the main globe film's opening render). Nuna hold and
+terminal frames spot-verified — the hold sits exactly on the hand-framed
+view; the final frame IS the main film's first. `tectonic_prequel_globe_v1.mp4`
+(13.1 MB) delivered to xian and the previews page. **Roadmap #2's production
+is complete pending xian's verdict.** Task #9 closed; site integration will
+be its own task.
