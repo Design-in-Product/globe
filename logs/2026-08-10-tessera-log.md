@@ -27,3 +27,22 @@ card; 9:16 vertical rebuilt from clean frames after catching double-text +
 cropped-card flaws in the first pass. Three caption drafts (hook / science /
 story). Kit in `previews/social/`; silent by design — music is xian's call.
 Posting is xian's move. Task #10 closed.
+
+## Roadmap #3 opened — plan, research, first strip in one afternoon
+
+- **Plan written** (`docs/design/sequel-future-projection-plan-2026-08-10.md`):
+  the inversion (map diverging into futures), scenario superposition, ending
+  options. **xian decided the tour ending** mid-writing. Deep-past addendum
+  from xian's "how far back before it's just noise?" question.
+- **Research pass run inline** (`docs/research/future-plate-models-2026-08-10.md`):
+  no turnkey future GPlates model exists; Davies/Green/Duarte four-scenario
+  land/sea masks are CC0 on OSF (verified via API, 20 Myr steps, all four
+  termini); author-contact upgrade path optional. Deep past: Pehrsson 2016
+  Nuna GPlates supplement (SUP18822) moves the frontier to ~2.2–2.5 Ga —
+  a motion cold-open is possible; beyond ~2.5 Ga is genuinely noise.
+- **Rung 2 delivered same day**: pulled the grids (4.5 MB), reverse-engineered
+  the OTIS binary format, caught a mixed longitude convention INSIDE the
+  dataset (pun/amn on −180..180, novon/aurn on 0..360 — the superposition
+  was 180° wrong for two scenarios until normalized; verify-by-rendering
+  caught it). Branching strip to xian: crisp +0 → ghosting +60 → branched
+  +120/+180 → four crisp termini. The inverted prequel, visible.
