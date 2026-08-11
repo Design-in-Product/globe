@@ -56,5 +56,21 @@ docs → `MEMORY.md` (memory dir is intact on this account; the 7/28 export at
 mandate: work the roadmap autonomously; batch questions for xian; xian's
 verdicts arrive by phone, fast.
 
+## Schedule (Pard's second notice, recorded per contract)
+
+- **Mechanism:** session-scoped `ScheduleWakeup` (the /loop-dynamic
+  wakeup), used ad hoc ONLY while monitoring long renders — never a
+  standing cadence. No CronCreate jobs ever created (CronList verified
+  empty, 8/11). No LaunchAgents of mine exist (never created one;
+  launchctl spot-check pending a transient harness hiccup, but every
+  scheduling act this session is in the transcript and all were
+  ScheduleWakeup).
+- **Pending fires: NONE.** The last wakeup fired 8/9 ~19:39 (prequel
+  assembly); nothing scheduled since. Nothing to cancel; nothing will
+  fire before the reboot.
+- **To restore after reboot:** nothing — the pattern is "schedule a wakeup
+  when you launch a long render, sized to its ETA." Re-arm only when the
+  next render starts (likely #3's motion window or production pass).
+
 *Everything is pushed. Nothing is mid-render. The future is parked at the
 branch point, which seems fitting.* — Tessera
