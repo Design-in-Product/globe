@@ -1,0 +1,29 @@
+Loading camera path data...
+  Animation frames: 2186
+  Duration: 91.1s at 24fps
+  Output: /Users/xian/Development/globe/tectonic_prequel_draft.mp4
+  Crossfade frames: 1600 (across 800 transitions)
+
+Creating frames (symlinks + crossfade blends)...
+  [200/2186] 166 blends, 0 morphs, 0 links so far (11.7s)
+  [400/2186] 333 blends, 0 morphs, 0 links so far (23.6s)
+  [600/2186] 499 blends, 0 morphs, 0 links so far (34.6s)
+  [800/2186] 666 blends, 0 morphs, 0 links so far (45.1s)
+  [1000/2186] 723 blends, 0 morphs, 131 links so far (48.7s)
+  [1200/2186] 889 blends, 0 morphs, 131 links so far (59.0s)
+  [1400/2186] 1056 blends, 0 morphs, 131 links so far (69.1s)
+  [1600/2186] 1223 blends, 0 morphs, 131 links so far (80.2s)
+  [1800/2186] 1389 blends, 0 morphs, 131 links so far (91.1s)
+  [2000/2186] 1556 blends, 0 morphs, 131 links so far (100.6s)
+  Created 2186 frames (1600 crossfade blends, 0 lens-morph renders, 263 hardlinked repeats in 103.0s)
+
+Assembling MP4: /Users/xian/Development/globe/tectonic_prequel_draft.mp4
+
+✓ Flat projection video complete!
+  Output: /Users/xian/Development/globe/tectonic_prequel_draft.mp4
+  Duration: 91.1s (2186 frames at 24fps)
+  Resolution: 1920×960, overlay burned in (PIL)
+  File size: 10.8 MB
+  Assembly time: 10.4s
+  Crossfade blends: 1600; lens morphs: 0
+  Cleaned up temp directory

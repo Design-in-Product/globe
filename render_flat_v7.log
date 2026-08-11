@@ -1,0 +1,39 @@
+/Users/xian/Development/globe/scripts/flat_morph.py:35: RuntimeWarning: invalid value encountered in divide
+  step = np.where(np.abs(fp) > 1e-9, f / fp, 0.0)
+Loading camera path data...
+  Animation frames: 2738
+  Duration: 114.1s at 24fps
+  Output: /Users/xian/Development/globe/tectonic_flat_v7.mp4
+  Crossfade frames: 1884 (across 1000 transitions)
+  Hold 900 Ma (frames 227-359, 132f) → sinusoidal
+  Hold 480 Ma (frames 1300-1432, 132f) → azimuthal-s
+  Hold 250 Ma (frames 2008-2140, 132f) → mollweide
+  Hold 0 Ma (frames 2606-2738, 132f) → ortho
+  Lens-morph frames: 528
+
+Creating frames (symlinks + crossfade blends)...
+  [200/2738] 172 blends, 0 morphs, 1 links so far (19.4s)
+  [400/2738] 240 blends, 132 morphs, 1 links so far (62.1s)
+  [600/2738] 392 blends, 132 morphs, 1 links so far (80.8s)
+  [800/2738] 537 blends, 132 morphs, 1 links so far (99.4s)
+  [1000/2738] 737 blends, 132 morphs, 1 links so far (121.5s)
+  [1200/2738] 937 blends, 132 morphs, 1 links so far (143.8s)
+  [1400/2738] 1037 blends, 232 morphs, 1 links so far (182.1s)
+  [1600/2738] 1205 blends, 264 morphs, 1 links so far (210.3s)
+  [1800/2738] 1356 blends, 264 morphs, 1 links so far (231.2s)
+  [2000/2738] 1490 blends, 264 morphs, 1 links so far (251.1s)
+  [2200/2738] 1535 blends, 396 morphs, 1 links so far (293.6s)
+  [2400/2738] 1730 blends, 396 morphs, 1 links so far (318.7s)
+  [2600/2738] 1878 blends, 396 morphs, 1 links so far (348.8s)
+  Created 2738 frames (1878 crossfade blends, 528 lens-morph renders, 1 hardlinked repeats in 401.8s)
+
+Assembling MP4: /Users/xian/Development/globe/tectonic_flat_v7.mp4
+
+✓ Flat projection video complete!
+  Output: /Users/xian/Development/globe/tectonic_flat_v7.mp4
+  Duration: 114.1s (2738 frames at 24fps)
+  Resolution: 1920×960, overlay burned in (PIL)
+  File size: 76.2 MB
+  Assembly time: 21.5s
+  Crossfade blends: 1878; lens morphs: 528
+  Cleaned up temp directory

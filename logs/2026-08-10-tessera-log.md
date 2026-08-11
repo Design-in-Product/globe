@@ -46,3 +46,7 @@ Posting is xian's move. Task #10 closed.
   was 180° wrong for two scenarios until normalized; verify-by-rendering
   caught it). Branching strip to xian: crisp +0 → ghosting +60 → branched
   +120/+180 → four crisp termini. The inverted prequel, visible.
+
+---
+*Log closed 2026-08-11 (stand-down): a two-ship day — continuous journey +
+social kit — and Roadmap #3 taken from idea to verified branching strip.*
