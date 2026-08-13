@@ -34,5 +34,15 @@ the actual next step is — informational only, or something to start
 scoping (feasibility poke, network outreach, mechanical sketch). No
 response yet; holding.
 
-**Status: idea logged, no work started.** Nothing to build until xian
-says which direction.
+**Xian's follow-up: someday/maybe, loves it, lacks bandwidth for the
+hardware track right now.** Confirmed the WebGL scrubber (roadmap item 5)
+as the needed prerequisite regardless of hardware, and floated a lesser
+stepping-stone: **print-on-demand** — scrub to a still, order it printed —
+as a possible way to raise money toward the bigger physical-globe idea.
+
+Captured in `ROADMAP.md` as item 7 (someday/maybe, gated on item 5) and
+saved as a project memory (`physical-globe-someday-maybe.md`) so this
+doesn't get re-raised as active work or re-litigated from scratch later.
+
+**Status: idea logged, sequencing note attached to item 5, no work
+started.** Nothing to build until xian says go.

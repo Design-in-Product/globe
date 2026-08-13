@@ -73,11 +73,39 @@ Equirectangular frames are already texture-ready (4096x2048).
 
 ---
 
+### 7. Physical product — someday/maybe
+
+Joe LaMantia (xian's call, 2026-08-11): turn this into an actual physical
+product — a globe on the desk, display or mechanical (a steampunk
+crank-and-wooden-plates version came up too), Kickstarter-funded, possibly
+merged with Dynamic Atlas (xian's sibling project) on the same hardware.
+
+**Xian's read (2026-08-12): loves the idea, lacks the bandwidth — someday/
+maybe, not now.** Two things do carry forward:
+
+- **The WebGL scrubber (item 5) is the shared prerequisite either way** —
+  hardware or not, "pick a moment and a camera angle" has to exist in
+  software first. Xian agrees this is needed regardless of the hardware
+  decision, which raises its priority independent of this item.
+- **Lesser stepping-stone idea, xian's: print-on-demand.** User scrubs to
+  the still they want (needs item 5) and orders it printed — globe gores,
+  a flat print, whatever POD format is feasible — no display/mechanical
+  R&D, no fulfillment risk beyond a standard POD vendor integration.
+  Framed as a possible way to raise money toward the bigger physical-globe
+  version rather than a competing scope.
+
+No work started. Revisit once item 5 exists.
+
+---
+
 ## Suggested sequencing
 
 1. **Spin reveal** — small scope, high visual impact, informs everything else
 2. **Deep time prequel** — Xian's prior momentum, extends the core content
 3. **Future projection** — natural sequel, parallel research track
 4. **Visual polish** — can happen anytime, incremental
-5. **WebGL viewer** — builds on all of the above
+5. **WebGL viewer** — builds on all of the above; also the shared
+   prerequisite for item 7's physical-product path (scrubber = the
+   software both the display and the print-on-demand version need)
 6. **Landing page** — evolves as content grows
+7. **Physical product** — someday/maybe, gated on item 5
