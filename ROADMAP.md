@@ -98,6 +98,31 @@ No work started. Revisit once item 5 exists.
 
 ---
 
+### 8. Biome/paleoclimate painting — someday/maybe, speculative
+
+Xian (2026-08-12): does the roadmap ever paint landmasses with real detail
+— Pangaea's central desert, its forested fringes — instead of one flat
+fill color? It doesn't currently (`CONTINENT_COLOR` is a single flat tone
+in `generate_prequel_frames.py` and the main-film scripts; item 4 is a
+palette shift, not per-region variation).
+
+**Research done** (`docs/research/paleoclimate-biome-painting-2026-08-12.md`,
+speculative, not scoped): real deep-time paleoclimate/vegetation datasets
+exist and are downloadable now. Best fit: **CESM1.2.2 540 Myr dataset**
+(55 snapshots, 10 Myr steps, temp/precip + vegetation via dynamic global
+vegetation model, CC BY 4.0, Scotese & Wright 2018 paleogeography). A more
+directly "paintable" Köppen–Geiger classification dataset also exists but
+is CC BY-NC-ND (noncommercial, no-derivatives — a real constraint given
+the Kickstarter/POD conversation in item 7). Both ride on Scotese
+paleogeography, not Merdith2021/cao2024 — same *kind* of registration
+problem the prequel's terminal-seam fix solved, but harder (raster grid
+onto plate boundaries, not plate-polygon onto plate-polygon).
+
+No work started, purely speculative per xian's request to open up ideas
+without committing.
+
+---
+
 ## Suggested sequencing
 
 1. **Spin reveal** — small scope, high visual impact, informs everything else
