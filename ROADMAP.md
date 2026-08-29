@@ -55,13 +55,25 @@ Shift from current earth tones to gold/blue movie-poster aesthetic.
 
 ---
 
-### 5. Interactive WebGL viewer
+### 5. Interactive WebGL viewer — SCOPED 2026-08-29, xian go-ahead given
 
-Equirectangular frames are already texture-ready (4096x2048).
+Equirectangular frames are already texture-ready (4096x2048) — **but not
+web-deliverable at that density**: full audit in
+`docs/design/scrubber-scope-2026-08-29.md`. 1006 main-film + 801 prequel
+frames (1.5 GB) can't reasonably be committed to a static GitHub Pages
+site. Recommended approach: sparse keyframes at the film's own named eras
+(~21 total) + a crossfade shader porting the technique the Blender render
+pipeline already uses at texture transitions — spin is real (Three.js
+OrbitControls), time-scrub feels continuous via the crossfade even though
+the underlying data is sparse.
 
 - Three.js sphere + camera_path.json for scrubable/interactive version
 - User could spin the globe freely, scrub through time
 - The spin reveal work (item 1) would directly inform the interaction model here
+- Phased: spike → sparse-keyframe MVP → denser sampling → (stretch) true
+  per-Myr density, which would need external asset hosting, not just more
+  scoping. Open questions for xian in the scope doc §7 (placement, range,
+  resolution budget, spike-first-or-not).
 
 ---
 
