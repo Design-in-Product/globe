@@ -20,7 +20,7 @@ At the start of each session:
 - `data/`, `frames/`, `render_frames/` — source data and render outputs
 - `dynamic-atlas-v*.html` — successive standalone atlas builds
 - `docs/briefs/cross-pollination/` — cross-pollination briefs from the DinP hub
-- `docs/mail/` — inter-agent memos (convention: `memo-{from}-to-{to}-{topic}-{date}.md`), when Tessera wants to send or receive cross-agent mail
+- `docs/mail/` — memos *to* Tessera (convention: `memo-{from}-to-{to}-{topic}-{date}.md`). Outbound mail never lands here — it goes in the RECIPIENT's repo (e.g. Janus → `designinproduct/docs/mail/`); destination table in `dispatch/CLAUDE.md` § "Mail routing". When unsure, route via the recipient project's POC, escalating to Janus if necessary (ratified 2026-09-12).
 - `logs/` — session logs (`YYYY-MM-DD-tessera-log.md`), if/when Tessera adopts the session-log tradition
 
 ## Cross-Pollination
