@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scrubber Phase-0 spike — throwaway feel-test</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #0a0e14; color: #dfe6ee; font-family: -apple-system, sans-serif; }
+  #canvas-wrap { position: fixed; inset: 0; }
+  canvas { display: block; }
+  #ui {
+    position: fixed; left: 0; right: 0; bottom: 0; padding: 14px 20px 18px;
+    background: linear-gradient(to top, rgba(0,0,0,0.75), transparent);
+    display: flex; flex-direction: column; gap: 8px; align-items: center;
+  }
+  #era-label { font-size: 0.95rem; letter-spacing: 0.02em; opacity: 0.9; }
+  #slider { width: min(520px, 80vw); }
+  #note {
+    position: fixed; top: 0; left: 0; right: 0; padding: 10px 16px;
+    font-size: 0.75rem; color: #9fb0c3; background: rgba(0,0,0,0.4);
+  }
+</style>
+</head>
+<body>
+<div id="note">
+  Phase-0 spike (throwaway, not product code) — 3 keyframes only
+  (1000 / 250 / 0 Ma), 2048×1024 JPEG. Drag to orbit freely; slider
+  crossfades between the two nearest keyframes. Built 2026-09-18 per
+  xian's spike-first answer — see <code>docs/design/scrubber-scope-2026-08-29.md</code>.
+</div>
+<div id="canvas-wrap"></div>
+<div id="ui">
+  <div id="era-label">Present day (0 Ma)</div>
+  <input id="slider" type="range" min="0" max="1000" value="1000" step="1">
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+// Keyframes ordered oldest -> newest. time_ma is the era time; the slider
+// itself runs in "Ma before present" so it reads left(old) -> right(new)
+// like the shipped films do.
+const KEYFRAMES = [
+  { time_ma: 1000, label: "Rodinia assembling (1000 Ma)", file: "textures/1000ma.jpg" },
+  { time_ma: 250,  label: "Pangaea assembled (250 Ma)",   file: "textures/0250ma.jpg" },
+  { time_ma: 0,    label: "Present day (0 Ma)",           file: "textures/0000ma.jpg" },
+];
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 100);
+camera.position.set(0, 0, 3);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+document.getElementById("canvas-wrap").appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enablePan = false;
+controls.minDistance = 1.6;
+controls.maxDistance = 6;
+
+const loader = new THREE.TextureLoader();
+const textures = KEYFRAMES.map(k => {
+  const t = loader.load(k.file);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+});
+
+// Crossfade shader: two texture samplers, one mix uniform. This is a GLSL
+// port of the same idea render_globe.py's Blender material already uses
+// (two texture nodes -> Mix node) for the shipped film's transitions.
+const material = new THREE.ShaderMaterial({
+  uniforms: {
+    texA: { value: textures[0] },
+    texB: { value: textures[1] },
+    mixFactor: { value: 0.0 },
+  },
+  vertexShader: `
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+  fragmentShader: `
+    uniform sampler2D texA;
+    uniform sampler2D texB;
+    uniform float mixFactor;
+    varying vec2 vUv;
+    void main() {
+      vec4 a = texture2D(texA, vUv);
+      vec4 b = texture2D(texB, vUv);
+      gl_FragColor = mix(a, b, mixFactor);
+    }
+  `,
+});
+
+const sphere = new THREE.Mesh(new THREE.SphereGeometry(1, 96, 96), material);
+scene.add(sphere);
+
+const slider = document.getElementById("slider");
+const eraLabel = document.getElementById("era-label");
+
+function applyTime(timeBeforePresentSliderVal) {
+  // slider is 0..1000, representing "Ma before present" but we display
+  // oldest-on-left by inverting: slider value IS time_ma directly here
+  // since KEYFRAMES already spans 1000->0.
+  const t = timeBeforePresentSliderVal;
+  let lo = KEYFRAMES[0], hi = KEYFRAMES[KEYFRAMES.length - 1], loIdx = 0, hiIdx = KEYFRAMES.length - 1;
+  for (let i = 0; i < KEYFRAMES.length - 1; i++) {
+    const a = KEYFRAMES[i], b = KEYFRAMES[i + 1];
+    if (t <= a.time_ma && t >= b.time_ma) {
+      lo = a; hi = b; loIdx = i; hiIdx = i + 1;
+      break;
+    }
+  }
+  const span = lo.time_ma - hi.time_ma;
+  const f = span === 0 ? 0 : (lo.time_ma - t) / span; // 0 at lo, 1 at hi
+  material.uniforms.texA.value = textures[loIdx];
+  material.uniforms.texB.value = textures[hiIdx];
+  material.uniforms.mixFactor.value = f;
+  eraLabel.textContent = `${Math.round(t)} Ma — crossfading ${lo.label.split(" (")[0]} → ${hi.label.split(" (")[0]}`;
+}
+
+slider.addEventListener("input", () => applyTime(Number(slider.value)));
+applyTime(0);
+
+window.addEventListener("resize", () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();
+</script>
+</body>
+</html>
