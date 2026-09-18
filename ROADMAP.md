@@ -55,7 +55,18 @@ Shift from current earth tones to gold/blue movie-poster aesthetic.
 
 ---
 
-### 5. Interactive WebGL viewer — SCOPED 2026-08-29, xian go-ahead given
+### 5. Interactive WebGL viewer — Phase-0 spike + resolution comparison built, awaiting eyeball (2026-09-18)
+
+**xian answered all four scope questions 2026-09-12** (via Janus): alongside
+placement, main-era-first range (1000→0 Ma, 15 eras), eyeball-first on
+resolution, spike first. **Phase-0 spike and the resolution comparison are
+both built and live**: `previews/scrubber-spike/` (free orbit + time
+slider, 3 keyframes, crossfade shader) and
+`docs/design/scrubber-resolution-comparison-2026-09-18/` (4 resolution/
+format candidates, full frame + 1:1 crop, file sizes). **Waiting on xian's
+eyeball verdict on resolution before locking the Phase-1 export budget and
+building the full 15-keyframe pipeline** — nothing else blocked.
+
 
 Equirectangular frames are already texture-ready (4096x2048) — **but not
 web-deliverable at that density**: full audit in
