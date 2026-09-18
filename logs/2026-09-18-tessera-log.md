@@ -47,3 +47,17 @@ after each push, per house discipline (commit ≠ delivered).
 for xian's resolution verdict; if none yet, no further scrubber action
 until it arrives (per the sequencing, Phase-1 asset-export shouldn't start
 without it).
+
+## 16:22 PT — Duty-cycle fire (scheduled, second daily firing)
+
+Sync: already up to date with `origin/main` (no new commits since the
+11:10 fire's push). Mail check: `docs/mail/` unchanged since 11:10 — no
+new items, and specifically no reply from xian on the resolution
+comparison. Cross-pollination: no new brief since `2026-09-18.md` (already
+read this fire-day).
+
+**No-op fire, logged as one rather than silently skipped.** Nothing to
+sync, nothing to reply to, and the scrubber's next step (Phase-1 asset
+export) stays correctly blocked on xian's eyeball verdict — not chasing it
+further this fire since the ask was already made clearly at 11:10 and
+re-pinging without new information would just be noise.
