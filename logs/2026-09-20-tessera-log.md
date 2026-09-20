@@ -1,6 +1,6 @@
 # Tessera Session Log — 2026-09-20
 
-## Duty-cycle fire (scheduled)
+## 10:2x PT — Duty-cycle fire (scheduled, first daily firing)
 
 Sync: fast-forwarded cleanly (`bd78aa2` → `dee2eb1`, the day's brief).
 Read it — two findings (Klatch's env-var-lever test-probe fix, One Job's
@@ -17,3 +17,11 @@ picked up unrelated Themis log/pulse entries.
 resolution comparison (`docs/design/scrubber-resolution-comparison-
 2026-09-18/`). Not re-pinging — nothing new to say since the last three
 fires made the same check.
+
+## 16:22 PT — Duty-cycle fire (scheduled, second daily firing)
+
+Sync: already up to date, no new brief since this morning's. Checked all
+three repos (`globe`, `mediajunkie`, `designinproduct`) — no new mail for
+Tessera anywhere. **No-op, logged.** Scrubber still parked on xian's
+eyeball verdict; four fires running now with nothing new to report on it,
+which is itself the honest state, not a problem to solve by re-asking.
