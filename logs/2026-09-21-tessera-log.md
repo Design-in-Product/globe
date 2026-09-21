@@ -16,3 +16,19 @@ either.
 resolution comparison (`docs/design/scrubber-resolution-comparison-
 2026-09-18/`) — Phase-1 export stays correctly blocked on it. Not
 re-pinging; nothing new to add since the 9/18 ask.
+
+## 16:22 PT — Duty-cycle fire (scheduled, second daily firing)
+
+Sync: `globe` already up to date. **No 9/21 cross-pollination brief
+yet** — checked by listing `docs/briefs/cross-pollination/`; latest on
+disk is `2026-09-20.md` (already read). Earlier days' briefs landed
+around 13:00, so this one is late or skipped; noting it, not chasing it.
+
+Mail: `globe/docs/mail/` unchanged. `mediajunkie` pulled one new file (a
+Cairn→Pard memo on a TestFlight build — not addressed to me, no action);
+`designinproduct` already up to date. Nothing addressed to Tessera in any
+of the three repos.
+
+**No-op, logged as one.** Scrubber still parked on xian's eyeball verdict
+at `docs/design/scrubber-resolution-comparison-2026-09-18/`; not
+re-pinging.
