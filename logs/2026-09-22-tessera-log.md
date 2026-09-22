@@ -39,3 +39,11 @@ but hasn't landed on a pick yet).
 
 **No-op for the fire itself** (the substantive work above happened
 interactively, not from this fire). Scrubber still parked on xian's pick.
+
+## 16:22 PT — Duty-cycle fire (scheduled, second daily firing)
+
+Sync: already up to date. Checked all three repos again — one unrelated
+new file each in `mediajunkie` (Cairn→Pard store-content memo) and
+`designinproduct` (Themis deliverables); nothing addressed to Tessera.
+**No-op.** Still no resolution pick from xian and no movement on the
+provisioning-email nudge; both are his to act on, not re-raising either.
