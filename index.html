@@ -96,8 +96,11 @@
             margin-top: 0.75rem;
         }
 
-        .video-toggle button {
+        .video-toggle button,
+        .video-toggle a {
             background: none;
+            text-decoration: none;
+            display: inline-block;
             border: 1px solid var(--border);
             color: var(--text-muted);
             padding: 0.4rem 1rem;
@@ -113,7 +116,8 @@
             color: var(--accent);
         }
 
-        .video-toggle button:hover {
+        .video-toggle button:hover,
+        .video-toggle a:hover {
             border-color: var(--text-muted);
             color: var(--text);
         }
@@ -339,6 +343,10 @@
             <button class="active" id="btn-main" onclick="startEra('main')">&#9654; Begin at Rodinia (1000&nbsp;Ma)</button>
         </div>
         <p class="chain-note" id="chain-note">Deep time plays straight through into the main film &mdash; one continuous journey.</p>
+        <div class="video-toggle era-toggle">
+            <a href="explore/" id="btn-explore">&#8635; Explore freely &mdash; spin the globe, scrub 1000&nbsp;Myr</a>
+        </div>
+        <p class="chain-note">The films are the story; Explore is the toy. Fifteen era keyframes, crossfaded.</p>
     </div>
 
     <a href="#about" class="scroll-hint" aria-label="Scroll down">Scroll</a>

@@ -1,0 +1,81 @@
+{
+  "budget": "4096x2048 WebP q90 (xian, 2026-09-22)",
+  "source": "camera_path_spin_v8.json",
+  "keyframes": [
+    {
+      "time_ma": 1000,
+      "label": "Rodinia assembling",
+      "file": "1000ma.webp"
+    },
+    {
+      "time_ma": 900,
+      "label": "Rodinia assembled",
+      "file": "0900ma.webp"
+    },
+    {
+      "time_ma": 750,
+      "label": "Rodinia breaking up",
+      "file": "0750ma.webp"
+    },
+    {
+      "time_ma": 550,
+      "label": "Gondwana assembling",
+      "file": "0550ma.webp"
+    },
+    {
+      "time_ma": 480,
+      "label": "Gondwana assembled",
+      "file": "0480ma.webp"
+    },
+    {
+      "time_ma": 380,
+      "label": "Laurussia forming",
+      "file": "0380ma.webp"
+    },
+    {
+      "time_ma": 350,
+      "label": "Pangaea assembling",
+      "file": "0350ma.webp"
+    },
+    {
+      "time_ma": 300,
+      "label": "Pangaea coalescing",
+      "file": "0300ma.webp"
+    },
+    {
+      "time_ma": 250,
+      "label": "Pangaea assembled",
+      "file": "0250ma.webp"
+    },
+    {
+      "time_ma": 200,
+      "label": "Pangaea breaking up",
+      "file": "0200ma.webp"
+    },
+    {
+      "time_ma": 150,
+      "label": "Atlantic Ocean opening",
+      "file": "0150ma.webp"
+    },
+    {
+      "time_ma": 100,
+      "label": "India racing north",
+      "file": "0100ma.webp"
+    },
+    {
+      "time_ma": 66,
+      "label": "K-Pg extinction",
+      "file": "0066ma.webp"
+    },
+    {
+      "time_ma": 50,
+      "label": "Modern world forming",
+      "file": "0050ma.webp"
+    },
+    {
+      "time_ma": 0,
+      "label": "Present day",
+      "file": "0000ma.webp"
+    }
+  ]
+}
