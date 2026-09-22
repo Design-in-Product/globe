@@ -23,6 +23,7 @@ SPIKE_JPEG_QUALITY = 88
 # (label, size, format, save_kwargs)
 COMPARISON_CANDIDATES = [
     ("4096x2048-png-original", (4096, 2048), "PNG", {}),
+    ("4096x2048-webp-q90", (4096, 2048), "WEBP", {"quality": 90}),
     ("2048x1024-webp-q80", (2048, 1024), "WEBP", {"quality": 80}),
     ("2048x1024-webp-q60", (2048, 1024), "WEBP", {"quality": 60}),
     ("1024x512-webp-q80", (1024, 512), "WEBP", {"quality": 80}),
