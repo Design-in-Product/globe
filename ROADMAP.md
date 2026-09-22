@@ -55,17 +55,25 @@ Shift from current earth tones to gold/blue movie-poster aesthetic.
 
 ---
 
-### 5. Interactive WebGL viewer — Phase-0 spike + resolution comparison built, awaiting eyeball (2026-09-18)
+### 5. Interactive WebGL viewer — PHASE 1 SHIPPED 2026-09-22 (`/explore/`)
 
-**xian answered all four scope questions 2026-09-12** (via Janus): alongside
-placement, main-era-first range (1000→0 Ma, 15 eras), eyeball-first on
-resolution, spike first. **Phase-0 spike and the resolution comparison are
-both built and live**: `previews/scrubber-spike/` (free orbit + time
-slider, 3 keyframes, crossfade shader) and
-`docs/design/scrubber-resolution-comparison-2026-09-18/` (4 resolution/
-format candidates, full frame + 1:1 crop, file sizes). **Waiting on xian's
-eyeball verdict on resolution before locking the Phase-1 export budget and
-building the full 15-keyframe pipeline** — nothing else blocked.
+**Live at globe.dinp.xyz/explore/**, linked from the hero as "Explore
+freely" under the era toggles (ALONGSIDE placement — the films stay the
+story, Explore is the toy). Free orbit + a 1000→0 Ma slider crossfading
+between the film's 15 named era keyframes.
+
+**Budget decided by xian 2026-09-22: 4096×2048 WebP q90** — chosen after a
+fifth comparison candidate isolated resolution from compression (same
+pixels as the PNG at a third the weight; 15 frames = 6.1 MB committed in
+`scrubber_assets/`). Export: `scripts/export_scrubber_keyframes.py`,
+manifest-driven (`scrubber_assets/keyframes.json`), so adding eras later
+is data, not code.
+
+**Next rungs, none started:** prequel range (1800→1000 Ma) as the
+fast-follow xian named; denser sampling between eras if Phase 1 feels
+sparse; true per-Myr density only with external hosting (see scope doc
+§5). **First-look items for xian:** equirect orientation on the sphere
+(untested in a real browser from here), load feel on mobile.
 
 
 Equirectangular frames are already texture-ready (4096x2048) — **but not

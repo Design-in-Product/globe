@@ -149,3 +149,19 @@ beyond just cost.
 No blockers — proceeding to Phase 0 (the spike) is safe to start under the
 existing go-ahead; will hold on Phase 1's asset-export commitment for an
 answer to #2/#3 since those set a budget that's mildly annoying to redo.
+
+## 8 · Answers and outcome (2026-09-12 → 2026-09-22)
+
+xian, 9/12 via Janus: **alongside · main era first · eyeball first ·
+spike first.** Spike and comparison built 9/18. On first look (9/22) xian
+preferred the uncompressed PNG "because it looks best" and asked what he
+was trading off — the comparison had conflated resolution with
+compression, so a fifth candidate (4096×2048 WebP q90: same pixels, a
+third the weight) was added to isolate them. **Decision: WebP q90.**
+
+Phase 1 shipped the same day: `scripts/export_scrubber_keyframes.py`,
+`scrubber_assets/` (15 keyframes, 6.1 MB), `explore/index.html`, hero
+link. Deviation from §5 as written: the explore page is a standalone route
+(`/explore/`) rather than a mode inside the hero's video slot — cleaner
+for "alongside," and it keeps Three.js out of the landing page's critical
+path. Everything else landed as scoped.

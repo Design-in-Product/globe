@@ -47,3 +47,39 @@ new file each in `mediajunkie` (Cairn→Pard store-content memo) and
 `designinproduct` (Themis deliverables); nothing addressed to Tessera.
 **No-op.** Still no resolution pick from xian and no movement on the
 provisioning-email nudge; both are his to act on, not re-raising either.
+
+## Afternoon — decision landed, Phase 1 shipped
+
+xian asked two things: how to resolve the 7/28 Pard thread (answered: a
+direct one-line question to Pard beats a third memo, or declare it moot —
+either closes it; his call), and what he was actually trading off by
+preferring the full-res PNG "because it looks best."
+
+The comparison had conflated two knobs — resolution and compression.
+Added a fifth candidate, **4096×2048 WebP q90** (491 KB vs the PNG's 1642
+KB, same pixels), to the repo page and the artifact, with the real cost
+spelled out: not visual, but page-load weight and how fast the committed-
+asset budget compounds as more eras land. **xian: "WebP·90 sounds good
+then!"** — budget locked.
+
+**Phase 1 shipped same day** (`c5ca838`, verified on `origin/main`):
+- `scripts/export_scrubber_keyframes.py` — manifest-driven, 15 main-film
+  eras from `camera_path_spin_v8.json`, honest accounting, non-zero exit
+  on an incomplete set. Ran clean: 15/15, **6.1 MB** total (under the
+  7.4 MB estimate — older eras carry less coastline).
+- `scrubber_assets/` — the WebPs + `keyframes.json`.
+- `explore/index.html` — the spike promoted: OrbitControls free-spin,
+  GLSL crossfade between the two nearest keyframes, era ticks, graceful
+  partial-load, slider runs oldest→newest. Module syntax checked with
+  `node --check`; **not exercised in a real browser from here** — equirect
+  orientation on the sphere and mobile load feel are first-look items for
+  xian.
+- `index.html` — "Explore freely" link under the era toggles. Standalone
+  route rather than a hero mode: cleaner for "alongside," keeps Three.js
+  off the landing page's critical path (noted as a deviation in the scope
+  doc §8).
+
+`ROADMAP.md` item 5 → PHASE 1 SHIPPED; scope doc gained §8 (answers and
+outcome). Memory updated (`scrubber-phase1-decisions.md`).
+
+Open: prequel range as the fast-follow; xian's first look at `/explore/`.
