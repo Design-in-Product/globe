@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tectonic Globe — Explore</title>
-<meta name="description" content="Spin the globe freely and scrub through a billion years of continental drift, Rodinia to the present day.">
+<meta name="description" content="Spin the globe freely and scrub through 1.8 billion years of continental drift, from the deep-time probability cloud to the present day.">
 <style>
   :root {
     --bg: #0a0e14; --text: #dfe6ee; --text-muted: #9fb0c3;
@@ -72,7 +72,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 // This is the same approximation the shipped film makes at its transitions
 // (render_globe.py's dual-texture Mix node), ported to GLSL.
 const ASSETS = "../scrubber_assets/";
-const MAJOR = new Set([1000, 900, 480, 250, 0]); // labeled ticks; others are marks only
+const MAJOR = new Set([1800, 1452, 1000, 480, 250, 0]); // labeled ticks; others are marks only
 
 const statusEl = document.getElementById("status");
 const timeEl = document.getElementById("time");
@@ -103,6 +103,8 @@ scene.add(new THREE.Mesh(new THREE.SphereGeometry(1, 128, 128), material));
 const res = await fetch(ASSETS + "keyframes.json");
 const manifest = await res.json();
 const KEYFRAMES = manifest.keyframes.slice().sort((a, b) => b.time_ma - a.time_ma); // oldest -> newest
+const MAX_T = KEYFRAMES[0].time_ma; // 1800 with the prequel range, 1000 without
+slider.max = String(MAX_T); slider.value = String(MAX_T); // start at present day
 const textures = new Array(KEYFRAMES.length).fill(null);
 let loaded = 0;
 const loader = new THREE.TextureLoader();
@@ -116,18 +118,18 @@ KEYFRAMES.forEach((k, i) => {
   });
 });
 
-// slider runs left(old) -> right(new): value v maps to time_ma = 1000 - v
-function sliderTime() { return 1000 - Number(slider.value); }
+// slider runs left(old) -> right(new): value v maps to time_ma = MAX_T - v
+function sliderTime() { return MAX_T - Number(slider.value); }
 
 // ticks
 KEYFRAMES.forEach((k) => {
-  const x = ((1000 - k.time_ma) / 1000) * 100;
+  const x = ((MAX_T - k.time_ma) / MAX_T) * 100;
   const tick = document.createElement("div");
   tick.className = "tick" + (MAJOR.has(k.time_ma) ? " major" : "");
   tick.style.left = x + "%"; ticksEl.appendChild(tick);
   if (MAJOR.has(k.time_ma)) {
     const lab = document.createElement("div");
-    lab.className = "tick-label" + (k.time_ma === 1000 || k.time_ma === 0 ? " keep" : "");
+    lab.className = "tick-label" + (k.time_ma === MAX_T || k.time_ma === 0 ? " keep" : "");
     lab.style.left = x + "%"; lab.textContent = `${k.time_ma} Ma`; ticksEl.appendChild(lab);
   }
 });

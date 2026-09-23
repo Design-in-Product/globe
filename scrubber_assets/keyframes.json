@@ -1,81 +1,173 @@
 {
-  "budget": "4096x2048 WebP q90 (xian, 2026-09-22)",
-  "source": "camera_path_spin_v8.json",
+  "budget": "WebP q90 at native resolution (xian, 2026-09-22)",
+  "span_ma": [
+    1800,
+    0
+  ],
+  "sources": {
+    "main": "camera_path_spin_v8.json",
+    "prequel": "ICS period boundaries + Nuna hold"
+  },
   "keyframes": [
+    {
+      "time_ma": 1800,
+      "label": "Statherian \u2014 the probability cloud",
+      "file": "1800ma.webp",
+      "source": "prequel",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "time_ma": 1600,
+      "label": "Calymmian",
+      "file": "1600ma.webp",
+      "source": "prequel",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "time_ma": 1452,
+      "label": "Nuna / Columbia assembled",
+      "file": "1452ma.webp",
+      "source": "prequel",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "time_ma": 1400,
+      "label": "Ectasian",
+      "file": "1400ma.webp",
+      "source": "prequel",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "time_ma": 1200,
+      "label": "Stenian",
+      "file": "1200ma.webp",
+      "source": "prequel",
+      "width": 2048,
+      "height": 1024
+    },
     {
       "time_ma": 1000,
       "label": "Rodinia assembling",
-      "file": "1000ma.webp"
+      "file": "1000ma.webp",
+      "source": "main",
+      "width": 4096,
+      "height": 2048
     },
     {
       "time_ma": 900,
       "label": "Rodinia assembled",
-      "file": "0900ma.webp"
+      "file": "0900ma.webp",
+      "source": "main",
+      "width": 4096,
+      "height": 2048
     },
     {
       "time_ma": 750,
       "label": "Rodinia breaking up",
-      "file": "0750ma.webp"
+      "file": "0750ma.webp",
+      "source": "main",
+      "width": 4096,
+      "height": 2048
     },
     {
       "time_ma": 550,
       "label": "Gondwana assembling",
-      "file": "0550ma.webp"
+      "file": "0550ma.webp",
+      "source": "main",
+      "width": 4096,
+      "height": 2048
     },
     {
       "time_ma": 480,
       "label": "Gondwana assembled",
-      "file": "0480ma.webp"
+      "file": "0480ma.webp",
+      "source": "main",
+      "width": 4096,
+      "height": 2048
     },
     {
       "time_ma": 380,
       "label": "Laurussia forming",
-      "file": "0380ma.webp"
+      "file": "0380ma.webp",
+      "source": "main",
+      "width": 4096,
+      "height": 2048
     },
     {
       "time_ma": 350,
       "label": "Pangaea assembling",
-      "file": "0350ma.webp"
+      "file": "0350ma.webp",
+      "source": "main",
+      "width": 4096,
+      "height": 2048
     },
     {
       "time_ma": 300,
       "label": "Pangaea coalescing",
-      "file": "0300ma.webp"
+      "file": "0300ma.webp",
+      "source": "main",
+      "width": 4096,
+      "height": 2048
     },
     {
       "time_ma": 250,
       "label": "Pangaea assembled",
-      "file": "0250ma.webp"
+      "file": "0250ma.webp",
+      "source": "main",
+      "width": 4096,
+      "height": 2048
     },
     {
       "time_ma": 200,
       "label": "Pangaea breaking up",
-      "file": "0200ma.webp"
+      "file": "0200ma.webp",
+      "source": "main",
+      "width": 4096,
+      "height": 2048
     },
     {
       "time_ma": 150,
       "label": "Atlantic Ocean opening",
-      "file": "0150ma.webp"
+      "file": "0150ma.webp",
+      "source": "main",
+      "width": 4096,
+      "height": 2048
     },
     {
       "time_ma": 100,
       "label": "India racing north",
-      "file": "0100ma.webp"
+      "file": "0100ma.webp",
+      "source": "main",
+      "width": 4096,
+      "height": 2048
     },
     {
       "time_ma": 66,
       "label": "K-Pg extinction",
-      "file": "0066ma.webp"
+      "file": "0066ma.webp",
+      "source": "main",
+      "width": 4096,
+      "height": 2048
     },
     {
       "time_ma": 50,
       "label": "Modern world forming",
-      "file": "0050ma.webp"
+      "file": "0050ma.webp",
+      "source": "main",
+      "width": 4096,
+      "height": 2048
     },
     {
       "time_ma": 0,
       "label": "Present day",
-      "file": "0000ma.webp"
+      "file": "0000ma.webp",
+      "source": "main",
+      "width": 4096,
+      "height": 2048
     }
   ]
 }
