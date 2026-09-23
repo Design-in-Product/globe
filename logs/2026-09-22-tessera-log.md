@@ -83,3 +83,28 @@ then!"** — budget locked.
 outcome). Memory updated (`scrubber-phase1-decisions.md`).
 
 Open: prequel range as the fast-follow; xian's first look at `/explore/`.
+
+## Evening — prequel range fast-follow shipped
+
+xian: "Let's go for it!" Five prequel keyframes at the ICS period
+boundaries + the Nuna hold (1800/1600/1452/1400/1200 Ma), indices
+verified against `generate_prequel_frames.py` (idx = 1800 − t) and all
+five source frames confirmed present at 2048×1024. Exported at native
+size — the budget rule generalizes to "WebP q90 at native resolution";
+upscaling adds bytes, not information. 1000 Ma stays the main film's
+Merdith frame (the prequel's own is registered onto it, near-identical).
+
+`25deebe`, verified on `origin/main`: **20 keyframes, 1800→0 Ma, 6.3 MB**
+— the clouds compress to ~0.2 MB for all five. Explore page made fully
+manifest-driven (span, ticks, labels from `MAX_T`), so this was data plus
+a handful of lines; hero copy now "scrub 1.8 billion years." Re-encoded
+main WebPs were byte-identical (deterministic encoder) — git saw only the
+five new files plus the manifest.
+
+**Flagged, not pre-solved:** the 1200→1000 Ma crossfade blends an
+unregistered cao2024 frame into Merdith2021 (~10° apart), so the map will
+ghost-slide across that stretch — the seam the film solved with its
+registration ramp. Reads like the ensemble cloud; a registered
+intermediate keyframe is the fix if xian wants one after his first look.
+
+`ROADMAP.md`, scope doc §8, and memory all updated.

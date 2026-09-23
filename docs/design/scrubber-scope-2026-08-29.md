@@ -165,3 +165,13 @@ link. Deviation from §5 as written: the explore page is a standalone route
 (`/explore/`) rather than a mode inside the hero's video slot — cleaner
 for "alongside," and it keeps Three.js out of the landing page's critical
 path. Everything else landed as scoped.
+
+**Prequel fast-follow, same day.** Five keyframes (1800/1600/1452/1400/
+1200 Ma — ICS period boundaries + the Nuna hold) at the prequel sources'
+native 2048×1024; the budget rule generalizes to "WebP q90 at native
+resolution," since upscaling adds bytes, not information. 20 keyframes,
+6.3 MB. The 1000 Ma join uses the main film's Merdith frame (the
+prequel's own is registered onto it). Known seam: 1200→1000 crossfades an
+unregistered cao2024 frame into Merdith2021, ~10° apart — a ghost-slide,
+same problem the film's registration ramp solved. Not pre-solved; a
+registered intermediate keyframe is the fix if xian wants it.

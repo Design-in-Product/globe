@@ -69,11 +69,19 @@ pixels as the PNG at a third the weight; 15 frames = 6.1 MB committed in
 manifest-driven (`scrubber_assets/keyframes.json`), so adding eras later
 is data, not code.
 
-**Next rungs, none started:** prequel range (1800→1000 Ma) as the
-fast-follow xian named; denser sampling between eras if Phase 1 feels
-sparse; true per-Myr density only with external hosting (see scope doc
-§5). **First-look items for xian:** equirect orientation on the sphere
-(untested in a real browser from here), load feel on mobile.
+**Prequel range shipped same day** (xian: "let's go for it"): five
+keyframes at the ICS period boundaries + the Nuna hold (1800/1600/1452/
+1400/1200 Ma) from the prequel ensemble frames at native 2048×1024 —
+Explore now spans **1800→0 Ma, 20 keyframes, 6.3 MB.** Page is fully
+manifest-driven, so this was data plus a few lines.
+
+**Next rungs, none started:** denser sampling between eras if it feels
+sparse; true per-Myr density only with external hosting (scope doc §5).
+**First-look items for xian:** equirect orientation on the sphere and
+mobile load feel (untested in a real browser from Amber); the 1200→1000
+Ma stretch will ghost-slide ~10° as unregistered cao2024 crossfades into
+Merdith2021 — the seam the film solves with its registration ramp. If it
+bothers, the fix is a registered intermediate keyframe, not a rewrite.
 
 
 Equirectangular frames are already texture-ready (4096x2048) — **but not
