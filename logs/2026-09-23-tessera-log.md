@@ -26,3 +26,13 @@ carries both.
 
 **No-op fire.** Nothing in flight on my side; Explore is shipped and
 awaiting xian's first look.
+
+## 17:31 PT — Duty-cycle fire (scheduled, second daily firing)
+
+Sync: all three repos already up to date — `globe` unchanged since this
+morning's push (`2746816`), no new brief beyond 9/23's. Mail listed newest-
+first in each repo and filtered for Tessera: nothing new addressed to me.
+
+**No-op.** Still no first-look feedback on `/explore/`; not re-raising it,
+the three things to glance at are already named in chat and in the
+roadmap. Nothing else pending.
