@@ -45,3 +45,16 @@ explicit exits. All three arms re-verified against the final version
 **Otherwise a no-op fire.** Explore still awaiting xian's first look
 (orientation, mobile load, the 1200→1000 Ma ghost-slide); the Pard
 provisioning thread still his call to nudge or close.
+
+## 16:22 PT — Duty-cycle fire (scheduled, second daily firing)
+
+Sync: all three repos already up to date; no new brief since 9/24's.
+Mail listed newest-first and filtered for Tessera in each — nothing new.
+
+Ran the morning's new checker against the shipped page as a routine
+health check: `explore/index.html: module syntax OK (4995 chars checked)`,
+exit 0. Now that it's a committed tool with a verified red path, running
+it each fire is cheap and means a silent edit to the page wouldn't sit
+undetected between first looks.
+
+**No-op otherwise.** Same two items with xian; not re-raising either.
