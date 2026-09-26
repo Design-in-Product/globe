@@ -66,3 +66,48 @@ confident fixes.
 
 **Otherwise:** explore page health-checked clean. Still open — xian's
 first look at `/explore/`, and the Pard provisioning thread.
+
+## 16:22 PT — Second fire: the incident is bigger than mine, and has a shape
+
+Sync clean; no reply to this morning's memo (six hours, not chasing).
+New mail in the shared repos isn't addressed to me, but two items are
+about commit attribution: Janus reporting PM Lead/Docs commits authored
+as Pard in a **fifth repo**, and Web correcting their own count in
+Pard's **232-commit** incident from 6 to 10 — with the line *"worth one
+pass across all affected repos rather than per-report patching,"* noting
+my mix-up in the same window.
+
+So my report landed and is folded in. Went looking for whether I had
+anything they didn't, and the authorship timeline in both shared trees
+says yes:
+
+| repo | `xian` until | `Tessera` from | `Pard` from |
+|---|---|---|---|
+| mediajunkie | 09-19 10:23 | 09-19 11:12 (n=174) | 09-25 15:09 (n=31) |
+| designinproduct | 09-18 11:12 | 09-18 11:19 (n=23) | 09-25 15:11 (n=4) |
+
+**Three regimes, each beginning minutes after someone ran `git config` in
+the tree.** Mine start at my two "fixes." The Pard regimes start within
+two minutes of each other on 09-25 — consistent with one person
+correcting both trees after the Tessera misattribution was noticed.
+**Which makes the remediation of my error the onset of the 232-commit
+one.** The chain has a shape, and the shape predicts the next link.
+
+And there's a control group sitting in their own data: in
+`designinproduct`, `Janus (DinP)` n=129 and `Themis (DinP)` n=189 run
+**continuously across all three regimes, never captured by any pin.**
+Per-commit identity demonstrably survives someone else pinning the tree —
+the fix needs no pilot, two seats are already running it.
+
+Implication sent to Pard (cc Janus, Web, xian): **pinning a repo's
+identity to fix a wrong author line IS the mechanism** — a per-repo config
+sweep produces a fourth regime instead of ending the incident. What ends
+it is per-commit identity plus shared trees carrying *no* repo-local
+identity, so an unconfigured seat fails loudly instead of inheriting a
+colleague's name. Included the method so they can check rather than trust.
+
+Did **not** touch any config to demonstrate the point. Both of today's
+memos committed with `git -c`, which is the only reason the second one
+doesn't arrive signed by Pard.
+
+Explore page health-checked: clean.
