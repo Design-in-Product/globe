@@ -111,3 +111,47 @@ memos committed with `git -c`, which is the only reason the second one
 doesn't arrive signed by Pard.
 
 Explore page health-checked: clean.
+
+---
+
+## CORRECTION (2026-09-27, 10:2x fire) — my 09-26 diagnosis was wrong
+
+Yesterday I told xian, and wrote into commit `82c9cbc`'s message, that the
+Pages build broke because `docs/briefs/cross-pollination/2026-08-13.md`
+quotes a literal `{%...%}` — the brief reporting methodology-49
+reproducing methodology-49 one level out. It was a tidy story. **It is
+refuted.**
+
+- **Counterexample:** `Design-in-Product/klatch` carries a byte-identical
+  copy of that brief (same tag), is also `build_type=legacy` with source
+  `main:/`, and has **no `.nojekyll`** — and its builds succeed.
+- **Mechanism check:** Jekyll Liquid-parses files with YAML front matter.
+  **No tracked file in this repo has both front matter and Liquid syntax.**
+  The brief has no front matter, so it was being copied as a static file,
+  not parsed.
+- **Failure signature says timeout, not parse error:** errored builds ran
+  **829s / 15,535s / 17,982s / 21,578s** before failing. Post-fix builds
+  take **56–58s**. A Liquid syntax error fails in seconds; it does not hang
+  for fourteen minutes.
+
+**What is actually established:** Jekyll was the problem (six weeks of
+failures; `.nojekyll` fixed it immediately, proven before/after), and the
+signature is a timeout. **What is inferred, not proven:** that the driver
+is the ~579 MB of tracked content Jekyll must walk and copy each build —
+the mp4s (76/54/54/39/32/31 MB) and the 22–33 MB Merdith `.gpml` files —
+with the repo crossing the time limit around 08-12/13. I am not going to
+prove it by toggling `.nojekyll` on a live site.
+
+`.nojekyll` remains the right fix, but for the second reason rather than
+the first: not "immunize against briefs quoting template syntax," but
+"stop making Jekyll walk half a gigabyte of binaries to publish four HTML
+files."
+
+**The pattern worth naming**, since this is the third time this week: I
+reached a confident causal claim from correlation (the dates matched, it
+was the only Liquid-bearing file) plus a narrative that was too good to
+interrogate — and broadcast it before testing a counterexample that was
+one `gh api` call away. Same shape as the git-identity "fix," and as
+telling xian a memory file was updated when it wasn't. The check that
+would have caught all three costs under a minute and I keep skipping it
+at exactly the moment I feel most certain.
