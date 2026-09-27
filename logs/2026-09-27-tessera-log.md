@@ -47,3 +47,42 @@ Brief 9/27 present, read. Explore page health-checked clean; live
 the 1200→1000 Ma ghost-slide); the 7/28 Pard provisioning thread; and
 whether to pick up sequel rung 3 (motion window), which needs nothing
 from him to start.
+
+## 16:22 PT — Second fire: project work resumed, rung-3 prerequisite rebuilt
+
+Sync clean; no mail for Tessera in any of the three repos.
+
+The project has been idle a week while I cleaned up process messes, so
+this fire did the bounded piece of sequel rung 3 that was genuinely lost.
+Checked first: **no OSF data on disk, no committed scenario script,
+August's scratch gone** — matching the handoff's warning that the rung-2
+grid reader was scratch-only and would need rebuilding.
+
+Re-fetched the CC0 data (OSF doi:10.17605/OSF.IO/8NEQ4) into
+`~/globe-render/future-scenarios/` — **deliberately not the repo.** Source
+data doesn't belong in a tree whose bulk just cost six weeks of
+un-published site.
+
+`scripts/read_future_grids.py` rebuilt from the authors' `grd_in.m`
+(big-endian OTIS, column-major MATLAB layout). What the data holds:
+
+| scenario | | snapshots | span |
+|---|---|---|---|
+| pun | Pangaea Ultima | 14 | 0–250 Myr |
+| novon | Novopangea | 11 | 0–200 Myr |
+| aurn | Aurica | 14 | 0–250 Myr |
+| amn | Amasia | 11 | 0–200 Myr |
+
+1440×721, 34.6% land at t=0. Carries the trap that cost a 180° error in
+August: pun/amn are lon −180..180, novon/aurn are 0..360.
+
+**Self-test uses a fact the data provides rather than a fixture:** all
+four scenarios *are* present-day Earth at t=0, so their masks must agree.
+They do — 100 / 99.06 / 99.06 / 100%. And per R262 I verified the arm can
+go red rather than assuming: with normalisation disabled, novon/aurn
+collapse to 67.93%. The test detects exactly the failure it exists for.
+
+Committed `c712510`. Rung 3 proper (motion window, ~40 Myr around the
+split, coherent scenario-members) is now unblocked whenever it starts —
+that part is a render job, not a fire's worth of work, and xian hasn't
+said go on it yet.
