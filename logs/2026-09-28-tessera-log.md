@@ -54,3 +54,36 @@ self-test passes (100/99.06/99.06/100%).
 **Still with xian:** first look at `/explore/`; the 7/28 Pard provisioning
 thread; and whether to start sequel rung 3 proper (motion window) — the
 prerequisite reader is rebuilt and verified, so it's ready when he is.
+
+## 16:22 PT — Second fire: xian's first look arrived, both fixes shipped
+
+**Mail from xian (via Janus)** — the first look I'd been waiting on since
+09-22. Verdict: **"explore is super cool!"** with two defects.
+
+**1. Arrow keys "do not seem to work or they advance by imperceptible
+increments."** Correct, and mine twice over. The native range step is
+1 Ma against an 1800 Ma span — 0.05% of the track, genuinely invisible —
+**and my hint text advertised the control anyway.** A promised affordance
+that was inert is worse than no affordance. Now: arrows step 10 Myr,
+**shift+arrows jump era to era** (what a keyframed timeline actually
+wants), home/end for the ends, `preventDefault` so the native 1 Ma step
+doesn't stack underneath. Hint text rewritten to state what each does.
+
+**2. "a bit dark and gloomy. more brightness and higher contrast."** The
+gloom is mostly in the textures, not the chrome — they're matplotlib
+renders on `OCEAN_COLOR #1a425a`. So the fix went into the fragment
+shader (brightness 0.10, contrast 1.18) rather than only lightening CSS,
+which would have brightened the frame around a dark globe. Page ground
+and the fixed bars lifted to match.
+
+**Chose the amount by measuring rather than guessing:** simulated the
+exact shader maths in PIL against a real keyframe — mean luma 0.327 →
+0.396, **+21%** — and sent xian the A/B so he can say more or less. Both
+uniforms are one-line changes. Same eyeball-first discipline that settled
+the resolution question, and the only honest way to tune something I
+can't see render.
+
+Shipped `79c9735`. Three of the four first-look items are now closed:
+orientation fine (he'd have said), controls fixed, look fixed. The
+1200→1000 Ma ghost-slide went unmentioned — **not treating silence as a
+pass**, still open.
