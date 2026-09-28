@@ -30,7 +30,11 @@ import sys
 from datetime import date, timedelta
 
 LOG_DIR = "logs"
-FIRE_HEADING = re.compile(r"^##\s+.*duty-cycle fire", re.I | re.M)
+# A fire section always opens with its clock time; prose sections never do.
+# Matching the phrase "duty-cycle fire" instead undercounted every fire I
+# happened to title differently ("Second fire: ..."), which is the population
+# defect this tool exists to catch in my behaviour, found in the tool itself.
+FIRE_HEADING = re.compile(r"^##\s+\d{1,2}:\d[\dx]", re.M)
 NOOP = re.compile(r"\*\*(?:genuine )?no-op", re.I)
 
 
@@ -60,9 +64,14 @@ def churn_by_day(since):
 
 
 def fires_by_day(days_back):
-    """Claimed: fire headings found in each day's session log."""
+    """Claimed: fire headings found in each day's session log.
+
+    Spans days_back+1 days so it covers the same window as churn_by_day's
+    --since (inclusive of the boundary day); an asymmetry here reported real
+    logs as "no session log for this day".
+    """
     claimed = {}
-    for i in range(days_back):
+    for i in range(days_back + 1):
         d = (date.today() - timedelta(days=i)).isoformat()
         try:
             text = open(f"{LOG_DIR}/{d}-tessera-log.md").read()
