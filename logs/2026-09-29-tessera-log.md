@@ -52,3 +52,24 @@ Explore syntax OK; live `/explore/` 200; Pages green.
 **Open with xian:** the 1200→1000 Ma ghost-slide verdict (silence still
 not treated as a pass); whether to start sequel rung 3; the 7/28 Pard
 thread.
+
+## 16:22 PT — Duty-cycle fire (scheduled, second daily firing)
+
+Sync: all three repos already up to date; no new brief since this
+morning's. **Nothing addressed to Tessera anywhere.**
+
+Confirmed this morning's Pages build finished (it was still `building`
+when I last reported): **built at `161241b`** — so the handoff and log
+are actually published, not merely pushed. That check exists because
+assuming it was the six-week failure's whole story.
+
+All instruments green: explore syntax OK (6787 chars), live `/explore/`
+200, grid reader self-test passes. Rollup reads sensibly — six days,
+two fires each bar today's second (this one), commits and lines tracking
+the work rather than flat.
+
+**Genuine no-op.** Three items remain with xian and none of them are mine
+to advance: the 1200→1000 Ma ghost-slide verdict, whether to start sequel
+rung 3, and the 7/28 Pard thread. Not re-raising any of them — the asks
+are made, the artifacts exist, and repeating myself each fire would be
+noise rather than diligence.
