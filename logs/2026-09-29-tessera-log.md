@@ -73,3 +73,37 @@ to advance: the 1200→1000 Ma ghost-slide verdict, whether to start sequel
 rung 3, and the 7/28 Pard thread. Not re-raising any of them — the asks
 are made, the artifacts exist, and repeating myself each fire would be
 noise rather than diligence.
+
+## ~16:40 PT — xian answered all three; two closed, one started
+
+**1. Ghost-slide: "is the registration gap fixable? I do notice it."** He
+saw it; my "leave it alone" read was wrong and his eyes overrode it.
+**Fixable, and without inventing anything.** Root cause was mine, not the
+frames': `generate_prequel_frames.py` corrects cao2024 onto Merdith2021 on
+a ramp from 1150 Ma (weight 0) to 1000 Ma (weight 1), spreading the ~10°
+gap over 150 Myr of film. My keyframes were 1200 and 1000 — so the
+explorer crossfaded *across the entire correction in one step*. A sampling
+defect, not a data defect. Added three in-ramp keyframes (1150/1100/1050),
+which are the film's own frames. Verified at the layer that fires:
+edge-sharpness at the 50% blend went **+73% → −7/+13/+4/+17%**, against a
+normal seam's −13%. Shipped `6a00e78`.
+
+**2. Rung 3: "yes."** Started and delivered same turn — and the first
+measurement corrected the plan. The 08-10 plan assumed agreement to ~+50
+Myr and a split beyond +100. **Measured: the branch is +20 to +40 Myr and
+is done by +60.** Wrote that into the plan as §6b rather than silently
+editing §2/§5, so the correction stays legible against what it corrects.
+`scripts/render_sequel_motion.py` renders the window 0→+80 Myr, four
+published scenarios as coherent members (no parameter jitter — these are
+real competing hypotheses), crossfaded between the 20 Myr snapshots.
+12s clip sent to xian.
+
+**Honest reservation on the draft, stated before he has to say it:** it
+reads as *one increasingly uncertain Earth*, not as *four distinct
+futures*. That may be the correct honest statement, or it may mean the
+treatment needs the tour (the decided ending) to land. Rung 4's question.
+Also noted: Antarctica reads as a heavy solid band in equirectangular —
+an artifact of the projection, not the data; the globe pass dissolves it.
+
+**3. Pard thread: "yes moot. any real lingering issues will present on
+their own in due time."** Closed. Removing it from the open list.

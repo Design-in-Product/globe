@@ -99,12 +99,29 @@ At 1000 geo frames × N-scenario members: member renders ≈ prequel's rate
 (~1 s each warm) → texture pass ≈ 1–2 h. Blender pass ≈ 2400 anim frames ×
 5.9 s ≈ 4 h. Assembly minutes. **One render-day total**, same as the prequel.
 
+## 6b · CORRECTION from rung 3 (2026-09-29): the branch is at +20–40 Myr, not +100
+
+§2 above says the scenarios "largely agree" to ~+50 Myr and "split beyond
+~+100." **Measured, they don't.** Pairwise land-mask agreement across all
+six scenario pairs:
+
+| +Myr | 0 | 20 | 40 | 60 | 80 | 200 |
+|---|---|---|---|---|---|---|
+| mean agreement | 99.4% | 96.3% | **75.4%** | 67.9% | 66.0% | 61.3% |
+
+The branch is essentially complete by +60; everything after is slow drift.
+§5's defaults (span to +250, drama at +100) would have put the film's
+central event in the wrong place — most of the runtime would be spent on
+scenarios that had already diverged and then barely moved. Rung 4's pacing
+should weight the first ~80 Myr heavily. Left §2 and §5 as written so the
+correction is legible against what it corrects.
+
 ## 7 · Draft ladder (the discipline, unchanged)
 
 1. Research pass → model availability report → xian reads.
 2. Static strip: present → +250 at 6 stops, superposed scenarios — does the
    branching READ? → xian.
-3. Motion window (~40 Myr around the split, coherent members) → xian.
+3. Motion window (~40 Myr around the split, coherent members) → xian. **DONE 2026-09-29** — window relocated to 0–80 Myr by measurement (§6b).
 4. Full-span flat draft (pacing + hold placement + ending options) → xian.
 5. Production textures → globe pass → assembly → ship.
 
