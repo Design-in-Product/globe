@@ -1,3 +1,8 @@
+> **SUPERSEDED 2026-09-29** by `docs/handoff-tessera-2026-09-29.md`.
+> This file describes the scrubber as in-flight and awaiting xian; it
+> shipped 09-22 and again 09-22 (prequel range). 48 commits of drift.
+> Kept for the reboot-gate record, not for orientation.
+
 # Handoff: Tessera — Amber reboot gate (fleet-wide, 2026-09-18)
 
 **Why this exists:** Janus's fleet memo (`docs/mail/janus-to-all-non-pm-
