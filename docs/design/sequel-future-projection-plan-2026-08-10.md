@@ -116,6 +116,34 @@ scenarios that had already diverged and then barely moved. Rung 4's pacing
 should weight the first ~80 Myr heavily. Left §2 and §5 as written so the
 correction is legible against what it corrects.
 
+## 6c · CORRECTION TO THE CORRECTION (2026-09-29, same day)
+
+§6b said "the branch is +20–40 Myr and essentially complete by +60."
+**That was an artifact of a saturating metric**, caught by xian asking why
+divergence would stop. Per-cell land-mask agreement bottoms out once two
+scenarios put continents in different hemispheres — it cannot distinguish
+"same land, opposite side of the planet" from "slightly different
+coastline." Measuring land-centroid separation instead:
+
+| +Myr | 40 | 60 | 80 | 120 | 160 | 200 |
+|---|---|---|---|---|---|---|
+| cell agreement (saturates) | 75.4% | 67.9% | 66.0% | 62.9% | 61.9% | 61.3% |
+| centroid separation (does not) | 41° | 71° | 83° | 87° | 104° | **129°** |
+| land concentration | 0.345 | 0.355 | 0.371 | 0.410 | 0.456 | **0.516** |
+
+**Divergence never stops**, and the supercontinents form *late* —
+concentration only starts climbing after +80 and is steepest at the end.
+§6b's window (0–80) showed the dispersal and cut off before any payoff.
+
+**Standing lesson for this project's metrics:** a saturating measure looks
+exactly like a process that has finished. Before reading a plateau as "the
+event is over", check whether the instrument can still move.
+
+**Presentation finding:** Novopangea and Aurica assemble near the
+antimeridian, so an equirectangular map centred on 0° cuts each in half at
+the frame edge. Not a data problem — a framing one, and an argument for
+the globe pass or per-scenario re-centring in the tour.
+
 ## 7 · Draft ladder (the discipline, unchanged)
 
 1. Research pass → model availability report → xian reads.

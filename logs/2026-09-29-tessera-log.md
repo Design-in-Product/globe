@@ -107,3 +107,39 @@ an artifact of the projection, not the data; the globe pass dissolves it.
 
 **3. Pard thread: "yes moot. any real lingering issues will present on
 their own in due time."** Closed. Removing it from the open list.
+
+## ~17:00 PT — xian's question killed my own finding, same day I filed it
+
+He asked why divergence would be concentrated early — "is it just that
+each scenario ultimately has its own path?" — and noted the preview was
+too early to show real differences. Both instincts right.
+
+**My +20–40 Myr "branch" was a metric artifact.** Per-cell land-mask
+agreement saturates: once two scenarios put continents in different
+hemispheres it bottoms out near the rate you get from both being mostly
+ocean. It cannot tell "same land, opposite side of the planet" from
+"slightly different coastline." Re-measured with land-centroid separation
+and concentration, neither of which saturate:
+
+| +Myr | 40 | 80 | 120 | 200 |
+|---|---|---|---|---|
+| cell agreement | 75.4% | 66.0% | 62.9% | 61.3% (flat) |
+| centroid separation | 41° | 83° | 87° | **129° (climbing)** |
+| concentration | 0.345 | 0.371 | 0.410 | **0.516 (rising)** |
+
+Divergence never stops, and **the supercontinents form late** —
+concentration only climbs after +80. My 0–80 window showed the dispersal
+and cut off before the payoff. Filed as plan §6c, a correction to the
+§6b I wrote hours earlier. Re-rendered the full span 0→+200 and a panel
+of the four terminal supercontinents, both sent.
+
+**Standing lesson recorded in the plan:** a saturating measure looks
+exactly like a finished process. Check the instrument can still move
+before reading a plateau as an ending. This is the same family as the
+fire-rollup undercount and the Pages misdiagnosis — I keep trusting a
+number's *shape* without asking what it can't see.
+
+**Presentation finding:** Novopangea and Aurica assemble near the
+antimeridian, so a 0°-centred equirectangular map cuts them in half at the
+frame edge — part of why xian found them hard to tell apart. Framing, not
+data; argues for the globe pass or per-scenario re-centring in the tour.
