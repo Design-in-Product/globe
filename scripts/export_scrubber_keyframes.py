@@ -45,6 +45,16 @@ PREQUEL_KEYFRAMES = [
     (1452, "Nuna / Columbia assembled"),
     (1400, "Ectasian"),
     (1200, "Stenian"),
+    # Registration-ramp samples. generate_prequel_frames.py corrects cao2024 onto
+    # Merdith2021 progressively from 1150 Ma (weight 0) to 1000 Ma (weight 1), so
+    # the ~10 deg reference-frame gap is absorbed across 150 Myr of film. With
+    # keyframes only at 1200 and 1000 the explorer crossfaded ACROSS that whole
+    # correction in one step, which xian saw as a slide (09-29). These sample the
+    # film's own ramp instead of jumping it. Not a new correction -- the same
+    # frames the film uses.
+    (1150, "Stenian \u2014 the map begins to settle"),
+    (1100, "Stenian"),
+    (1050, "Stenian"),
 ]
 
 

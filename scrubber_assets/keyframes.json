@@ -50,6 +50,30 @@
       "height": 1024
     },
     {
+      "time_ma": 1150,
+      "label": "Stenian \u2014 the map begins to settle",
+      "file": "1150ma.webp",
+      "source": "prequel",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "time_ma": 1100,
+      "label": "Stenian",
+      "file": "1100ma.webp",
+      "source": "prequel",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "time_ma": 1050,
+      "label": "Stenian",
+      "file": "1050ma.webp",
+      "source": "prequel",
+      "width": 2048,
+      "height": 1024
+    },
+    {
       "time_ma": 1000,
       "label": "Rodinia assembling",
       "file": "1000ma.webp",
