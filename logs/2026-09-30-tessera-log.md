@@ -42,3 +42,19 @@ noted as the same principle I've been leaning on for the Pages cause.
 **Open with xian:** green-light rung 5 (production textures → globe pass
 → assembly → ship), and whether to build the `/explore/` scenario picker
 before or after the film.
+
+## 16:22 PT — Duty-cycle fire (scheduled, second daily firing)
+
+Sync: all three repos already up to date; no new brief since 9/30's.
+**Nothing addressed to Tessera** — sibling traffic is Terminus (deck
+draft, Slides connector), Janus/Pard (transcript collector, ledger).
+
+Health: explore syntax OK; live `/explore/` 200; **Pages built at
+`247e853`**, so this morning's hook commit is published, not just pushed.
+Hook still wired (`core.hooksPath scripts/hooks`) and executable — worth
+one line each fire now, since a hook that quietly stops firing looks
+identical to one that never needed to.
+
+**No-op.** Two decisions still with xian — rung 5 (production globe pass
+→ ship) and the `/explore/` scenario picker's timing. Both asks made,
+both artifacts in front of him; not re-raising.
