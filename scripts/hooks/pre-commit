@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Pre-commit gate: the explore page's only automated check, made structural.
+#
+# Brief 9/30 (Klatch/Argus): a discipline that depends on remembering to run
+# a check is not a discipline; when the check is fast and stateless, make it a
+# pre-commit gate. check_explore_syntax.py is ~0.2s, no network, exit 0/1/2/3,
+# and until now I ran it by hand each fire. Only fires when the page is staged,
+# so unrelated commits are not gated.
+#
+# Wired with `git config core.hooksPath scripts/hooks`. That is repo-local
+# config — fine HERE because globe is a single-seat checkout. Never do this in
+# mediajunkie or designinproduct (see memory: shared-checkout-identity).
+#
+# Exec bit is set via `git update-index --chmod=+x` so it survives clones; a
+# non-executable hook is silently ignored by git (the brief's gotcha).
+set -euo pipefail
+if git diff --cached --name-only | grep -qx 'explore/index.html'; then
+  python3 scripts/check_explore_syntax.py explore/index.html || {
+    echo "pre-commit: explore/index.html failed its syntax gate — commit refused." >&2
+    exit 1
+  }
+fi
