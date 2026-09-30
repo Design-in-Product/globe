@@ -143,3 +143,29 @@ number's *shape* without asking what it can't see.
 antimeridian, so a 0°-centred equirectangular map cuts them in half at the
 frame edge — part of why xian found them hard to tell apart. Framing, not
 data; argues for the globe pass or per-scenario re-centring in the tour.
+
+## ~17:30 PT — Rung 4 delivered: full-span flat draft with the tour
+
+xian: "Yes please!" — and that he's enjoying the process, learning, and
+sees real value plus wow factor in it. Mutual.
+
+`scripts/render_sequel_draft.py`, 33s at 24fps, 797 frames: departure
+hold → 0→+200 Myr → terminal hold superposed → the tour (each scenario
+alone, named, re-centred on its own supercontinent, at its own terminus)
+→ re-superposition and final hold. **Pacing is eased to the measured
+shape of the event** (§6c): slow at both ends where dispersal and
+assembly happen, brisk through the quiet middle. Superposition spans
+0–200 only — beyond that just pun/aurn exist, and averaging two while
+calling it four would overstate agreement.
+
+**The one look caught a real bug.** First render's tour frames were all
+cut at the frame edge — my re-centring double-counted the half-world
+offset and rolled every supercontinent *to* the edge, the exact defect it
+existed to fix. Verified the fix numerically with a check proven to go
+red on the old code (centroid column: buggy 0/1439, fixed 720 = centre,
+all four). Re-rendered; tour now reads — four genuinely distinct worlds,
+each whole. That's the wow xian couldn't see in the flat strip.
+
+Sent clip + contact sheet. Ladder: rungs 1–4 done. Rung 5 (production
+textures → globe pass → assembly → ship) is the next decision, plus the
+`/explore/` scenario picker he asked about.

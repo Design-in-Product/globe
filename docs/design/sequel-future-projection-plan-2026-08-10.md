@@ -150,7 +150,7 @@ the globe pass or per-scenario re-centring in the tour.
 2. Static strip: present → +250 at 6 stops, superposed scenarios — does the
    branching READ? → xian.
 3. Motion window (~40 Myr around the split, coherent members) → xian. **DONE 2026-09-29** — window relocated to 0–80 Myr by measurement (§6b).
-4. Full-span flat draft (pacing + hold placement + ending options) → xian.
+4. Full-span flat draft (pacing + hold placement + ending options) → xian. **DONE 2026-09-29** — `scripts/render_sequel_draft.py`, 33s: eased pacing per §6c, departure/terminal holds, the tour with per-scenario re-centring. Superposition spans 0–200 only (all four exist); each scenario tours at its own terminus.
 5. Production textures → globe pass → assembly → ship.
 
 ## Addendum: the other direction — how far before 1800 Ma? (xian, 8/10)
