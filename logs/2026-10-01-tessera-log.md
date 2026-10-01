@@ -42,3 +42,16 @@ true, cheap (58s), not worth action; noted.
 
 **Open with xian:** rung 5 green-light; `/explore/` scenario picker
 timing.
+
+## 16:22 PT — Duty-cycle fire (scheduled, second daily firing)
+
+Sync: all three repos already up to date; no new brief since 10/01's.
+**Nothing addressed to Tessera** — sibling traffic is PM-seat cascade
+work (Comms as seat 5, jitter mechanism) and Themis/Janus project
+framing.
+
+Health: explore syntax OK; live `/explore/` 200; **Pages built at
+`9d47a45`** — the rollup fix is published. Hook wired and executable.
+
+**No-op.** Rung 5 and the `/explore/` picker timing still with xian; not
+re-raising.
