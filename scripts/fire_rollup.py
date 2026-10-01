@@ -42,24 +42,38 @@ def git(*args):
     return subprocess.run(["git", *args], capture_output=True, text=True).stdout
 
 
+def is_delivery(files):
+    """A brief delivery touches only docs/briefs/. Detected from the files the
+    commit touched, not from its subject line — brief 10/01 finding 3: a
+    name/subject enumeration goes stale silently; detection reflects what is
+    actually there. (Previously matched "briefs: cross-pollination" in the
+    subject, which would have counted deliveries as my work the day Janus
+    reworded it, inflating my own depth signal without any error.)"""
+    return bool(files) and all(f.startswith("docs/briefs/") for f in files)
+
+
 def churn_by_day(since):
     """Objective: commits and lines changed per day, from git, excluding
-    the brief deliveries Janus pushes (not my work)."""
+    brief deliveries (not my work)."""
     out = git("log", f"--since={since}", "--date=short",
-              "--pretty=format:@%ad %an %s", "--numstat")
+              "--pretty=format:@%ad", "--numstat")
     days = collections.defaultdict(lambda: {"commits": 0, "lines": 0})
-    day = None
+    commits = []                       # (day, lines, files)
+    cur = None
     for line in out.splitlines():
         if line.startswith("@"):
-            day, author = line[1:].split(" ", 1)[0], line
-            mine = "briefs: cross-pollination" not in author
-            if mine:
-                days[day]["commits"] += 1
-            day = day if mine else None
-        elif day and line.strip():
+            cur = [line[1:].strip(), 0, []]; commits.append(cur)
+        elif cur and line.strip():
             parts = line.split("\t")
-            if len(parts) == 3 and parts[0].isdigit() and parts[1].isdigit():
-                days[day]["lines"] += int(parts[0]) + int(parts[1])
+            if len(parts) == 3:
+                cur[2].append(parts[2])
+                if parts[0].isdigit() and parts[1].isdigit():
+                    cur[1] += int(parts[0]) + int(parts[1])
+    for day, lines, files in commits:
+        if is_delivery(files):
+            continue
+        days[day]["commits"] += 1
+        days[day]["lines"] += lines
     return days
 
 
