@@ -38,3 +38,16 @@ not just the primary one): no corpus-scanning absence checks here.
 work, so there's no self-reference to exclude. Noted.
 
 **Open with xian:** rung 5 green-light; `/explore/` picker timing.
+
+## 16:22 PT — Duty-cycle fire (scheduled, second daily firing)
+
+Sync: all three repos already up to date; no new brief since 10/02's.
+**Nothing addressed to Tessera** — sibling traffic is PM seat-6 roster
+rulings and the settings-window close-out.
+
+Health: explore syntax OK; live `/explore/` 200; **Pages built at
+`1b14d49`** — the pipefail hook fix is published. Hook wired and
+executable.
+
+**No-op.** Rung 5 and the `/explore/` picker timing still with xian; not
+re-raising.
