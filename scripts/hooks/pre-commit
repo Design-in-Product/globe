@@ -14,7 +14,11 @@
 # Exec bit is set via `git update-index --chmod=+x` so it survives clones; a
 # non-executable hook is silently ignored by git (the brief's gotcha).
 set -euo pipefail
-if git diff --cached --name-only | grep -qx 'explore/index.html'; then
+# Full-read grep, not grep -q: under pipefail an early exit can SIGPIPE the
+# producer and fail the pipeline, and in an `if` that reads as "not staged" —
+# the gate would silently skip. Fail-open is the wrong direction for a gate.
+# (Brief 10/02, Pard's freeze-check: the -q optimisation is the hazard.)
+if git diff --cached --name-only | grep -x 'explore/index.html' >/dev/null; then
   python3 scripts/check_explore_syntax.py explore/index.html || {
     echo "pre-commit: explore/index.html failed its syntax gate — commit refused." >&2
     exit 1
