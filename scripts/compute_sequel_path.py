@@ -75,6 +75,39 @@ def arc_deg(lon_a, lat_a, lon_b, lat_b):
     return float(np.degrees(np.arccos(np.clip(np.sin(a[0])*np.sin(b[0]) + np.cos(a[0])*np.cos(b[0])*np.cos(a[1]-b[1]), -1, 1))))
 
 
+# ---- the renderer's view mapping, measured (10-03) ----------------------------
+# render_globe.py rotates the GLOBE with Euler (0, -lat, -lon) under a fixed camera
+# 10 deg above the equator. Measured with Blender's own sphere (data_view_table.json):
+# the view latitude is roughly -lat*cos(lon) + 10 — sign-inverted, longitude-coupled.
+# Every shipped film was hand-framed against that behaviour, so it stays; aim points
+# computed in TRUE (lat, lon) are converted here. The main film's departure camera is
+# already in renderer space and is NOT converted.
+_VM = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "data_view_model.json")))
+def _Rz(a): c, s_ = np.cos(a), np.sin(a); return np.array([[c, -s_, 0], [s_, c, 0], [0, 0, 1]])
+def _Ry(a): c, s_ = np.cos(a), np.sin(a); return np.array([[c, 0, s_], [0, 1, 0], [-s_, 0, c]])
+_D = np.array([np.cos(np.deg2rad(_VM["elev"])), 0, np.sin(np.deg2rad(_VM["elev"]))])
+def view_of(cam_lat, cam_lon):
+    A, B = _Ry(_VM["sy"] * np.deg2rad(cam_lat)), _Rz(_VM["sz"] * np.deg2rad(cam_lon))
+    M = B @ A if _VM["order"] == "zy" else A @ B
+    p = (M.T if _VM["transpose"] else M) @ _D
+    return float(np.degrees(np.arcsin(np.clip(p[2], -1, 1)))), float(np.degrees(np.arctan2(p[1], p[0])))
+def renderer_cam(view_lat, view_lon):
+    """Invert view_of numerically: the (camera_lat, camera_lon) that shows (view_lat, view_lon)."""
+    from scipy.optimize import minimize
+    def cost(x):
+        vl, vo = view_of(x[0], x[1])
+        dlo = (vo - view_lon + 180) % 360 - 180
+        return (vl - view_lat) ** 2 + (np.cos(np.deg2rad(view_lat)) * dlo) ** 2
+    best = None
+    for lat0 in (-view_lat, view_lat, 0.0):
+        for lon0 in (view_lon, view_lon + 180):
+            r = minimize(cost, [lat0, lon0], method="Nelder-Mead", options={"xatol": 1e-3, "fatol": 1e-6})
+            if best is None or r.fun < best.fun: best = r
+    cl, co = best.x; co = (co + 180) % 360 - 180
+    assert best.fun < 0.25, f"renderer_cam could not reach view ({view_lat},{view_lon}): residual {best.fun}"
+    return float(cl), float(co)
+
+
 def shortest_arc(prev_lon, target_lon):
     """Unwrap target so the move from prev is the short way round."""
     d = (target_lon - prev_lon + 180.0) % 360.0 - 180.0
@@ -94,7 +127,9 @@ def main():
     blend_len = {}                               # scenario (or "return") -> anim frames per blend geo frame
     for f in geo:
         if f["kind"] == "tour_hold":
-            lat, lon = aim_for(f); stops[f["scenario"]] = (lat, lon)
+            vlat, vlon = aim_for(f)                      # TRUE view coordinates
+            lat, lon = renderer_cam(vlat, vlon)          # -> renderer camera_lat/lon
+            stops[f["scenario"]] = (lat, lon); views = globals().setdefault("_views", {}); views[f["scenario"]] = (vlat, vlon)
             arc = arc_deg(cur_lon, cur_lat, lon, lat)
             total = int(np.clip(arc / DEG_PER_FRAME, BLEND_MIN, BLEND_MAX))
             blend_len[f["scenario"]] = max(1, round(total / side["blend_frames"]))
@@ -194,7 +229,8 @@ def main():
     for label, s, n in holds:
         seg = lons[s:s + n]; print(f"  hold {label:<28} frames {s}-{s+n-1}  lon spread {np.ptp(seg):.3f}")
     for sc, (lat, lon) in stops.items():
-        print(f"  stop {sc:<6} aim lat {lat:6.1f} lon {lon:7.1f}   dissolve {blend_len[sc]*side['blend_frames']} f = {blend_len[sc]*side['blend_frames']/FPS:.1f}s")
+        vl, vo = globals()["_views"][sc]; cl, co = view_of(lat, lon)
+        print(f"  stop {sc:<6} want view ({vl:6.1f},{vo:7.1f}) -> cam ({lat:6.1f},{lon:7.1f}) -> model view ({cl:6.1f},{co:7.1f})   dissolve {blend_len[sc]*side['blend_frames']/FPS:.1f}s")
     print(f"max per-frame lon step {dl.max():.2f} deg (at frame {int(dl.argmax())})")
 
 

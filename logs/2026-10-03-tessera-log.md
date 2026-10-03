@@ -127,3 +127,30 @@ globe" — put the camera *under* a supercontinent whose land sits at
 60–75°N. The clamp did the opposite of its intent. Raised to 75; aim now
 (60°, 30°); re-rendered. One more instance of a protective constant that
 needed to be looked at, not reasoned about.
+
+### The renderer's camera latitude was never what the path said it was
+
+Amasia's stop stayed mostly ocean after raising the clamp, and the frame
+barely changed between clamp 45 and 75 — so the latitude wasn't reaching
+the render. Probed empirically (same texture, `camera_lat=60`, five
+longitudes) and then asked Blender itself: rebuilt the renderer's UV
+sphere, applied its exact `rotation_euler=(0,-lat,-lon)`, read the UV of
+the vertex facing the camera. **`render_globe.py` rotates the globe, not
+the camera, with an Euler order that spins the tilt axis: the view
+latitude is roughly `-lat·cos(lon) + 10°`** (the 10° is the fixed camera
+elevation). Sign-inverted and longitude-coupled. The main film's
+`(28.75, 25.3)` looks at lat −11; my Ultima stills were well-framed by
+accident. Every shipped film was hand-framed by eye, which absorbed this
+silently — so the renderer stays as it is, and the path script converts
+true view coordinates to renderer coordinates for the computed stops
+only (the main film's departure camera is already in renderer space).
+
+My own first read of the probe sheet was wrong too — I called the
+lon −90 frame "full north"; Blender says it's an equatorial view of
+Amasia's land-rich western longitude. The model was right, my eyes
+weren't. Fitted the closed form against Blender's 5° table (2,664 rows,
+mean err 3.9° ≈ UV quantisation), `data_view_model.json`; numeric inverse
+`renderer_cam()` asserts its residual. All four stops now reach their
+wanted view in the model. Peak lon step 1.83°/frame. **Pending the look:
+Amasia's solution has camera_lat 106° — the inverse matched the facing
+point, not the image roll, so that frame may be upside-down.**
