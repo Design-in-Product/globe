@@ -154,3 +154,26 @@ mean err 3.9° ≈ UV quantisation), `data_view_model.json`; numeric inverse
 wanted view in the model. Peak lon step 1.83°/frame. **Pending the look:
 Amasia's solution has camera_lat 106° — the inverse matched the facing
 point, not the image roll, so that frame may be upside-down.**
+
+### Looked, then launched
+
+The corrected tour stills: Ultima ring-dominant at both biases, Novopangea
+and Aurica whole and centred, **Amasia the northern supercontinent at
+last** — and right-side-up despite the inverse landing on camera_lat 106°
+(a polar look has no strong "up"; the roll question was real but
+harmless here). Sent to xian; Ultima bias (45% default vs 20%) is his
+pick.
+
+Pard courtesy memo on `origin/main` of mediajunkie (`14c33ac`, authored
+Tessera via `git -c`). **Full pass launched 16:54:39, pid 24601**, nohup,
+`~/globe-render/sequel_render/`, log `sequel_render.log`. Verified alive
+with 5 frames on disk at 45 s → ~8 s/frame → **~3.5 h, ETA ~20:30.**
+Resumable via FRAME_START/END + png_complete.
+
+If xian picks 20%: only the tour frames change (anim ≥ ~800), so that's a
+tour-only re-render of ~790 frames (~1.8 h), not a restart.
+
+**Open for the pipeline after the render:** the 0 → first-future seam
+(main film's last Blender frame → sequel's first) — the prequel used
+TERMINAL_BLEND; the sequel wants the mirror, an opening blend *from* the
+main film's last frame. Assembly step, not render.
