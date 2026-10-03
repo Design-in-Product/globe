@@ -38,6 +38,12 @@
   .tick { position: absolute; top: 0; width: 1px; height: 6px; background: var(--border); transform: translateX(-0.5px); }
   .tick.major { height: 9px; background: var(--text-muted); }
   .tick-label { position: absolute; top: 11px; transform: translateX(-50%); font-size: 0.62rem; color: var(--text-muted); white-space: nowrap; }
+  #picker { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+  #picker button { font-family: var(--font); font-size: 0.72rem; color: var(--text-muted); background: transparent;
+    border: 1px solid var(--border); border-radius: 999px; padding: 4px 11px; cursor: pointer; }
+  #picker button.active { color: var(--text); border-color: var(--accent); }
+  #picker button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  #picker-note { font-size: 0.66rem; color: var(--text-muted); margin-top: -2px; }
   #hint { font-size: 0.7rem; color: var(--text-muted); text-align: center; }
   @media (max-width: 520px) { .tick-label { display: none; } .tick-label.keep { display: block; } }
 </style>
@@ -50,11 +56,13 @@
 </div>
 <div id="ui">
   <div id="readout"><span id="time">0 Ma</span><span id="era">Present day</span></div>
+  <div id="picker" role="group" aria-label="Which future"></div>
+  <div id="picker-note">the past is one story; the futures diverge after today &mdash; hold all four, or pick one</div>
   <div id="track">
-    <input id="slider" type="range" min="0" max="1000" value="1000" step="1" aria-label="Time, million years before present">
+    <input id="slider" type="range" min="0" max="2050" value="1800" step="1" aria-label="Time: 1800 Ma in the past to 250 Myr in the future">
     <div id="ticks"></div>
   </div>
-  <div id="hint">Drag to spin &middot; scroll to zoom &middot; &larr; &rarr; step 10&nbsp;Myr &middot; shift&#8202;+&#8202;&larr;&rarr; jump era to era &middot; home/end for the ends</div>
+  <div id="hint">Drag to spin &middot; scroll to zoom &middot; &larr; &rarr; step 10&nbsp;Myr &middot; shift&#8202;+&#8202;&larr;&rarr; jump era to era &middot; home = 1800&nbsp;Ma, end = the far future</div>
 </div>
 
 <script type="importmap">
@@ -72,7 +80,6 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 // This is the same approximation the shipped film makes at its transitions
 // (render_globe.py's dual-texture Mix node), ported to GLSL.
 const ASSETS = "../scrubber_assets/";
-const MAJOR = new Set([1800, 1452, 1000, 480, 250, 0]); // labeled ticks; others are marks only
 
 const statusEl = document.getElementById("status");
 const timeEl = document.getElementById("time");
@@ -108,82 +115,140 @@ const material = new THREE.ShaderMaterial({
 });
 scene.add(new THREE.Mesh(new THREE.SphereGeometry(1, 128, 128), material));
 
-// ---- keyframes: manifest first, textures as they arrive ----
-const res = await fetch(ASSETS + "keyframes.json");
-const manifest = await res.json();
-const KEYFRAMES = manifest.keyframes.slice().sort((a, b) => b.time_ma - a.time_ma); // oldest -> newest
-const MAX_T = KEYFRAMES[0].time_ma; // 1800 with the prequel range, 1000 without
-slider.max = String(MAX_T); slider.value = String(MAX_T); // start at present day
-const textures = new Array(KEYFRAMES.length).fill(null);
-let loaded = 0;
+// ---- keyframes: two manifests, merged as layers ----
+// The past is one story (Merdith/cao2024 keyframes, time_ma >= 0). The futures
+// are four published scenarios plus their superposition, stored as NEGATIVE
+// time_ma so the whole axis is one number line: 1800 ... 0 ... -250. Each
+// layer is a separate keyframe set; the active set is PAST + one future layer.
+// Layering here is the hook a later layer (biome, culture) would also use.
+const [pastM, futM] = await Promise.all([
+  fetch(ASSETS + "keyframes.json").then(r => r.json()),
+  fetch(ASSETS + "future/keyframes-future.json").then(r => r.json()),
+]);
+const byTimeDesc = (a, b) => b.time_ma - a.time_ma;
+const PAST = pastM.keyframes.map(k => ({ ...k, file: ASSETS + k.file })).sort(byTimeDesc);
+const FUTURE = {};
+for (const k of futM.keyframes) (FUTURE[k.layer] ||= []).push({ ...k, file: ASSETS + "future/" + k.file });
+for (const l in FUTURE) FUTURE[l].sort(byTimeDesc);
+const LAYER_NAMES = futM.layers;
+let layer = "future:super";
+
+const MAX_T = PAST[0].time_ma;                                           // 1800
+const layerMin = (l) => FUTURE[l][FUTURE[l].length - 1].time_ma;          // -200 or -250
+const GLOBAL_MIN = Math.min(...Object.keys(FUTURE).map(layerMin));       // -250
+slider.max = String(MAX_T - GLOBAL_MIN);
+slider.value = String(MAX_T);                                            // start at present day
+const active = () => PAST.concat(FUTURE[layer]);                         // still descending
+
+const fmt = (t) => t >= 0 ? `${Math.round(t)} Ma` : `+${Math.round(-t)} Myr`;
+
+// ---- textures: on demand, cached by file ----
 const loader = new THREE.TextureLoader();
-KEYFRAMES.forEach((k, i) => {
-  loader.load(ASSETS + k.file, (t) => {
+const tex = new Map();           // file -> Texture | null (null = loading)
+function ensure(k) {
+  if (tex.has(k.file)) return tex.get(k.file);
+  tex.set(k.file, null);
+  loader.load(k.file, (t) => {
     t.colorSpace = THREE.SRGBColorSpace;
     t.anisotropy = renderer.capabilities.getMaxAnisotropy();
-    textures[i] = t; loaded++;
-    statusEl.textContent = loaded < KEYFRAMES.length ? `loading eras ${loaded}/${KEYFRAMES.length}` : `${KEYFRAMES.length} eras · ${manifest.budget.split(" (")[0]}`;
+    tex.set(k.file, t);
+    updateStatus();
     applyTime(sliderTime());
   });
-});
+  return null;
+}
+function updateStatus() {
+  const set = active();
+  const n = set.filter(k => tex.get(k.file)).length;
+  statusEl.textContent = n < set.length
+    ? `loading eras ${n}/${set.length}`
+    : `${set.length} eras · ${pastM.budget.split(" (")[0]} · future: ${LAYER_NAMES[layer]}`;
+}
+PAST.forEach(ensure);                                                    // past is always needed
 
 // slider runs left(old) -> right(new): value v maps to time_ma = MAX_T - v
 function sliderTime() { return MAX_T - Number(slider.value); }
 
-// ticks
-KEYFRAMES.forEach((k) => {
-  const x = ((MAX_T - k.time_ma) / MAX_T) * 100;
-  const tick = document.createElement("div");
-  tick.className = "tick" + (MAJOR.has(k.time_ma) ? " major" : "");
-  tick.style.left = x + "%"; ticksEl.appendChild(tick);
-  if (MAJOR.has(k.time_ma)) {
-    const lab = document.createElement("div");
-    lab.className = "tick-label" + (k.time_ma === MAX_T || k.time_ma === 0 ? " keep" : "");
-    lab.style.left = x + "%"; lab.textContent = `${k.time_ma} Ma`; ticksEl.appendChild(lab);
+// ---- picker ----
+const pickerEl = document.getElementById("picker");
+function buildPicker() {
+  pickerEl.innerHTML = "";
+  for (const [id, name] of Object.entries(LAYER_NAMES)) {
+    const b = document.createElement("button");
+    b.type = "button"; b.textContent = name; b.dataset.layer = id;
+    b.className = id === layer ? "active" : "";
+    b.addEventListener("click", () => setLayer(id));
+    pickerEl.appendChild(b);
   }
-});
+}
+function setLayer(id) {
+  layer = id;
+  for (const b of pickerEl.children) b.className = b.dataset.layer === id ? "active" : "";
+  FUTURE[layer].forEach(ensure);
+  buildTicks();
+  const t = sliderTime();
+  setTime(t < layerMin(layer) ? layerMin(layer) : t);   // a shorter scenario can't show +250
+  updateStatus();
+}
 
-// nearest loaded texture at-or-before index i (in KEYFRAMES order), for graceful partial loads
-function nearestLoaded(i, dir) {
-  for (let j = i; j >= 0 && j < KEYFRAMES.length; j += dir) if (textures[j]) return textures[j];
-  for (let j = 0; j < KEYFRAMES.length; j++) if (textures[j]) return textures[j];
+// ---- ticks ----
+const MAJOR = new Set([1800, 1452, 1000, 480, 250, 0, -100, -200, -250]);
+function buildTicks() {
+  ticksEl.innerHTML = "";
+  const span = MAX_T - GLOBAL_MIN;
+  for (const k of active()) {
+    const x = ((MAX_T - k.time_ma) / span) * 100;
+    const tick = document.createElement("div");
+    tick.className = "tick" + (MAJOR.has(k.time_ma) ? " major" : "");
+    tick.style.left = x + "%"; ticksEl.appendChild(tick);
+    if (MAJOR.has(k.time_ma)) {
+      const lab = document.createElement("div");
+      lab.className = "tick-label" + (k.time_ma === MAX_T || k.time_ma === 0 || k.time_ma === GLOBAL_MIN ? " keep" : "");
+      lab.style.left = x + "%"; lab.textContent = fmt(k.time_ma); ticksEl.appendChild(lab);
+    }
+  }
+}
+
+// nearest loaded texture in the active set, scanning from index i in direction dir
+function nearestLoaded(set, i, dir) {
+  for (let j = i; j >= 0 && j < set.length; j += dir) { const t = tex.get(set[j].file); if (t) return t; }
+  for (const k of set) { const t = tex.get(k.file); if (t) return t; }
   return null;
 }
 
 function applyTime(t) {
-  let lo = 0, hi = KEYFRAMES.length - 1;
-  for (let i = 0; i < KEYFRAMES.length - 1; i++) {
-    if (t <= KEYFRAMES[i].time_ma && t >= KEYFRAMES[i + 1].time_ma) { lo = i; hi = i + 1; break; }
+  const set = active();
+  let lo = 0, hi = set.length - 1;
+  for (let i = 0; i < set.length - 1; i++) {
+    if (t <= set[i].time_ma && t >= set[i + 1].time_ma) { lo = i; hi = i + 1; break; }
   }
-  const span = KEYFRAMES[lo].time_ma - KEYFRAMES[hi].time_ma;
-  const f = span === 0 ? 0 : (KEYFRAMES[lo].time_ma - t) / span;
-  material.uniforms.texA.value = textures[lo] || nearestLoaded(lo, -1);
-  material.uniforms.texB.value = textures[hi] || nearestLoaded(hi, 1) || material.uniforms.texA.value;
+  const span = set[lo].time_ma - set[hi].time_ma;
+  const f = span === 0 ? 0 : (set[lo].time_ma - t) / span;
+  ensure(set[lo]); ensure(set[hi]);
+  material.uniforms.texA.value = tex.get(set[lo].file) || nearestLoaded(set, lo, -1);
+  material.uniforms.texB.value = tex.get(set[hi].file) || nearestLoaded(set, hi, 1) || material.uniforms.texA.value;
   material.uniforms.mixFactor.value = f;
-  timeEl.textContent = `${Math.round(t)} Ma`;
-  const near = f < 0.5 ? KEYFRAMES[lo] : KEYFRAMES[hi];
-  eraEl.textContent = f === 0 || f === 1 ? near.label : `${KEYFRAMES[lo].label} → ${KEYFRAMES[hi].label}`;
+  timeEl.textContent = fmt(t);
+  const strip = (l) => l.replace(/ \(.*\)$/, "");
+  eraEl.textContent = f === 0 || f === 1 ? strip((f === 0 ? set[lo] : set[hi]).label)
+                                         : `${strip(set[lo].label)} → ${strip(set[hi].label)}`;
 }
 
-slider.addEventListener("input", () => applyTime(sliderTime()));
-
-// Arrow keys. The native range step (1 Ma of an 1800 Ma span) is 0.05% of the
-// track — xian's first look reported it as "imperceptible", correctly. Plain
-// arrows move a visible slice; Shift jumps era to era, which is the navigation
-// people actually want on a keyframed timeline.
+// ---- time control ----
 const STEP_MA = 10;
 function setTime(t) {
-  t = Math.max(0, Math.min(MAX_T, t));
+  t = Math.max(layerMin(layer), Math.min(MAX_T, t));
   slider.value = String(MAX_T - t);
   applyTime(t);
 }
 function neighbourEra(t, dir) {         // dir -1 = older, +1 = newer
-  const times = KEYFRAMES.map(k => k.time_ma);          // descending
+  const times = active().map(k => k.time_ma);          // descending
   const older = times.filter(x => x > t + 0.5);
   const newer = times.filter(x => x < t - 0.5);
   if (dir < 0) return older.length ? Math.min(...older) : MAX_T;
-  return newer.length ? Math.max(...newer) : 0;
+  return newer.length ? Math.max(...newer) : layerMin(layer);
 }
+slider.addEventListener("input", () => setTime(sliderTime()));
 addEventListener("keydown", (e) => {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
   const t = sliderTime();
@@ -191,12 +256,14 @@ addEventListener("keydown", (e) => {
   if (e.key === "ArrowLeft")       next = e.shiftKey ? neighbourEra(t, -1) : t + STEP_MA;
   else if (e.key === "ArrowRight") next = e.shiftKey ? neighbourEra(t, +1) : t - STEP_MA;
   else if (e.key === "Home")       next = MAX_T;
-  else if (e.key === "End")        next = 0;
+  else if (e.key === "End")        next = layerMin(layer);
   if (next === null) return;
-  e.preventDefault();               // stop the native 1 Ma step stacking on top
+  e.preventDefault();
   setTime(next);
 });
-applyTime(sliderTime());
+
+buildPicker();
+setLayer(layer);
 
 addEventListener("resize", () => {
   camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();

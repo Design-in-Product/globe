@@ -75,6 +75,13 @@ keyframes at the ICS period boundaries + the Nuna hold (1800/1600/1452/
 Explore now spans **1800→0 Ma, 20 keyframes, 6.3 MB.** Page is fully
 manifest-driven, so this was data plus a few lines.
 
+**Scenario picker shipped 2026-10-02** (xian: "picker first"): `/explore/`
+now spans **1800 Ma → +250 Myr** on one axis. The past is one layer; after
+today the viewer holds all four futures superposed or picks one (Pangaea
+Ultima, Novopangea, Aurica, Amasia). `scripts/export_future_keyframes.py`
+→ `scrubber_assets/future/` (56 keyframes, 3.3 MB, own manifest; the page
+merges layers — the hook a biome or culture layer would also use).
+
 **Next rungs, none started:** denser sampling between eras if it feels
 sparse; true per-Myr density only with external hosting (scope doc §5).
 **First-look items for xian:** equirect orientation on the sphere and

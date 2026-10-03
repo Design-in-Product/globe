@@ -1,0 +1,461 @@
+{
+  "budget": "2048x1024 WebP q90, flat masks (OSF 1440x721 resized)",
+  "source": "OSF 10.17605/OSF.IO/8NEQ4 (Davies, Green & Duarte), CC0",
+  "layers": {
+    "future:super": "All four, superposed",
+    "future:pun": "Pangaea Ultima",
+    "future:novon": "Novopangea",
+    "future:aurn": "Aurica",
+    "future:amn": "Amasia"
+  },
+  "keyframes": [
+    {
+      "layer": "future:amn",
+      "time_ma": -20,
+      "label": "+20 Myr \u2014 Amasia",
+      "file": "future_amn_020.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:amn",
+      "time_ma": -40,
+      "label": "+40 Myr \u2014 Amasia",
+      "file": "future_amn_040.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:amn",
+      "time_ma": -60,
+      "label": "+60 Myr \u2014 Amasia",
+      "file": "future_amn_060.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:amn",
+      "time_ma": -80,
+      "label": "+80 Myr \u2014 Amasia",
+      "file": "future_amn_080.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:amn",
+      "time_ma": -100,
+      "label": "+100 Myr \u2014 Amasia",
+      "file": "future_amn_100.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:amn",
+      "time_ma": -120,
+      "label": "+120 Myr \u2014 Amasia",
+      "file": "future_amn_120.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:amn",
+      "time_ma": -140,
+      "label": "+140 Myr \u2014 Amasia",
+      "file": "future_amn_140.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:amn",
+      "time_ma": -160,
+      "label": "+160 Myr \u2014 Amasia",
+      "file": "future_amn_160.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:amn",
+      "time_ma": -180,
+      "label": "+180 Myr \u2014 Amasia",
+      "file": "future_amn_180.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:amn",
+      "time_ma": -200,
+      "label": "+200 Myr \u2014 Amasia",
+      "file": "future_amn_200.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:aurn",
+      "time_ma": -20,
+      "label": "+20 Myr \u2014 Aurica",
+      "file": "future_aurn_020.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:aurn",
+      "time_ma": -40,
+      "label": "+40 Myr \u2014 Aurica",
+      "file": "future_aurn_040.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:aurn",
+      "time_ma": -60,
+      "label": "+60 Myr \u2014 Aurica",
+      "file": "future_aurn_060.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:aurn",
+      "time_ma": -80,
+      "label": "+80 Myr \u2014 Aurica",
+      "file": "future_aurn_080.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:aurn",
+      "time_ma": -100,
+      "label": "+100 Myr \u2014 Aurica",
+      "file": "future_aurn_100.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:aurn",
+      "time_ma": -120,
+      "label": "+120 Myr \u2014 Aurica",
+      "file": "future_aurn_120.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:aurn",
+      "time_ma": -140,
+      "label": "+140 Myr \u2014 Aurica",
+      "file": "future_aurn_140.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:aurn",
+      "time_ma": -160,
+      "label": "+160 Myr \u2014 Aurica",
+      "file": "future_aurn_160.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:aurn",
+      "time_ma": -180,
+      "label": "+180 Myr \u2014 Aurica",
+      "file": "future_aurn_180.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:aurn",
+      "time_ma": -200,
+      "label": "+200 Myr \u2014 Aurica",
+      "file": "future_aurn_200.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:aurn",
+      "time_ma": -220,
+      "label": "+220 Myr \u2014 Aurica",
+      "file": "future_aurn_220.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:aurn",
+      "time_ma": -240,
+      "label": "+240 Myr \u2014 Aurica",
+      "file": "future_aurn_240.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:aurn",
+      "time_ma": -250,
+      "label": "+250 Myr \u2014 Aurica",
+      "file": "future_aurn_250.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:novon",
+      "time_ma": -20,
+      "label": "+20 Myr \u2014 Novopangea",
+      "file": "future_novon_020.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:novon",
+      "time_ma": -40,
+      "label": "+40 Myr \u2014 Novopangea",
+      "file": "future_novon_040.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:novon",
+      "time_ma": -60,
+      "label": "+60 Myr \u2014 Novopangea",
+      "file": "future_novon_060.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:novon",
+      "time_ma": -80,
+      "label": "+80 Myr \u2014 Novopangea",
+      "file": "future_novon_080.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:novon",
+      "time_ma": -100,
+      "label": "+100 Myr \u2014 Novopangea",
+      "file": "future_novon_100.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:novon",
+      "time_ma": -120,
+      "label": "+120 Myr \u2014 Novopangea",
+      "file": "future_novon_120.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:novon",
+      "time_ma": -140,
+      "label": "+140 Myr \u2014 Novopangea",
+      "file": "future_novon_140.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:novon",
+      "time_ma": -160,
+      "label": "+160 Myr \u2014 Novopangea",
+      "file": "future_novon_160.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:novon",
+      "time_ma": -180,
+      "label": "+180 Myr \u2014 Novopangea",
+      "file": "future_novon_180.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:novon",
+      "time_ma": -200,
+      "label": "+200 Myr \u2014 Novopangea",
+      "file": "future_novon_200.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:pun",
+      "time_ma": -20,
+      "label": "+20 Myr \u2014 Pangaea Ultima",
+      "file": "future_pun_020.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:pun",
+      "time_ma": -40,
+      "label": "+40 Myr \u2014 Pangaea Ultima",
+      "file": "future_pun_040.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:pun",
+      "time_ma": -60,
+      "label": "+60 Myr \u2014 Pangaea Ultima",
+      "file": "future_pun_060.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:pun",
+      "time_ma": -80,
+      "label": "+80 Myr \u2014 Pangaea Ultima",
+      "file": "future_pun_080.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:pun",
+      "time_ma": -100,
+      "label": "+100 Myr \u2014 Pangaea Ultima",
+      "file": "future_pun_100.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:pun",
+      "time_ma": -120,
+      "label": "+120 Myr \u2014 Pangaea Ultima",
+      "file": "future_pun_120.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:pun",
+      "time_ma": -140,
+      "label": "+140 Myr \u2014 Pangaea Ultima",
+      "file": "future_pun_140.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:pun",
+      "time_ma": -160,
+      "label": "+160 Myr \u2014 Pangaea Ultima",
+      "file": "future_pun_160.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:pun",
+      "time_ma": -180,
+      "label": "+180 Myr \u2014 Pangaea Ultima",
+      "file": "future_pun_180.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:pun",
+      "time_ma": -200,
+      "label": "+200 Myr \u2014 Pangaea Ultima",
+      "file": "future_pun_200.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:pun",
+      "time_ma": -220,
+      "label": "+220 Myr \u2014 Pangaea Ultima",
+      "file": "future_pun_220.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:pun",
+      "time_ma": -240,
+      "label": "+240 Myr \u2014 Pangaea Ultima",
+      "file": "future_pun_240.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:pun",
+      "time_ma": -250,
+      "label": "+250 Myr \u2014 Pangaea Ultima",
+      "file": "future_pun_250.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:super",
+      "time_ma": -20,
+      "label": "+20 Myr \u2014 four futures superposed",
+      "file": "future_super_020.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:super",
+      "time_ma": -40,
+      "label": "+40 Myr \u2014 four futures superposed",
+      "file": "future_super_040.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:super",
+      "time_ma": -60,
+      "label": "+60 Myr \u2014 four futures superposed",
+      "file": "future_super_060.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:super",
+      "time_ma": -80,
+      "label": "+80 Myr \u2014 four futures superposed",
+      "file": "future_super_080.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:super",
+      "time_ma": -100,
+      "label": "+100 Myr \u2014 four futures superposed",
+      "file": "future_super_100.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:super",
+      "time_ma": -120,
+      "label": "+120 Myr \u2014 four futures superposed",
+      "file": "future_super_120.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:super",
+      "time_ma": -140,
+      "label": "+140 Myr \u2014 four futures superposed",
+      "file": "future_super_140.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:super",
+      "time_ma": -160,
+      "label": "+160 Myr \u2014 four futures superposed",
+      "file": "future_super_160.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:super",
+      "time_ma": -180,
+      "label": "+180 Myr \u2014 four futures superposed",
+      "file": "future_super_180.webp",
+      "width": 2048,
+      "height": 1024
+    },
+    {
+      "layer": "future:super",
+      "time_ma": -200,
+      "label": "+200 Myr \u2014 four futures superposed",
+      "file": "future_super_200.webp",
+      "width": 2048,
+      "height": 1024
+    }
+  ]
+}

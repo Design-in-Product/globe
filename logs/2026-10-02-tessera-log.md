@@ -51,3 +51,35 @@ executable.
 
 **No-op.** Rung 5 and the `/explore/` picker timing still with xian; not
 re-raising.
+
+## ~17:00 PT — xian: "rung 5, sure! picker first, yes." Picker shipped.
+
+**Data:** `scripts/export_future_keyframes.py` — the four scenarios each
+to their own terminus (pun/aurn +250, novon/amn +200) plus the
+superposition to +200, at the OSF 20 Myr snapshots, as **negative
+`time_ma`** so the whole axis is one number line (1800 … 0 … −250). 56
+keyframes, 3.3 MB, WebP q90, own manifest (`keyframes-future.json`) —
+each exporter owns its manifest and the page merges, which is the
+layer-separable shape the north star asks for. The t=0 snapshots are
+deliberately not exported: the shared Merdith present is the origin and
+0→+20 is the honest seam between two datasets.
+
+**Page:** keyframe handling rewritten around layers. Active set = PAST +
+one future layer; picker buttons from the manifest; slider spans
+1800→−250 with per-layer clamp (a +200 scenario can't show +250);
+textures load on demand and cache by file (79 total now, past eagerly);
+ticks/labels rebuild per layer; `fmt()` renders `+N Myr` for the future;
+End key goes to the far future. Shader untouched.
+
+The syntax checker caught a duplicate `MAJOR` declaration left over from
+the old code on the first pass — the gate paying for itself on a real
+edit. Fixed; no dead references to the old names remain.
+
+Hero copy: "1.8 billion years back, 250 million ahead."
+
+**First-look items for xian (can't browser-test from Amber):** the 0→+20
+style seam (Merdith relief dissolving into a flat mask); whether the
+picker reads as a control over the future only; mobile layout with the
+extra row.
+
+**Rung 5 is next** — Pard courtesy memo before the >2h Blender pass.
