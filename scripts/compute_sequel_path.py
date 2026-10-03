@@ -47,7 +47,7 @@ TOUR_HOLD = 84         # 3.5 s per scenario alone (xian 10-03: a slower tour)
 DEG_PER_FRAME = 1.2    # tour moves pace by distance (xian 10-03: slower); a big swing ~6-7 s, a hop ~2 s
 BLEND_MIN, BLEND_MAX = 48, 168   # anim frames per 8-frame dissolve (2 s .. 7 s)
 SEA_BIAS = {"pun": float(os.environ.get("PUN_SEA_BIAS", "0.45"))}          # fraction from the most-land point toward the centroid (the sea)
-LAT_CLAMP = 45.0
+LAT_CLAMP = 75.0   # 45 put the camera UNDER Amasia (land at 60-75N): mostly ocean in frame. A polar mass wants a near-polar look.
 DRIFT_LON = -60.0      # gentle westward drift across the divergence
 TOUR_LAT = 10.0
 

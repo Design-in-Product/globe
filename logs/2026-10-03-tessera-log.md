@@ -120,3 +120,10 @@ Sidecar now carries `aim.{centroid,most_land,ring_side}`; the path owns
 the choice. `render_globe.py` has no per-frame camera distance, so a
 pulled-back ring shot isn't a knob without renderer work — noted, not
 built.
+
+**Caught on the look, before xian saw it:** Amasia's stop was mostly
+ocean. My `LAT_CLAMP = 45` — meant to keep a polar mass "reading as a
+globe" — put the camera *under* a supercontinent whose land sits at
+60–75°N. The clamp did the opposite of its intent. Raised to 75; aim now
+(60°, 30°); re-rendered. One more instance of a protective constant that
+needed to be looked at, not reasoned about.
