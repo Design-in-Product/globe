@@ -73,3 +73,25 @@ it. Leaving it for a motion preview to decide rather than tuning blind.
 
 xian asked mid-fire how to preview the latest — answering at the break
 with real frames rather than a description.
+
+### Preview stills rendered through the real pipeline (xian: "how might I preview the latest?")
+
+Answered with frames, not prose. Six single-frame Blender runs via
+`FRAME_START=FRAME_END=k` (the range mode skips assembly): present (f1),
+~+60 (f380), +200 superposed (f760), Pangaea Ultima (f807), Novopangea
+(f915), final cloud (f1239). ~8 s a frame, all six on disk in
+`~/globe-render/sequel_preview/`. **The sequel path drives render_globe.py
+unchanged** — no KeyError, texture discovery found all 246, honest
+accounting line printed per run. Sheet sent to xian.
+
+Read of the stills: opening frame is Africa-centred on the main film's
+last camera, as designed; divergence and terminal cloud read as a ghosted
+globe; Novopangea centres cleanly. **Finding: Pangaea Ultima is a ring
+around an inland sea, so its land centroid sits in the hole and the
+camera stares into the sea (f807).** Mechanism, not a bug; the knob is
+the aim target (e.g. hemisphere-of-most-land instead of centroid). Left
+for xian's eye — the inland sea *is* PU's defining feature.
+
+Not launching the full pass yet: two cheap-now/expensive-later calls are
+in front of xian (PU framing; the 5.5°/frame tour swing). Pard memo goes
+out the moment he says go.
