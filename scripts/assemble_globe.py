@@ -36,9 +36,16 @@ _TIME_FONT = ImageFont.truetype(_FONT, 48)
 _ERA_FONT = ImageFont.truetype(_FONT, 32)
 
 
+def time_label(time_ma):
+    """Past reads 'N Ma'; the sequel stores future times as negative Ma and
+    reads '+N Myr' (a '-200 Ma' stamp would be wrong, not just ugly)."""
+    t = int(round(time_ma))
+    return f"+{-t} Myr" if t < 0 else f"{t} Ma"
+
+
 def stamp(im, time_ma, era):
     d = ImageDraw.Draw(im)
-    d.text((40, RES_Y - 35 - 58), f"{int(time_ma)} Ma", font=_TIME_FONT,
+    d.text((40, RES_Y - 35 - 58), time_label(time_ma), font=_TIME_FONT,
            fill=(255, 255, 255), stroke_width=3, stroke_fill=(0, 0, 0))
     if era:
         d.text((40, RES_Y - 35 - 58 - 44), era, font=_ERA_FONT,
