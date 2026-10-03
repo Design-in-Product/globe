@@ -43,3 +43,33 @@ on −250/−200/0/66/1000; compiles.
 
 **Next:** `compute_sequel_path.py` (eased tempo per §6c, holds, tour
 camera keys from the sidecar), then the Pard courtesy memo, then Blender.
+
+## 16:22 PT — Second fire: rung 5 step 2, the camera path
+
+Routine: no mail for Tessera, no new brief, health green, 246 textures
+still on disk.
+
+`scripts/compute_sequel_path.py` → `sequel_camera_path.json`. Reads the
+texture sidecar (one owner for the sequence); eased pacing per §6c
+(rate 1−0.22·cos2πu over the divergence, accumulated as a float so
+rounding can't drift); holds at departure, terminal, each tour stop, and
+the final cloud; tour blends get 6 anim frames per texture so an 8-frame
+dissolve lasts 2 s and the camera can travel; **opening camera read from
+the main film's last frame** (25.32°, 28.75°) rather than typed in; tour
+stops aim at each scenario's land-centroid lon from the sidecar along
+the shortest arc. PCHIP between keys, duplicates pinning holds.
+
+**The first run printed nothing and exited 0** — I'd defined `main()`
+and never called it. A silent tool read as success is exactly the
+vacuous-pass shape I've been auditing for; caught because I look at
+output, not exit codes. Fixed.
+
+Verified (printed by the script): 1,371 anim frames = 57.1 s; opening
+camera equals the main film's last; all five holds lon-spread 0.000;
+geo index monotone and complete. **Watch item:** max per-frame lon step
+5.48° at frame 890 — the Pangaea Ultima → Novopangea swing (179°) inside
+a 48-frame blend. Likely too brisk on a globe; `BLEND_ANIM` 6→12 halves
+it. Leaving it for a motion preview to decide rather than tuning blind.
+
+xian asked mid-fire how to preview the latest — answering at the break
+with real frames rather than a description.
