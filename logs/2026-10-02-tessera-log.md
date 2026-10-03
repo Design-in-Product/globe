@@ -83,3 +83,18 @@ picker reads as a control over the future only; mobile layout with the
 extra row.
 
 **Rung 5 is next** — Pard courtesy memo before the >2h Blender pass.
+
+### Postscript: my deploy check passed vacuously, and I caught it on the live site
+
+After pushing the picker I polled `pages/builds/latest` for `status ==
+built`, broke on the first hit, and ran live checks — which failed
+(manifest 404, no picker). The `built` was **the previous push's build**
+(`7d09a00`); `f6b20c8` hadn't registered yet. Exactly brief 10/01 finding
+1: an assertion that passes because the thing it's checking never ran.
+Re-polled asserting the **commit**, not the status; built after ~50s;
+picker/manifest/textures all live.
+
+Made it structural: `scripts/wait_pages.py` exits 0 only when the latest
+build is `built` **for the sha on origin/main**; 1 on errored, 2 on
+timeout. Proven both ways — returns 0 immediately now; a never-built sha
+returns 2 — so the next "it's live" I say will have been measured.
