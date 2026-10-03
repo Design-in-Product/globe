@@ -58,11 +58,52 @@ def to_image(m):
     return Image.fromarray(np.clip(img, 0, 255).astype(np.uint8)).resize(SIZE, Image.BILINEAR)
 
 
+def _unit_vectors(m):
+    """Area-weighted unit vectors of land cells, on a coarse grid (speed)."""
+    h, w = m.shape
+    mm = m[::4, ::4]                                   # 1440x721 -> ~360x181
+    lat = np.deg2rad(np.linspace(90, -90, mm.shape[0]))[:, None]
+    lon = np.deg2rad(np.linspace(-180, 180, mm.shape[1]))[None, :]
+    wgt = (mm * np.cos(lat)).ravel()
+    x = (np.cos(lat) * np.cos(lon)).ravel(); y = (np.cos(lat) * np.sin(lon)).ravel(); z = np.broadcast_to(np.sin(lat), mm.shape).ravel()
+    keep = wgt > 0
+    return np.stack([x[keep], y[keep], z[keep]], 1), wgt[keep]
+
+
+def aim_points(m):
+    """Two candidate camera targets for a tour stop, both (lat, lon) in degrees.
+
+    centroid   — the land centroid. For a RING supercontinent (Pangaea Ultima)
+                 this sits in the inland sea: the camera stares into the hole.
+    most_land  — the hemisphere centre that sees the most land area
+                 (sum of area-weighted dot products clipped at 0, searched on a
+                 5-degree grid). For a compact mass this ~= the centroid; for a
+                 ring it moves onto the ring. xian (10-03): aim Ultima here,
+                 "perhaps at a locus nearer to the sea" — the path script blends
+                 toward the centroid by a per-scenario sea bias.
+    """
+    U, wgt = _unit_vectors(m)
+    c = (U * wgt[:, None]).sum(0); c /= np.linalg.norm(c)
+    centroid = (float(np.degrees(np.arcsin(c[2]))), float(np.degrees(np.arctan2(c[1], c[0]))))
+    best, best_pt, ring_best, ring_pt = -1.0, None, -1.0, None
+    for lat in range(-60, 61, 5):
+        for lon in range(-180, 180, 5):
+            la, lo = np.deg2rad(lat), np.deg2rad(lon)
+            v = np.array([np.cos(la) * np.cos(lo), np.cos(la) * np.sin(lo), np.sin(la)])
+            vis = (wgt * np.clip(U @ v, 0, None)).sum()
+            if vis > best:
+                best, best_pt = vis, (float(lat), float(lon))
+            # ring_side: best view at least 35 deg away from the centroid. For a
+            # ring the unconstrained optimum IS the centroid (measured 10-03:
+            # Ultima's most_land == centroid), so this is the view that sits on
+            # the ring with the sea entering from one side.
+            if np.degrees(np.arccos(np.clip(v @ c, -1, 1))) >= 35.0 and vis > ring_best:
+                ring_best, ring_pt = vis, (float(lat), float(lon))
+    return {"centroid": centroid, "most_land": best_pt, "ring_side": ring_pt}
+
+
 def centroid_lon_deg(m):
-    """Longitude of the land centroid, for the tour camera to aim at."""
-    col = (m * np.cos(np.linspace(np.pi / 2, -np.pi / 2, m.shape[0]))[:, None]).sum(0)
-    ang = np.linspace(-np.pi, np.pi, m.shape[1])
-    return float(np.degrees(np.arctan2((np.sin(ang) * col).sum(), (np.cos(ang) * col).sum())))
+    return aim_points(m)["centroid"][1]
 
 
 def main():
@@ -92,12 +133,12 @@ def main():
     # ---- tour: dissolve cloud -> scenario, then a hold frame; camera aims at the centroid
     prev = end_cloud
     for s, name in SCENARIOS.items():
-        alone = term[s]; lon = centroid_lon_deg(alone)
+        alone = term[s]; aim = aim_points(alone); lon = aim["centroid"][1]
         for i in range(1, BLEND_FRAMES + 1):
             f = i / (BLEND_FRAMES + 1)
             emit(prev * (1 - f) + alone * f, kind="tour_blend", time_myr=termini[s],
-                 label=name, scenario=s, centroid_lon=lon)
-        emit(alone, kind="tour_hold", time_myr=termini[s], label=name, scenario=s, centroid_lon=lon)
+                 label=name, scenario=s, centroid_lon=lon, aim=aim)
+        emit(alone, kind="tour_hold", time_myr=termini[s], label=name, scenario=s, centroid_lon=lon, aim=aim)
         prev = alone
 
     # ---- return to the cloud, final hold
@@ -121,8 +162,10 @@ def main():
     for fr in frames:
         kinds[fr["kind"]] = kinds.get(fr["kind"], 0) + 1
     print(f"geo frames: {len(frames)} emitted, {on_disk} on disk, {expected} expected  {kinds}")
-    print("tour camera targets (centroid lon):",
-          {s: round(centroid_lon_deg(term[s]), 1) for s in SCENARIOS})
+    for s in SCENARIOS:
+        a = aim_points(term[s])
+        print(f"  aim {s:<6} centroid (lat,lon) {tuple(round(v,1) for v in a['centroid'])}  "
+              f"most-land hemisphere {tuple(round(v,1) for v in a['most_land'])}")
     if not (len(frames) == on_disk == expected):
         print("INCOMPLETE"); sys.exit(1)
 

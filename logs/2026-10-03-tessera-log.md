@@ -95,3 +95,28 @@ for xian's eye — the inland sea *is* PU's defining feature.
 Not launching the full pass yet: two cheap-now/expensive-later calls are
 in front of xian (PU framing; the 5.5°/frame tour swing). Pard memo goes
 out the moment he says go.
+
+### xian's two calls, applied — and a measurement that changed the plan
+
+**Ultima: "center on the hemisphere with the most land, perhaps nearer to
+the sea than the precise center."** Implemented a most-land-hemisphere
+search (area-weighted visible land, 5° grid). **It landed on (15°, −25°)
+— the same point as the centroid.** The ring is wide enough that the view
+centred on its hole sees the most land, so that criterion alone keeps the
+camera over the sea. The faithful reading of his intent: the best view
+*constrained to the ring side* (≥35° from the centroid → (30°, −60°)),
+then blended toward the sea by a bias. Rendered at 45% and 20% for his
+eye; `PUN_SEA_BIAS` env, default 0.45. For compact masses most-land ≈
+centroid (novon/aurn within 5°); Amasia's lat clamped to 45° so a polar
+mass still reads as a globe.
+
+**"A slower tour if it makes sense geographically."** It does: dissolves
+now pace by the arc the camera travels (1.2°/frame, 2–7 s), tour holds
+3.5 s. Peak lon step 5.48 → **2.40°/frame**; film 57 → 65 s. Big swings
+(cloud→Novopangea 4.3 s, Aurica→Amasia 4.0 s) are leisurely; short hops
+stay 2 s.
+
+Sidecar now carries `aim.{centroid,most_land,ring_side}`; the path owns
+the choice. `render_globe.py` has no per-frame camera distance, so a
+pulled-back ring shot isn't a knob without renderer work — noted, not
+built.
