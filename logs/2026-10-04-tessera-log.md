@@ -36,3 +36,13 @@ exposed; every fire's timestamp above is evidence. Finding 2 (pytest
 ledger keyed on full hashes for compliance checks over old corpora): no
 such check here; noted as the shape to use if `fire_rollup` ever grows
 a red state over history.
+
+**Handoff refreshed (`562ade4`).** The 🔒 line I added to its owes table
+contradicted the state paragraph ("rung 3, not started") and two
+"unresolved" items that closed 09-29 — a cold start reads the stale lines
+first. Brought it to 10-04 state: rungs 1–5 done, picker shipped, two 🔒
+decisions, sequel pipeline in where-things-live, and three new traps
+(commit-aware deploy check; the renderer's camera mapping — never "fix"
+the renderer; long passes via `render_supervised.sh`).
+
+Open: the two 🔒 decisions, escalation due tomorrow 16:22 if unanswered.
