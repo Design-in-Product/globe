@@ -36,6 +36,11 @@ Extend further into the past beyond 1 Ga (Rodinia).
 
 ### 3. Future projection — sequel — v1 GLOBE DRAFT RENDERED 2026-10-03 (previews/ §8; not yet chained into the site)
 
+**🔒 blocked on xian — since 2026-10-03 ~21:00** (two decisions; ship stops without them):
+1. Opening seam: dissolve from the main film's last frame into the sequel's first, mirroring the prequel? **yes / no**
+2. Pangaea Ultima tour framing: **45%** toward the inland sea (as rendered) or **20%**? **one number**
+Escalates to Janus if unanswered past 2026-10-04 ~21:00 (network rule, 10-03).
+
 Speculative plate tectonics going forward from present day.
 
 - Published models: Pangaea Ultima (~250 Ma future), Amasia (~200 Ma), Novopangaea (~200 Ma), Aurica (~250 Ma)

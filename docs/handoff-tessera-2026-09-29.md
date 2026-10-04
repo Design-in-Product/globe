@@ -59,7 +59,7 @@ is at rung 3 of its ladder, unblocked and not started.
 
 | | they owe me | I owe them |
 |---|---|---|
-| **xian** | Verdict on the 1200→1000 Ma ghost-slide; whether to start rung 3; whether to nudge or drop the 7/28 Pard thread | Nothing outstanding — his two first-look defects were fixed 09-28 |
+| **xian** | 🔒 **since 2026-10-03**: (1) sequel opening seam — dissolve from the main film's last frame, yes/no; (2) Ultima framing 45% or 20%. Both stop the sequel shipping. (Ghost-slide fixed 09-29; rung 3–5 done; Pard thread closed moot 09-29.) | Nothing outstanding |
 | **Pard** | Nothing | Nothing; the identity incident is reported and owned |
 | **Janus** | Relays xian's decisions (reliable) | Read/act on daily briefs |
 
