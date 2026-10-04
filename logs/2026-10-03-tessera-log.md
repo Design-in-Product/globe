@@ -223,3 +223,14 @@ frames in 62 min since the relaunch = 5.9 s/frame, **no CRASH events**,
 no new crash report, newest frames intact. ~900 remaining → ETA ~20:35.
 The one segfault remains a one-off so far; the supervisor has not had to
 act. Re-armed the wakeup for the runtime cap (60 min).
+
+### 20:08 — render check
+
+**1327/1587**, 640 frames in 61 min (5.7 s/frame), still **zero CRASH
+events**. The integrity sweep reports 258 "problems" — those are the
+frames not yet rendered (1330–1587) plus two in flight, not corruption.
+My 19:07 wakeup prompt said "likely COMPLETE by this wakeup"; its own
+arithmetic (900 × 5.9 s = 88 min) said 20:35. Writing the number, not
+the hope, next time. ~260 to go → ~20:33. Completion waiter armed
+(self-match-proof `until ! pgrep '[r]ender_supervised'`), fallback wakeup
+at the cap.
