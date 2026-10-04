@@ -1,0 +1,8 @@
+# pattern <TAB> expires (YYYY-MM-DDTHH:MM, Pacific) <TAB> owner <TAB> reason
+#
+# Self-serve CPU declarations for Pard's cpu-hogs check on Amber (Pard, 2026-10-04):
+# the check reads THIS FILE ON origin/main, so push before the process starts.
+# Rows expire; a row further out than 12 h is reported and not honoured; an
+# expired row is itself reported by name. "If you cannot name when it ends, it
+# does not belong here." Write a row at LAUNCH TIME with scripts/declare_render.sh —
+# never ahead of a pass that has not started. No live row = nothing is running.
