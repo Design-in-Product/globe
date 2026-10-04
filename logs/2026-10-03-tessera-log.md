@@ -234,3 +234,35 @@ arithmetic (900 × 5.9 s = 88 min) said 20:35. Writing the number, not
 the hope, next time. ~260 to go → ~20:33. Completion waiter armed
 (self-match-proof `until ! pgrep '[r]ender_supervised'`), fallback wakeup
 at the cap.
+
+### 20:33 — COMPLETE. 21:0x — assembled, looked at, delivered as v1 draft
+
+Supervisor's final line: **`COMPLETE: 1587/1587 intact after 0 crash(es)`**
+at 20:33:42 — the 19:07 arithmetic said 20:35. Independent integrity
+sweep: 0 problems. The one segfault at frame 9 was the only one all day;
+the supervisor never had to relaunch, but it was the right thing to be
+standing behind.
+
+Assembly (`assemble_globe.py`): stamped 1587, missing 0, 296 s;
+**`tectonic_sequel_globe_v1.mp4` — 1587 frames, 66.125 s, 1920×1080,
+24 fps, 7.6 MB, faststart (moov at head, verified).** Contact sheet from
+the actual output, looked at once: present day Africa-centred on the main
+film's last camera → +37 diverging → +148 cloud → +200 superposed →
+Pangaea Ultima ring-side with the sea in frame → Novopangea →
+Aurica → back to the cloud. Stamps read "+N Myr" and the era names.
+
+**Delivered to xian as a v1 draft, not shipped.** Not chaining it into
+the site yet because two calls are his: (1) the opening — a hard cut from
+the main film's last frame to the sequel's first (same camera, different
+texture style); the prequel's seam used a dissolve and this could mirror
+it with an INITIAL_BLEND in the assembler, which doesn't exist yet and
+shouldn't be invented unseen; (2) Ultima 45% vs 20%. Both are tour-only
+or assembly-only changes. Copied to `previews/` (§8), ladder rung 5 marked
+rendered, roadmap item 3 updated.
+
+Day's scorecard, honestly: rung 5 went from textures to a verified film in
+one day, through a renderer camera convention nobody had measured, a
+Blender segfault, two wrong first reads of my own (the cache no-op, the
+"full north" frame), a pgrep self-match, three bash-3.2 hazards and an
+off-by-one — every one of them caught by looking at output rather than
+trusting it, and each recorded where it happened.

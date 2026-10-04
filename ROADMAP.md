@@ -34,7 +34,7 @@ Extend further into the past beyond 1 Ga (Rodinia).
 
 ---
 
-### 3. Future projection — sequel
+### 3. Future projection — sequel — v1 GLOBE DRAFT RENDERED 2026-10-03 (previews/ §8; not yet chained into the site)
 
 Speculative plate tectonics going forward from present day.
 

@@ -151,7 +151,7 @@ the globe pass or per-scenario re-centring in the tour.
    branching READ? → xian.
 3. Motion window (~40 Myr around the split, coherent members) → xian. **DONE 2026-09-29** — window relocated to 0–80 Myr by measurement (§6b).
 4. Full-span flat draft (pacing + hold placement + ending options) → xian. **DONE 2026-09-29** — `scripts/render_sequel_draft.py`, 33s: eased pacing per §6c, departure/terminal holds, the tour with per-scenario re-centring. Superposition spans 0–200 only (all four exist); each scenario tours at its own terminus.
-5. Production textures → globe pass → assembly → ship.
+5. Production textures → globe pass → assembly → ship. **RENDERED 2026-10-03** — v1 draft on previews/ (66 s, 1,587 frames). Ship = chain into the site as the third film; held for xian's two calls (opening seam, Ultima framing).
 
 ## Addendum: the other direction — how far before 1800 Ma? (xian, 8/10)
 
