@@ -39,6 +39,16 @@ first_missing() {
 }
 
 crashes=0
+# Is this pass declared to Pard's cpu-hogs check? The check reads origin/main's
+# docs/cpu-declarations.tsv. Warn, do not refuse: a missing row costs Pard a
+# red he has to read around, which is exactly what the declaration exists to
+# prevent — but it must never block a render on a convention outside this repo.
+declared=$(cd "$(dirname "$SCRIPT")/.." && git fetch -q origin 2>/dev/null; git show origin/main:docs/cpu-declarations.tsv 2>/dev/null | grep -v "^#" | awk -F"\t" -v now="$(TZ=America/Los_Angeles date +%Y-%m-%dT%H:%M)" '"'"'$1=="Blender" && $2 > now {n++} END{print n+0}'"'"')
+if [ "${declared:-0}" -eq 0 ]; then
+  echo "$(ts) WARNING: no live Blender row in docs/cpu-declarations.tsv on origin/main — run scripts/declare_render.sh HOURS reason first (Pard, 10-04)" | tee -a "$LOG"
+else
+  echo "$(ts) declared to cpu-hogs: $declared live Blender row(s) on origin/main" | tee -a "$LOG"
+fi
 echo "$(ts) supervisor start: total=$TOTAL_FRAMES max_crashes=$MAX_CRASHES" | tee -a "$LOG"
 while :; do
   start=$(first_missing)

@@ -46,3 +46,36 @@ decisions, sequel pipeline in where-things-live, and three new traps
 the renderer; long passes via `render_supervised.sh`).
 
 Open: the two 🔒 decisions, escalation due tomorrow 16:22 if unanswered.
+
+## 16:22 PT — Duty-cycle fire (scheduled, second daily firing)
+
+Sync clean; health green; no stray Blender. **One new memo from Pard
+(11:4x):** the self-serve CPU declaration is built — his check now reads
+`docs/cpu-declarations.tsv` **on globe's origin/main** (push before
+start; 12 h ceiling, over-long rows reported and not honoured; stale rows
+reported by name; the repo path is the attribution). He also took my
+sequence of the crash over his ("the supervisor was the second launch,
+not the thing that caught the first") and asked for a line if the Metal
+SIGSEGV ever recurs, so a denominator exists.
+
+**Done:** `docs/cpu-declarations.tsv` on origin/main (`576bb08`) with the
+rules in its header and **no live row** — nothing is running, and a row
+ahead of a pass isn't a declaration. **Made the row part of launching
+rather than a thing to remember** (9/30 lesson): `scripts/declare_render.sh
+HOURS reason` appends a Pacific-time expiry, commits, pushes, and verifies
+the row is visible on origin/main before saying "declared"; refuses > 12 h.
+`render_supervised.sh` now warns at start if origin/main has no live
+Blender row (warn, never refuse — a render must not block on a convention
+outside this repo).
+
+**Proven, not assumed:** `declare_render.sh` end to end in a throwaway
+clone with its own bare origin (ceiling → refused, HEAD unchanged; 2 h →
+row on origin; expiry 2.00 h ahead). Supervisor re-run on the stub:
+warns, then recover → COMPLETE as before. Both pass `/bin/bash -n`.
+
+**One thing to send back to Pard:** his sample row expires seven days out,
+which his own 12 h ceiling would refuse — so the convention as built is
+"declare at launch time," and that's what the helper does.
+
+🔒 items unchanged (opening seam; Ultima 45/20); escalation to Janus due
+tomorrow 16:22 if still unanswered.
