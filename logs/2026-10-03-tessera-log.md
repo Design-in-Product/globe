@@ -177,3 +177,41 @@ tour-only re-render of ~790 frames (~1.8 h), not a restart.
 (main film's last Blender frame → sequel's first) — the prequel used
 TERMINAL_BLEND; the sequel wants the mirror, an opening blend *from* the
 main film's last frame. Assembly step, not render.
+
+### 17:57–18:08 — the render died at frame 9; root-caused, not restarted blind
+
+Wakeup found **pid 24601 dead, 9 frames on disk, zero error lines.**
+Timing (~70 s after launch) made me suspect the tool shell reaping my
+nohup'd child. **Tested rather than assumed:** a nohup'd `sleep 300`
+survived the next call — detach is fine. The log's tail had the real
+answer: `Writing: …/blender.crash.txt`. **Blender 5.1.2 SIGSEGV'd inside
+Cycles' Metal kernel-pipeline compile** (`MTLBinaryArchive
+serializeToURL` → `MetalKernelPipeline::compile`, on a shader-cache
+thread) right after saving frame 9. Textures are byte-identical in
+format to the prequel's (RGB 2048×1024); frames 1–9 all used one
+texture, so not a texture-switch issue.
+
+Two things I got wrong on the way and am recording: (1) I "moved the
+Metal cache aside" — **neither directory existed, the step was a no-op**,
+and the single-frame test afterwards proved nothing (single frames had
+always passed; the crash is in a background compile thread). Blender
+keeps that archive in a per-session `$TMPDIR`, so a stale cache was
+never the mechanism. (2) My wait-for-completion loop used
+`pgrep -f render_globe.py`, which **matched its own command line** and
+would have waited forever — Pard's cycle-check self-match from the 9/26
+brief, reproduced by me. Self-match-proof pattern now (`'[B]lender…'`).
+
+**Sustained 40-frame test (frames 11–50): passed, 253 s, 6.3 s/frame,
+no crash.** So the crash is intermittent, not a wall. Built
+`scripts/render_supervised.sh`: relaunch from the first missing or
+truncated frame (IEND check) until all 1,587 are intact; each crash is a
+counted event; stops on a crash budget (exit 2) or zero progress (exit
+3). **Proven end-to-end against a stub Blender that crashes on purpose**
+— recover/complete, budget-exhausted, no-progress, already-complete —
+after removing three bash-3.2 quoting hazards and one `grep -q`-under-
+pipefail hazard that the proving found. Also fixed a 1-based/0-based
+mismatch (the renderer writes `anim_frame+1`) that would have produced a
+false NO PROGRESS exit.
+
+**Relaunched under the supervisor at 18:08** from frame 51, budget 8.
+Remaining ~1,537 frames × ~6.5 s ≈ 2.8 h → ETA ~21:00.
