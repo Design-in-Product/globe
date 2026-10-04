@@ -215,3 +215,11 @@ false NO PROGRESS exit.
 
 **Relaunched under the supervisor at 18:08** from frame 51, budget 8.
 Remaining ~1,537 frames × ~6.5 s ≈ 2.8 h → ETA ~21:00.
+
+### 19:07 — render check
+
+Supervisor and Blender alive (self-match-proof pgrep). **687/1587**, 632
+frames in 62 min since the relaunch = 5.9 s/frame, **no CRASH events**,
+no new crash report, newest frames intact. ~900 remaining → ETA ~20:35.
+The one segfault remains a one-off so far; the supervisor has not had to
+act. Re-armed the wakeup for the runtime cap (60 min).
