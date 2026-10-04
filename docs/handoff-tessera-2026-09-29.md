@@ -1,5 +1,6 @@
 # Handoff: Tessera — current state (supersedes 2026-09-18)
 
+**Updated 2026-10-04** (sequel rendered; 🔒 rule adopted). Original rationale:
 **Why now:** brief 9/29 (Klatch fork-identity finding) restated the first
 principle of multi-session work — *shared memory is exactly what's in git,
 nothing carried implicitly across session boundaries.* My last handoff is
@@ -15,8 +16,11 @@ on globe.dinp.xyz (GitHub Pages, `Design-in-Product/globe`, single `main`,
 **legacy Jekyll build — see the trap below**). Roadmap #1 (main film) and
 #2 (deep-time prequel) shipped long ago. **Roadmap item 5 (WebGL scrubber)
 shipped 2026-09-22 and is live at `/explore/`** — free orbit plus a
-1800→0 Ma slider crossfading 20 era keyframes. Roadmap #3 (future sequel)
-is at rung 3 of its ladder, unblocked and not started.
+1800 Ma → +250 Myr slider: 23 past keyframes plus a **scenario picker**
+(four futures superposed or any one alone; shipped 10-02). **Roadmap #3
+(future sequel): rungs 1–5 done — v1 globe film rendered 10-03** (66 s,
+1,587 frames, `previews/` §8). **Not yet chained into the site: two
+decisions are 🔒 blocked on xian** (see Who owes what).
 
 ## Traps that cost real time — read before touching anything
 
@@ -39,21 +43,40 @@ is at rung 3 of its ladder, unblocked and not started.
 3. **Don't add bulk to this repo.** Consequence of #2. Source data belongs
    in `~/globe-render/` (outside git), which is where the future-scenario
    grids went.
-4. **Verify publishing, not just pushing.** `git push` succeeding says
-   nothing about the site. `gh api repos/Design-in-Product/globe/pages/builds/latest`.
+4. **Verify publishing, not just pushing.** `python3 scripts/wait_pages.py`
+   — exits 0 only when Pages has built **the sha on origin/main**. Checking
+   `status == built` alone matched the *previous* push once (10-02).
+5. **The renderer's camera latitude is not what the path says.**
+   `render_globe.py` rotates the globe with Euler (0,−lat,−lon); the view
+   latitude is ≈ `−lat·cos(lon) + 10°`. Shipped films were eye-framed
+   against this — **never "fix" the renderer**; convert computed aim
+   points with `compute_sequel_path.renderer_cam()`. Memory
+   `renderer-camera-mapping.md`; data `scripts/data_view_table.json`.
+6. **Long Blender passes go through `scripts/render_supervised.sh`.**
+   Blender 5.1.2 can SIGSEGV in Cycles' Metal kernel compile (once in
+   ~1,600 frames, intermittent). The supervisor resumes from the first
+   missing/truncated frame and stops on a crash budget. Use self-match-
+   proof `pgrep -fl '[r]ender_supervised'` to check it.
 
 ## Where things live
 
 | what | where |
 |---|---|
 | Live explore page | `explore/index.html` → globe.dinp.xyz/explore/ |
-| Its 20 keyframes + manifest | `scrubber_assets/` (WebP q90 at native res) |
+| Its keyframes + manifests | `scrubber_assets/` (23 past, `keyframes.json`) + `scrubber_assets/future/` (56, `keyframes-future.json`); WebP q90 at native res |
 | Keyframe export | `scripts/export_scrubber_keyframes.py` (manifest-driven) |
 | Syntax check (only automated check `/explore/` gets) | `scripts/check_explore_syntax.py` — exit 0/1/2/3, guarded against vacuous pass |
 | Fire depth signal | `scripts/fire_rollup.py` |
 | Future-scenario grids (rung 3) | `~/globe-render/future-scenarios/` — **not in git**, CC0 from OSF 10.17605/OSF.IO/8NEQ4 |
 | Its reader | `scripts/read_future_grids.py` — self-test: all four scenarios are present-day Earth at t=0, so masks must agree (100/99.06/99.06/100%) |
-| Render workspace | `~/globe-render/` (frames, prequel frames, camera paths) |
+| Future keyframe export | `scripts/export_future_keyframes.py` |
+| Sequel textures + sidecar | `scripts/generate_sequel_frames.py` → `~/globe-render/sequel_frames/` (246 geo frames, `sequel_frames.json` owns the sequence + aim points) |
+| Sequel camera path | `scripts/compute_sequel_path.py` → `sequel_camera_path.json` (eased pacing, holds, tour aims via `renderer_cam()`; `PUN_SEA_BIAS` env) |
+| Sequel v1 film | `~/globe-render/tectonic_sequel_globe_v1.mp4` and `previews/tectonic_sequel_globe_v1.mp4` |
+| Crash-resilient render driver | `scripts/render_supervised.sh` (proven on a stub: recover / budget / no-progress / complete) |
+| Deploy check | `scripts/wait_pages.py` |
+| Pre-commit gate (explore page) | `scripts/hooks/pre-commit` via repo-local `core.hooksPath` — fine here only because `globe` is single-seat |
+| Render workspace | `~/globe-render/` (frames, prequel frames, sequel frames/renders, camera paths, OSF grids) |
 
 ## Who owes what
 
@@ -65,13 +88,12 @@ is at rung 3 of its ladder, unblocked and not started.
 
 ## Deliberately unresolved — do not "fix" these
 
-1. **The 1200→1000 Ma ghost-slide in `/explore/`.** Crossfading an
-   unregistered cao2024 keyframe into Merdith2021, ~10° apart. xian's
-   first look didn't mention it — **silence is not a pass**, he may not
-   have scrubbed there. If he does object, the fix is a registered
-   intermediate keyframe, not a rewrite.
-2. **The 7/28 provisioning thread with Pard.** Two months old, delivered
-   28 days late, never answered. xian's call to nudge or drop.
+1. **The sequel's opening seam and Ultima framing are 🔒 xian's calls**
+   (since 10-03). Don't invent an initial blend or re-render the tour
+   unasked; both are cheap once answered.
+2. *(closed)* The 1200→1000 Ma ghost-slide — fixed 09-29 by sampling the
+   film's registration ramp (keyframes 1150/1100/1050). The 7/28 Pard
+   provisioning thread — xian ruled it moot 09-29.
 3. **Roadmap items 7 (physical/POD) and 8 (biome painting)** — xian-confirmed
    someday/maybe. If 8 ever moves: the CESM1.2.2 dataset is CC BY 4.0 and
    fine commercially; the Köppen set is **CC BY-NC-ND — not for a POD product**.
@@ -91,6 +113,13 @@ is at rung 3 of its ladder, unblocked and not started.
   it matched a phrase instead of the structural marker. The instrument
   built to detect my degradation was itself mismeasuring me. Verify an
   arm can go red before trusting it green.
+- **10-03, the render day:** a "cache moved aside" that was a no-op (the
+  directories didn't exist); a probe frame I read as "full north" that
+  Blender's own geometry showed was equatorial; a `pgrep -f` that matched
+  its own command line; three bash-3.2 quoting hazards and an off-by-one
+  in a script I'd declared done. Every one caught by looking at output
+  instead of trusting it. The pattern that keeps paying: **prove an
+  instrument can go red before trusting its green.**
 
 ## Cold start
 
