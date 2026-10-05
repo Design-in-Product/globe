@@ -45,3 +45,21 @@ is running).
 **🔒 items unchanged** (opening seam; Ultima 45/20). Grep across all three
 repos' mail: no answer. Escalation to Janus at 16:22 today if still
 unanswered — the rule's "more than a day" has elapsed by then.
+
+## 16:22 PT — Duty-cycle fire (scheduled, second daily firing)
+
+First fire run through `scripts/fire_check.sh` instead of the retyped
+block. Sync clean; **no mail addressed to Tessera** (sibling traffic is
+PM per-fire-record design, Themis/Janus domain redirects); brief age 0 d;
+site 200; Pages built for `9ffed27`; hook live; no stray Blender; 0 live
+CPU declarations (correct).
+
+**🔒 escalated.** The two sequel decisions (opening seam yes/no; Ultima
+45 or 20) were flagged 10-03 ~21:00 and are unanswered past a day — a
+tight grep of all three repos' mail since the flag, excluding my own,
+found nothing, including nothing relayed via Janus. Sent to Janus in
+designinproduct per the rule, with the one-line framings and a link to
+the board. Flags stay on `ROADMAP.md` and the handoff until an answer
+lands anywhere; Janus's relay memo, if it comes that way, is the record.
+
+Otherwise a no-op; nothing rendering, nothing to arm.
