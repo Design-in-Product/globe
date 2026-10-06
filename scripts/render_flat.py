@@ -52,6 +52,16 @@ MORPH_FRAMES = 24  # each side; remainder of the hold is the 360° rotate-under
 # final frame IS the main film's first. Empty src disables.
 TERMINAL_BLEND_SRC = os.path.expanduser(os.environ.get("TERMINAL_BLEND_SRC", ""))
 TERMINAL_BLEND_FRAMES = int(os.environ.get("TERMINAL_BLEND_FRAMES", "72"))
+# Initial blend (sequel): the first INITIAL_BLEND_FRAMES dissolve OUT of
+# INITIAL_BLEND_SRC (the main flat film's last frame). Mirror of the terminal
+# blend; same seam language as the globe assembler (xian 10-06: dissolve).
+INITIAL_BLEND_SRC = os.path.expanduser(os.environ.get("INITIAL_BLEND_SRC", ""))
+INITIAL_BLEND_FRAMES = int(os.environ.get("INITIAL_BLEND_FRAMES", "24"))
+# Pan scroll: the flat analogue of the globe's slow pan on a hold — roll the
+# equirectangular map through DEGREES of longitude over FRAMES anim frames
+# starting at anim START (eased, so it ends where it started when DEGREES=360).
+# "START:FRAMES:DEGREES"; empty disables. Flat parity rule (xian 10-06).
+PAN_SCROLL = os.environ.get("PAN_SCROLL", "")
 
 # Overlay is burned in with PIL at frame-creation time. (Amber's Homebrew
 # ffmpeg ships without libass/freetype — no ass/subtitles/drawtext filters —
@@ -66,7 +76,8 @@ def stamp_overlay(im, time_ma, era):
     """Burn the time + era labels onto a RES_X x RES_Y frame (bottom-left,
     matching the v6 ASS style: white time over grey era, black outline)."""
     d = ImageDraw.Draw(im)
-    time_str = f"{int(time_ma)} Ma"
+    t = int(round(time_ma))
+    time_str = f"+{-t} Myr" if t < 0 else f"{t} Ma"   # sequel stores the future as negative Ma
     d.text((40, RES_Y - 30 - 52), time_str, font=_TIME_FONT,
            fill=(255, 255, 255), stroke_width=3, stroke_fill=(0, 0, 0))
     if era:
@@ -195,9 +206,56 @@ if TERMINAL_BLEND_SRC:
     print(f"  Terminal blend: last {TERMINAL_BLEND_FRAMES} frames → "
           f"{TERMINAL_BLEND_SRC}")
 
+initial_img = None
+if INITIAL_BLEND_SRC:
+    initial_img = Image.open(INITIAL_BLEND_SRC).convert("RGB").resize(
+        (RES_X, RES_Y), Image.LANCZOS)
+    print(f"  Initial blend: first {INITIAL_BLEND_FRAMES} frames ← {INITIAL_BLEND_SRC}")
+
+pan = None
+if PAN_SCROLL:
+    pan = tuple(int(x) for x in PAN_SCROLL.split(":"))   # (start, frames, degrees)
+    print(f"  Pan scroll: {pan[2]} deg over anim {pan[0]}-{pan[0] + pan[1] - 1}")
+
+
+def pan_shift(i):
+    """Pixels to roll the map at anim frame i (0 outside the pan). Smoothstep ease."""
+    if pan is None or not (pan[0] <= i < pan[0] + pan[1]):
+        return 0
+    u = (i - pan[0] + 1) / pan[1]
+    e = u * u * (3 - 2 * u)
+    return int(round(e * pan[2] / 360.0 * RES_X)) % RES_X
+
+
+def rolled(im, px):
+    """Roll an equirectangular frame westward by px (the globe pans west)."""
+    if not px:
+        return im
+    out = Image.new("RGB", im.size)
+    out.paste(im.crop((px, 0, RES_X, RES_Y)), (0, 0))
+    out.paste(im.crop((0, 0, px, RES_Y)), (RES_X - px, 0))
+    return out
+
+
 for i, pf in enumerate(path_frames):
     dst = os.path.join(tmp_dir, f"frame_{i + 1:04d}.png")
     time_ma, era = pf["time_ma"], pf.get("era_label", "")
+
+    if initial_img is not None and i < INITIAL_BLEND_FRAMES:
+        alpha = (INITIAL_BLEND_FRAMES - i) / (INITIAL_BLEND_FRAMES + 1)   # 1 → 0
+        frame = Image.blend(load_resized(pf["geo_frame_idx"]), initial_img, alpha)
+        stamp_overlay(frame, time_ma, era).save(dst)
+        blend_count += 1
+        prev_static = None
+        continue
+
+    if pan_shift(i):
+        # Panning hold: a rolled static frame; never hardlinked (each shift is unique)
+        frame = rolled(load_resized(pf["geo_frame_idx"]), pan_shift(i))
+        stamp_overlay(frame, time_ma, era).save(dst)
+        blend_count += 1
+        prev_static = None
+        continue
 
     if terminal_img is not None and i >= total_frames - TERMINAL_BLEND_FRAMES:
         # Terminal blend into the main film's opening frame

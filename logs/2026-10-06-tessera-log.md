@@ -124,3 +124,24 @@ chain stops at the present in flat view), tagline + chain-note updated.
 Checker: 1 block OK. The film lives at the site root like its siblings;
 previews §8 points at `../`; the v1 draft is removed from the tree
 (history keeps it) so the repo carries one sequel, not two.
+
+## 13:40 — flat parity, as a rule
+
+xian: "yes, flat parity (as a rule)." Saved as a standing rule (memory
+`flat-parity-rule`): every era ships in both projections on one timeline.
+
+`render_flat.py` gained what the globe assembler already had — an
+`INITIAL_BLEND` (from the main flat film's last frame, extracted with
+ffmpeg), a `+N Myr` label for negative times, and `PAN_SCROLL`
+(START:FRAMES:DEGREES): the flat analogue of the globe's pan is a rolled
+equirectangular, here a full eased 360° over the same 288 frames so the
+map ends where it started. `LENS_HOLDS=0` — the sequel's "holds" by the
+renderer's constant-time rule are texture dissolves (six of them), and a
+lens morph would freeze one texture across a dissolve. 1,795 frames both
+films (checked with ffprobe), 797 blends, 46 s to render, 9.6 MB.
+Seam and scroll checked at 0/0.5/1/36–51 s. Known cosmetic: a 1-px
+land-coloured polar row at the top/bottom of the source textures, visible
+in flat only; pre-existing in the main film's sources too.
+
+Site: `FILMS.future.flat` set; the globe-only note removed; the null
+fallback stays as the structural guard the rule asks for.

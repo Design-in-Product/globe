@@ -350,7 +350,7 @@
             <button class="active" id="btn-main" onclick="startEra('main')">&#9654; Begin at Rodinia (1000&nbsp;Ma)</button>
             <button id="btn-future" onclick="startEra('future')">&#9654; Continue into the future (+250&nbsp;Myr)</button>
         </div>
-        <p class="chain-note" id="chain-note">Deep time plays straight through the main film and on into the future &mdash; one continuous journey, 1.8&nbsp;billion years back and 250&nbsp;million ahead. (The future is a globe only.)</p>
+        <p class="chain-note" id="chain-note">Deep time plays straight through the main film and on into the future &mdash; one continuous journey, 1.8&nbsp;billion years back and 250&nbsp;million ahead.</p>
         <div class="video-toggle era-toggle">
             <a href="explore/" id="btn-explore">&#8635; Explore freely &mdash; 1.8&nbsp;billion years back, 250&nbsp;million ahead</a>
         </div>
@@ -440,12 +440,13 @@
     // The series plays end-to-end: deep time (1800→1000 Ma) chains straight
     // into the main film (1000 Ma→present), which chains into the future
     // (present→+250 Myr). Films stay separate assets; dissolves at each
-    // junction make the seams invisible. The future exists as a globe only —
-    // in flat view the series ends at the present day.
+    // junction make the seams invisible. Every era has both projections on
+    // one timeline (flat parity is a rule — xian 10-06); a missing one
+    // (null) would fall back to the globe and disable the Flat button.
     const FILMS = {
         deep:   { globe: 'tectonic_prequel_globe_v1.mp4', flat: 'tectonic_prequel_v1.mp4' },
         main:   { globe: 'tectonic_globe_v7.mp4',         flat: 'tectonic_flat_v7.mp4' },
-        future: { globe: 'tectonic_sequel_globe_v2.mp4',  flat: null },
+        future: { globe: 'tectonic_sequel_globe_v2.mp4',  flat: 'tectonic_sequel_flat_v2.mp4' },
     };
     const ERA_BTNS = ['btn-deep', 'btn-main', 'btn-future'];
     const NEXT_ERA = { deep: 'main', main: 'future' };
