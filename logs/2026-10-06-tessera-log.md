@@ -78,3 +78,27 @@ Decision 1 shipped: `INITIAL_BLEND_SRC/_FRAMES` in `assemble_globe.py`
 from `render_2738.png`. Previews §8, ROADMAP item 3, handoff updated.
 
 Seam verified from the re-assembled mp4 (frames at 0/0.5/1.0/1.5 s: boundaries → half → clean sequel). Janus memo pushed to designinproduct (`1122ae0`).
+
+## 11:45 — Decision 2: centroid, plus a slow pan
+
+xian (mid-turn): "I actually like centroid the best. Probably we should
+also rotate the globe in a slow pan so people get the feel for it? I
+assume the other side of the globe is almost all ocean?"
+
+Measured before answering: at +250 the hemisphere centred on C is 54.5%
+land; the antipodal hemisphere is **0.5%** land (global 27.5%). The far
+side is the world ocean — the assumption holds exactly.
+
+Pan: `PAN = {"pun": (180°, 288 f)}` in `compute_sequel_path.py` — 3.5 s
+static hold at the centroid, then a westward half-turn over 12 s, camera
+keys every 30° of view-lon through `renderer_cam` (the renderer's lon is
+coupled, so a two-key pan would not be an honest arc). Max lon step
+1.12°/f. Film 66.1 → 74.8 s. The next stop (Novopangea) departs from the
+pan's END, not the stop. Five stills across the pan, one RENDER_DIR each,
+md5 5/5 distinct, sent 11:45: C → ring edge → coastline sliding off →
+open ocean. "Lon spread 359" in the hold print is the ±180 wrap, not a
+spin.
+
+Re-render: old/new paths agree through anim frame 755 (the divergence and
+the departure to the tour are untouched); 756..1794 = 1,039 frames ≈ 1.6 h.
+Prefix hardlinked into `sequel_render_v2/`; declared; supervisor launched.

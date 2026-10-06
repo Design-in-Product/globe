@@ -46,7 +46,14 @@ HOLD = 132             # 5.5 s, the film's established hold length
 TOUR_HOLD = 84         # 3.5 s per scenario alone (xian 10-03: a slower tour)
 DEG_PER_FRAME = 1.2    # tour moves pace by distance (xian 10-03: slower); a big swing ~6-7 s, a hop ~2 s
 BLEND_MIN, BLEND_MAX = 48, 168   # anim frames per 8-frame dissolve (2 s .. 7 s)
-SEA_BIAS = {"pun": float(os.environ.get("PUN_SEA_BIAS", "0.45"))}          # fraction from the most-land point toward the centroid (the sea)
+SEA_BIAS = {"pun": float(os.environ.get("PUN_SEA_BIAS", "1.0"))}           # fraction from the most-land point toward the centroid (the sea); xian 10-06: centroid
+# Slow pan during a tour hold: (degrees of view longitude, anim frames), after the
+# static hold. xian 10-06 on Ultima: "rotate the globe in a slow pan so people get
+# the feel for it ... I assume the other side is almost all ocean" — measured: the
+# antipodal hemisphere at +250 is 0.5% land, so a half-turn westward lands on the
+# world ocean. 180 deg over 288 f = 0.63 deg/f, half the tour's move pace.
+PAN = {"pun": (float(os.environ.get("PUN_PAN_DEG", "180")), int(os.environ.get("PUN_PAN_FRAMES", "288")))}
+PAN_STEP = 30.0        # view-lon spacing of the pan's camera keys (renderer_cam is lon-coupled; keys keep the arc honest)
 LAT_CLAMP = 75.0   # 45 put the camera UNDER Amasia (land at 60-75N): mostly ocean in frame. A polar mass wants a near-polar look.
 DRIFT_LON = -60.0      # gentle westward drift across the divergence
 TOUR_LAT = 10.0
@@ -125,6 +132,7 @@ def main():
     stops = {}                                   # scenario -> (lat, lon)
     cur_lat, cur_lon = lat0 * 0.6 + TOUR_LAT * 0.4, lon0 + DRIFT_LON
     blend_len = {}                               # scenario (or "return") -> anim frames per blend geo frame
+    pan_keys = {}                                # scenario -> [(cam_lat, cam_lon), ...] after the static hold
     for f in geo:
         if f["kind"] == "tour_hold":
             vlat, vlon = aim_for(f)                      # TRUE view coordinates
@@ -134,6 +142,11 @@ def main():
             total = int(np.clip(arc / DEG_PER_FRAME, BLEND_MIN, BLEND_MAX))
             blend_len[f["scenario"]] = max(1, round(total / side["blend_frames"]))
             cur_lat, cur_lon = lat, lon
+            if f["scenario"] in PAN:                     # pan keys in renderer space, westward from the stop
+                deg, _ = PAN[f["scenario"]]
+                steps = int(round(deg / PAN_STEP))
+                pan_keys[f["scenario"]] = [renderer_cam(vlat, vlon - deg * j / steps) for j in range(1, steps + 1)]
+                cur_lat, cur_lon = pan_keys[f["scenario"]][-1]   # the next move departs from the pan's end
     blend_len["return"] = max(1, round(BLEND_MIN / side["blend_frames"]))
 
     # ---- anim frames per geo frame
@@ -152,7 +165,7 @@ def main():
         elif k == "return_blend":
             n = blend_len["return"]
         elif k == "tour_hold":
-            n = TOUR_HOLD
+            n = TOUR_HOLD + (PAN[f["scenario"]][1] if f["scenario"] in PAN else 0)
         elif k == "final_hold":
             n = HOLD
         else:
@@ -173,7 +186,13 @@ def main():
         if f["kind"] == "tour_hold":
             lat, lon = stops[f["scenario"]]
             lon = shortest_arc(prev_lon, lon)
-            key(s, lon, lat); key(s + n - 1, lon, lat)
+            pk = pan_keys.get(f["scenario"], [])
+            key(s, lon, lat); key(s + TOUR_HOLD - 1, lon, lat)   # static hold, then the pan keys spread over the rest
+            for j, (plat, plon) in enumerate(pk, 1):
+                lon = shortest_arc(lon, plon); lat = plat
+                key(s + TOUR_HOLD - 1 + round((n - TOUR_HOLD) * j / len(pk)), lon, lat)
+            if not pk:
+                key(s + n - 1, lon, lat)
             prev_lon, prev_lat = lon, lat
         elif f["kind"] == "final_hold":
             key(s, prev_lon, prev_lat); key(s + n - 1, prev_lon, prev_lat)
@@ -205,7 +224,7 @@ def main():
             "time_step": 1, "geological_timesteps": len(geo),
             "animation_frames": len(frames), "anim_frames": len(frames), "fps": FPS,
             "duration_sec": round(len(frames) / FPS, 1),
-            "pacing": f"eased (rate 1-0.22cos2piu, base {TEMPO}), holds {HOLD}/{TOUR_HOLD}, tour dissolves {BLEND_MIN}-{BLEND_MAX}f by arc at {DEG_PER_FRAME} deg/f",
+            "pacing": f"eased (rate 1-0.22cos2piu, base {TEMPO}), holds {HOLD}/{TOUR_HOLD}, tour dissolves {BLEND_MIN}-{BLEND_MAX}f by arc at {DEG_PER_FRAME} deg/f, pans {PAN}",
             "opening_camera_from": MAIN_PATH,
         },
         "eras": [{"time_ma": 0, "label": "Present day"},
