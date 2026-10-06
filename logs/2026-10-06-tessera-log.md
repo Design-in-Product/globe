@@ -48,3 +48,33 @@ log files. A 25-min background waiter saw it reach **built at 10:35**,
 live `/explore/` 200. GitHub-side slowness, transient; nothing to fix.
 Worth having: the wait script's timeout is a state, not a failure, and I
 didn't write "built" until it was.
+
+## 11:10 — xian's two decisions; one answered, one I had broken
+
+xian, 10:50: Decision 1 = **dissolve** ("the jump-cut is too abrupt").
+And: the Ultima "45 vs 20" image "shows the same image twice."
+
+**It did.** `md5` of `sequel_preview3/pun.png` and `pun_b20.png`: byte-
+identical. Cause: `render_globe.py` skips frames already intact on disk;
+the 10-03 loop rendered both candidates at frame 837 into the same
+`RENDER_DIR`, so the second run was "0 rendered, 1 already on disk" and
+I copied the 45% frame under the 20% name. I then *recommended 45%* over
+an image I had never seen. The recommendation is withdrawn — not because
+it's wrong, but because it was made on nothing.
+
+Then I did it again: the first corrected 3-up (0% / 45% / 100%) had A ≡ C
+for the identical reason — same dir, same frame index — caught by eye
+before sending, confirmed by md5 and "already on disk" in the log. One
+RENDER_DIR per candidate fixed it; `md5 | sort -u | wc -l` → 3 of 3
+distinct before it went out. Trap 7 added to the handoff.
+
+Also: the "20%" candidate was a 9° nudge from 45% — too subtle to be a
+real choice even rendered. The 3-up now spans the actual range: A ring-
+side (0%), B as rendered (45%), C centroid over the inland sea (100%).
+🔒 Decision 2 reframed as A/B/C, clock restarted 10-06 11:10.
+
+Decision 1 shipped: `INITIAL_BLEND_SRC/_FRAMES` in `assemble_globe.py`
+(mirror of the terminal blend, 24 frames, a runs 1→0); v1 re-assembled
+from `render_2738.png`. Previews §8, ROADMAP item 3, handoff updated.
+
+Seam verified from the re-assembled mp4 (frames at 0/0.5/1.0/1.5 s: boundaries → half → clean sequel). Janus memo pushed to designinproduct (`1122ae0`).

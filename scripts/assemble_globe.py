@@ -12,6 +12,8 @@ Env:
   OUTPUT_PATH        output mp4 (default ./tectonic_globe.mp4)
   TERMINAL_BLEND_SRC optional image the last frames dissolve into
   TERMINAL_BLEND_FRAMES  dissolve length (default 72)
+  INITIAL_BLEND_SRC  optional image the first frames dissolve out of
+  INITIAL_BLEND_FRAMES   dissolve length (default 24)
 """
 
 import json
@@ -28,6 +30,13 @@ RENDER_DIR = os.path.abspath(os.path.expanduser(os.environ.get("RENDER_DIR", "./
 OUTPUT_PATH = os.path.abspath(os.environ.get("OUTPUT_PATH", "./tectonic_globe.mp4"))
 TERMINAL_BLEND_SRC = os.path.expanduser(os.environ.get("TERMINAL_BLEND_SRC", ""))
 TERMINAL_BLEND_FRAMES = int(os.environ.get("TERMINAL_BLEND_FRAMES", "72"))
+# Mirror of the terminal blend for a film that CONTINUES another: the first N
+# frames dissolve out of INITIAL_BLEND_SRC (the previous film's last frame).
+# xian, 2026-10-06, on the sequel's opening: "The dissolve is nice and the
+# jump-cut is too abrupt." The prequel's seam into the main film used the
+# terminal form; this is the same seam language at the other end.
+INITIAL_BLEND_SRC = os.path.expanduser(os.environ.get("INITIAL_BLEND_SRC", ""))
+INITIAL_BLEND_FRAMES = int(os.environ.get("INITIAL_BLEND_FRAMES", "24"))
 FPS = 24
 RES_X, RES_Y = 1920, 1080
 
@@ -58,6 +67,10 @@ with open(CAMERA_PATH_FILE) as f:
 total = len(frames)
 print(f"Assembling {total} frames from {RENDER_DIR}")
 
+initial_img = None
+if INITIAL_BLEND_SRC:
+    initial_img = Image.open(INITIAL_BLEND_SRC).convert("RGB").resize((RES_X, RES_Y), Image.LANCZOS)
+    print(f"  Initial blend: first {INITIAL_BLEND_FRAMES} frames ← {INITIAL_BLEND_SRC}")
 terminal_img = None
 if TERMINAL_BLEND_SRC:
     terminal_img = Image.open(TERMINAL_BLEND_SRC).convert("RGB").resize((RES_X, RES_Y), Image.LANCZOS)
@@ -74,6 +87,10 @@ for i, pf in enumerate(frames):
     im = Image.open(src).convert("RGB")
     if im.size != (RES_X, RES_Y):
         im = im.resize((RES_X, RES_Y), Image.LANCZOS)
+    if initial_img is not None and i < INITIAL_BLEND_FRAMES:
+        # a runs 1→0: frame 0 is almost entirely the previous film's last frame.
+        a = (INITIAL_BLEND_FRAMES - i) / (INITIAL_BLEND_FRAMES + 1)
+        im = Image.blend(im, initial_img, a)
     if terminal_img is not None and i >= total - TERMINAL_BLEND_FRAMES:
         a = (i - (total - TERMINAL_BLEND_FRAMES) + 1) / (TERMINAL_BLEND_FRAMES + 1)
         im = Image.blend(im, terminal_img, a)

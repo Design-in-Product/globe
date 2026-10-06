@@ -82,15 +82,19 @@ decisions are 🔒 blocked on xian** (see Who owes what).
 
 | | they owe me | I owe them |
 |---|---|---|
-| **xian** | 🔒 **since 2026-10-03**: (1) sequel opening seam — dissolve from the main film's last frame, yes/no; (2) Ultima framing 45% or 20%. Both stop the sequel shipping. (Ghost-slide fixed 09-29; rung 3–5 done; Pard thread closed moot 09-29.) | Nothing outstanding |
+| **xian** | 🔒 **since 2026-10-06**: Ultima framing — A ring-side / B 45% (as rendered) / C centroid; 3-up sent 10-06 11:10, verified distinct. (Opening seam answered 10-06: dissolve — done. Ghost-slide fixed 09-29; rung 3–5 done; Pard thread closed moot 09-29.) | Nothing outstanding |
 | **Pard** | Nothing | Nothing; the identity incident is reported and owned |
 | **Janus** | Relays xian's decisions (reliable) | Read/act on daily briefs |
 
 ## Deliberately unresolved — do not "fix" these
 
-1. **The sequel's opening seam and Ultima framing are 🔒 xian's calls**
-   (since 10-03). Don't invent an initial blend or re-render the tour
-   unasked; both are cheap once answered.
+1. **The Ultima framing is 🔒 xian's call** (A/B/C, since 10-06; the
+   opening seam was answered 10-06 — dissolve, shipped). Don't re-render
+   the tour unasked; it is ~1.5 h once answered. Trap 7: `render_globe.py`
+   skips frames already on disk, so two candidate stills at the same frame
+   index in the same RENDER_DIR are ONE still — the 10-03 "45 vs 20"
+   comparison was exactly this. One RENDER_DIR per candidate, and `md5`
+   the outputs before calling them a comparison.
 2. *(closed)* The 1200→1000 Ma ghost-slide — fixed 09-29 by sampling the
    film's registration ramp (keyframes 1150/1100/1050). The 7/28 Pard
    provisioning thread — xian ruled it moot 09-29.
