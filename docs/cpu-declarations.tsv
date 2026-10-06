@@ -6,3 +6,4 @@
 # expired row is itself reported by name. "If you cannot name when it ends, it
 # does not belong here." Write a row at LAUNCH TIME with scripts/declare_render.sh —
 # never ahead of a pass that has not started. No live row = nothing is running.
+Blender	2026-10-06T13:07	tessera	sequel v2 tour re-render (Ultima centroid + pan), frames 757-1795
