@@ -37,8 +37,8 @@ Extend further into the past beyond 1 Ga (Rodinia).
 ### 3. Future projection — sequel — v1 GLOBE DRAFT RENDERED 2026-10-03 (previews/ §8; not yet chained into the site)
 
 1. ~~Opening seam~~ **answered 2026-10-06: dissolve** ("the jump-cut is too abrupt"). `INITIAL_BLEND` added to the assembler; v1 re-assembled with a 1 s dissolve from `render_2738`.
-2. **🔒 blocked on xian — since 2026-10-06 11:10** Pangaea Ultima tour framing: **A** ring-side (0%), **B** 45% toward the inland sea (as rendered), or **C** centroid (100%)? The earlier "45 vs 20" comparison was one file sent twice (renderer skip-existing; my error) — the 10-06 3-up is verified distinct. **one letter**
-Escalates to Janus if unanswered past 2026-10-07 ~11:00 (network rule, 10-03).
+2. ~~Ultima framing~~ **answered 2026-10-06: centroid (C), plus a slow pan** — 3.5 s hold, then a 12 s westward half-turn ending on the world ocean (far hemisphere measured 0.5% land). Tour re-render (frames 757–1795) launched 11:08; then assemble v2, then chain into the site as the third film. (The 10-03 "45 vs 20" comparison was one file sent twice — renderer skip-existing, my error; the A/B/C 3-up that replaced it was verified distinct.)
+**Nothing 🔒 as of 2026-10-06 11:10.**
 
 Speculative plate tectonics going forward from present day.
 

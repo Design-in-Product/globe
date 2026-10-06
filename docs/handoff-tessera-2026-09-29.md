@@ -82,15 +82,15 @@ decisions are 🔒 blocked on xian** (see Who owes what).
 
 | | they owe me | I owe them |
 |---|---|---|
-| **xian** | 🔒 **since 2026-10-06**: Ultima framing — A ring-side / B 45% (as rendered) / C centroid; 3-up sent 10-06 11:10, verified distinct. (Opening seam answered 10-06: dissolve — done. Ghost-slide fixed 09-29; rung 3–5 done; Pard thread closed moot 09-29.) | Nothing outstanding |
+| **xian** | Nothing — both sequel decisions answered 10-06 (dissolve; centroid + slow pan). Next eyeball: the assembled v2 film once the tour re-render lands (~13:00 10-06). | Nothing outstanding |
 | **Pard** | Nothing | Nothing; the identity incident is reported and owned |
 | **Janus** | Relays xian's decisions (reliable) | Read/act on daily briefs |
 
 ## Deliberately unresolved — do not "fix" these
 
-1. **The Ultima framing is 🔒 xian's call** (A/B/C, since 10-06; the
-   opening seam was answered 10-06 — dissolve, shipped). Don't re-render
-   the tour unasked; it is ~1.5 h once answered. Trap 7: `render_globe.py`
+1. *(closed 10-06)* Both sequel decisions answered: dissolve (shipped),
+   centroid + 12 s pan (re-render `sequel_render_v2/`, frames 757–1795,
+   supervised; prefix 1–756 hardlinked from v1). Trap 7: `render_globe.py`
    skips frames already on disk, so two candidate stills at the same frame
    index in the same RENDER_DIR are ONE still — the 10-03 "45 vs 20"
    comparison was exactly this. One RENDER_DIR per candidate, and `md5`

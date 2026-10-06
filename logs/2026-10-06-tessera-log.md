@@ -49,7 +49,7 @@ live `/explore/` 200. GitHub-side slowness, transient; nothing to fix.
 Worth having: the wait script's timeout is a state, not a failure, and I
 didn't write "built" until it was.
 
-## 11:10 — xian's two decisions; one answered, one I had broken
+## 10:55 — xian's two decisions; one answered, one I had broken
 
 xian, 10:50: Decision 1 = **dissolve** ("the jump-cut is too abrupt").
 And: the Ultima "45 vs 20" image "shows the same image twice."
@@ -79,7 +79,7 @@ from `render_2738.png`. Previews §8, ROADMAP item 3, handoff updated.
 
 Seam verified from the re-assembled mp4 (frames at 0/0.5/1.0/1.5 s: boundaries → half → clean sequel). Janus memo pushed to designinproduct (`1122ae0`).
 
-## 11:45 — Decision 2: centroid, plus a slow pan
+## 11:05 — Decision 2: centroid, plus a slow pan
 
 xian (mid-turn): "I actually like centroid the best. Probably we should
 also rotate the globe in a slow pan so people get the feel for it? I
@@ -95,7 +95,7 @@ keys every 30° of view-lon through `renderer_cam` (the renderer's lon is
 coupled, so a two-key pan would not be an honest arc). Max lon step
 1.12°/f. Film 66.1 → 74.8 s. The next stop (Novopangea) departs from the
 pan's END, not the stop. Five stills across the pan, one RENDER_DIR each,
-md5 5/5 distinct, sent 11:45: C → ring edge → coastline sliding off →
+md5 5/5 distinct, sent 11:07: C → ring edge → coastline sliding off →
 open ocean. "Lon spread 359" in the hold print is the ±180 wrap, not a
 spin.
 
