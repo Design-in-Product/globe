@@ -63,3 +63,20 @@ the board. Flags stay on `ROADMAP.md` and the handoff until an answer
 lands anywhere; Janus's relay memo, if it comes that way, is the record.
 
 Otherwise a no-op; nothing rendering, nothing to arm.
+
+## ~16:45 PT — xian: "where do I look?" — answered with the artifacts, not directions
+
+He asked where to eyeball the two 🔒 decisions and whether I had a
+recommendation on Ultima. The seam isn't visible in any one file (it sits
+between the main film's last frame and the sequel's first), so I built
+it: a 5 s clip, hard cut on top / 1 s dissolve below, from the real
+`render_2738.png` and `render_0001.png`. Looked at the mid-seam frame
+first: **camera identical; the cut is a style change** — the v7 texture's
+plate boundaries and craton outlines vanish and the coast shifts slightly
+into the flat scenario mask. Sent, with the two Ultima stills side by
+side from the 10-03 corrected renders.
+
+Recommendations given: seam → **dissolve** (it hides a style cut, mirrors
+the prequel's seam); Ultima → **45%, as rendered** (the sea-as-basin is
+what makes Ultima a different world; 20% makes it read like the other
+three, and costs a re-render). Both stay 🔒 until he answers.
