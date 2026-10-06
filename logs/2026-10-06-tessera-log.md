@@ -37,3 +37,14 @@ Same shape as the 9/28 rollup undercount and the 10/02 deploy poll: an
 instrument that measured one thing and read as "the site." The lesson
 that keeps paying is the denominator — say what was checked, and derive
 that list from the thing itself.
+
+**Postscript, 10:35 — a slow Pages build, recorded rather than glossed.**
+The "Pages built" in the 10:22 health block was the *pre-push* check
+(`3e0d2d6`). The push of `6c59b74` registered a build at 10:24 that sat
+in `building` ~11 min against a 20–93 s norm; `wait_pages.py` timed out
+at 300 s (exit 2, its honest code — not "built"). Ruled out my side
+first: `.nojekyll` still on origin/main, the commit touched four script/
+log files. A 25-min background waiter saw it reach **built at 10:35**,
+live `/explore/` 200. GitHub-side slowness, transient; nothing to fix.
+Worth having: the wait script's timeout is a state, not a failure, and I
+didn't write "built" until it was.
