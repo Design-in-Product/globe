@@ -36,9 +36,7 @@ Extend further into the past beyond 1 Ga (Rodinia).
 
 ### 3. Future projection — sequel — SHIPPED 2026-10-06 as the site's third act (`tectonic_sequel_globe_v2.mp4` + `tectonic_sequel_flat_v2.mp4`, 75 s, both projections; chains from the main film's end)
 
-1. ~~Opening seam~~ **answered 2026-10-06: dissolve** ("the jump-cut is too abrupt"). `INITIAL_BLEND` added to the assembler; v1 re-assembled with a 1 s dissolve from `render_2738`.
-2. ~~Ultima framing~~ **answered 2026-10-06: centroid (C), plus a slow pan** — 3.5 s hold, then a 12 s westward half-turn ending on the world ocean (far hemisphere measured 0.5% land). Tour re-render (frames 757–1795) launched 11:08; then assemble v2, then chain into the site as the third film. (The 10-03 "45 vs 20" comparison was one file sent twice — renderer skip-existing, my error; the A/B/C 3-up that replaced it was verified distinct.)
-**Nothing 🔒 as of 2026-10-06 11:10.**
+Decisions taken 2026-10-06 (xian): opening dissolve from the main film's last frame; Pangaea Ultima framed on its centroid with a 12 s westward half-turn onto the world ocean. Both projections, one 1,795-frame timeline. History in `logs/2026-10-06-tessera-log.md`. **Nothing 🔒.**
 
 Speculative plate tectonics going forward from present day.
 

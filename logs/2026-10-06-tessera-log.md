@@ -125,7 +125,7 @@ Checker: 1 block OK. The film lives at the site root like its siblings;
 previews §8 points at `../`; the v1 draft is removed from the tree
 (history keeps it) so the repo carries one sequel, not two.
 
-## 13:40 — flat parity, as a rule
+## 13:12 — flat parity, as a rule
 
 xian: "yes, flat parity (as a rule)." Saved as a standing rule (memory
 `flat-parity-rule`): every era ships in both projections on one timeline.
@@ -145,3 +145,33 @@ in flat only; pre-existing in the main film's sources too.
 
 Site: `FILMS.future.flat` set; the globe-only note removed; the null
 fallback stays as the structural guard the rule asks for.
+
+**Postscript, 14:10 — the Pages build of `219aca0` ERRORED.** Created
+13:08, sat in `building` 60 min, then `errored` / "Page build failed" /
+duration 0 — the 08-13→09-26 signature (legacy Jekyll, timeout-shaped,
+no diagnostic). GitHub status: Pages operational. The previous build
+(`a2425a3`, +8.5 MB globe sequel) took 284 s; this one added +9.6 MB.
+Tracked tree now 587 MB / 3,868 files, of which ~470 MB is twelve old
+hero mp4s the gallery still links. Rebuild requested via the API 14:09
+(queued). If it errors again, the structural fix is to stop building at
+all: switch Pages to the Actions deploy (`build_type=workflow`, pure
+artifact upload, no Jekyll pass over 587 MB) — which the brief-9/29
+"don't keep bulk in the repo" lesson and today's two slow builds were
+already pointing at. Not a push-and-hope: the flat film is NOT live until
+a 200 says so.
+
+**14:10 — rebuild built in 83 s; flat film live (200), page references it.**
+So the hour-long error was transient, not size-deterministic — the same
+tree built in 83 s on request. Denominator for today: 5 builds, 2 normal
+(65 s, 83 s), 1 slow-normal (284 s), 1 slow (11 min), 1 errored (60 min).
+Three of five anomalous is not "fine"; it's a legacy-Jekyll pass over
+587 MB behaving erratically. Not switching the publishing mechanism
+unilaterally on a day the site works — proposed to xian instead:
+Actions artifact deploy (`build_type=workflow`), reversible with one API
+call. Until then the lever is `gh api -X POST .../pages/builds` and the
+rule stands: not live until a 200 says so.
+
+Also applied Janus's 10-06 living-doc conventions: struck-through and
+closed items removed from ROADMAP item 3 and the handoff's "unresolved"
+list (history lives here, in the log). No conflict with how this project
+runs, so no reply sent.

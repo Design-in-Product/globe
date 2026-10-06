@@ -88,16 +88,12 @@ decisions are 🔒 blocked on xian** (see Who owes what).
 
 ## Deliberately unresolved — do not "fix" these
 
-1. *(closed 10-06)* Both sequel decisions answered: dissolve (shipped),
-   centroid + 12 s pan (re-render `sequel_render_v2/`, frames 757–1795,
-   supervised; prefix 1–756 hardlinked from v1). Trap 7: `render_globe.py`
-   skips frames already on disk, so two candidate stills at the same frame
-   index in the same RENDER_DIR are ONE still — the 10-03 "45 vs 20"
-   comparison was exactly this. One RENDER_DIR per candidate, and `md5`
+1. **Nothing is unresolved as of 2026-10-06.** (Closed items live in the
+   daily logs, per the network's living-doc rule — Janus memo 10-06.)
+   Trap 7, learned closing the last one: `render_globe.py` skips frames
+   already on disk, so two candidate stills at the same frame index in the
+   same RENDER_DIR are ONE still. One RENDER_DIR per candidate, and `md5`
    the outputs before calling them a comparison.
-2. *(closed)* The 1200→1000 Ma ghost-slide — fixed 09-29 by sampling the
-   film's registration ramp (keyframes 1150/1100/1050). The 7/28 Pard
-   provisioning thread — xian ruled it moot 09-29.
 3. **Roadmap items 7 (physical/POD) and 8 (biome painting)** — xian-confirmed
    someday/maybe. If 8 ever moves: the CESM1.2.2 dataset is CC BY 4.0 and
    fine commercially; the Köppen set is **CC BY-NC-ND — not for a POD product**.
