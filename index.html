@@ -122,6 +122,13 @@
             color: var(--text);
         }
 
+        .video-toggle button:disabled {
+            opacity: 0.35;
+            cursor: default;
+            border-color: var(--border);
+            color: var(--text-muted);
+        }
+
         .era-toggle {
             margin-top: 0.5rem;
         }
@@ -324,7 +331,7 @@
 <!-- ── Hero ───────────────────────────────────────── -->
 <div class="hero">
     <h1>Tectonic Globe</h1>
-    <p class="tagline">1.8 billion years of continental drift &mdash; from probability cloud to the present day</p>
+    <p class="tagline">1.8 billion years of continental drift &mdash; from probability cloud to the present day, and 250 million years beyond</p>
 
     <div class="hero-video-wrap">
         <video id="hero-video"
@@ -341,8 +348,9 @@
         <div class="video-toggle era-toggle">
             <button id="btn-deep" onclick="startEra('deep')">&#9654; Begin in deep time (1800&nbsp;Ma)</button>
             <button class="active" id="btn-main" onclick="startEra('main')">&#9654; Begin at Rodinia (1000&nbsp;Ma)</button>
+            <button id="btn-future" onclick="startEra('future')">&#9654; Continue into the future (+250&nbsp;Myr)</button>
         </div>
-        <p class="chain-note" id="chain-note">Deep time plays straight through into the main film &mdash; one continuous journey.</p>
+        <p class="chain-note" id="chain-note">Deep time plays straight through the main film and on into the future &mdash; one continuous journey, 1.8&nbsp;billion years back and 250&nbsp;million ahead. (The future is a globe only.)</p>
         <div class="video-toggle era-toggle">
             <a href="explore/" id="btn-explore">&#8635; Explore freely &mdash; 1.8&nbsp;billion years back, 250&nbsp;million ahead</a>
         </div>
@@ -430,12 +438,17 @@
 <!-- ── Script ─────────────────────────────────────── -->
 <script>
     // The series plays end-to-end: deep time (1800→1000 Ma) chains straight
-    // into the main film (1000 Ma→present). Films stay separate assets; the
-    // terminal dissolve makes the junction seamless.
+    // into the main film (1000 Ma→present), which chains into the future
+    // (present→+250 Myr). Films stay separate assets; dissolves at each
+    // junction make the seams invisible. The future exists as a globe only —
+    // in flat view the series ends at the present day.
     const FILMS = {
-        deep: { globe: 'tectonic_prequel_globe_v1.mp4', flat: 'tectonic_prequel_v1.mp4' },
-        main: { globe: 'tectonic_globe_v7.mp4',         flat: 'tectonic_flat_v7.mp4' },
+        deep:   { globe: 'tectonic_prequel_globe_v1.mp4', flat: 'tectonic_prequel_v1.mp4' },
+        main:   { globe: 'tectonic_globe_v7.mp4',         flat: 'tectonic_flat_v7.mp4' },
+        future: { globe: 'tectonic_sequel_globe_v2.mp4',  flat: null },
     };
+    const ERA_BTNS = ['btn-deep', 'btn-main', 'btn-future'];
+    const NEXT_ERA = { deep: 'main', main: 'future' };
     let era = 'main';
     let view = 'globe';
 
@@ -447,17 +460,20 @@
     }
 
     function load(newEra, newView, t, play) {
+        if (!FILMS[newEra][newView]) newView = 'globe';   // the future has no flat film
         era = newEra; view = newView;
         video.src = FILMS[era][view];
         video.poster = (era === 'main' && view === 'globe') ? 'poster_v7.png' : '';
         setActive(view === 'globe' ? 'btn-globe' : 'btn-flat', ['btn-globe', 'btn-flat']);
-        setActive(era === 'deep' ? 'btn-deep' : 'btn-main', ['btn-deep', 'btn-main']);
+        setActive('btn-' + era, ERA_BTNS);
+        document.getElementById('btn-flat').disabled = !FILMS[era].flat;
         if (t) video.currentTime = t;
         if (play) video.play();
     }
 
     function switchView(v) {
         // same era, other projection — timelines are frame-identical
+        if (!FILMS[era][v]) return;
         load(era, v, video.currentTime, !video.paused);
     }
 
@@ -466,7 +482,8 @@
     }
 
     video.addEventListener('ended', () => {
-        if (era === 'deep') load('main', view, 0, true);
+        const next = NEXT_ERA[era];
+        if (next && FILMS[next][view]) load(next, view, 0, true);
     });
 </script>
 

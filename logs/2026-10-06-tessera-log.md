@@ -102,3 +102,25 @@ spin.
 Re-render: old/new paths agree through anim frame 755 (the divergence and
 the departure to the tour are untouched); 756..1794 = 1,039 frames ≈ 1.6 h.
 Prefix hardlinked into `sequel_render_v2/`; declared; supervisor launched.
+
+## 12:48 — v2 tour render complete
+
+Supervisor: `COMPLETE: 1795/1795 intact after 0 crash(es)`, 11:07:49 →
+12:47:48 (100 min for 1,039 frames, 5.8 s/frame), inside the 13:07
+declaration. Metal SIGSEGV denominator now 1 in ~3,700 frames across three
+supervised passes. Assembling v2 with the dissolve; then the site chain.
+
+## 13:05 — sequel v2 assembled; chained into the site as the third act
+
+`tectonic_sequel_globe_v2.mp4`: 1,795 frames, 74.8 s, 8.5 MB, opening
+dissolve in. Checked in motion at 36/39/42/45/48/51/54 s: centroid →
+ring edge → coast sliding off → last land → open ocean → Novopangea's
+dissolve arrives. Reads as intended.
+
+Site: `FILMS.future` (globe only, `flat: null`), `NEXT_ERA` chain
+deep→main→future on `ended`, third era button "Continue into the
+future", Flat button disabled while in the future (no flat sequel; the
+chain stops at the present in flat view), tagline + chain-note updated.
+Checker: 1 block OK. The film lives at the site root like its siblings;
+previews §8 points at `../`; the v1 draft is removed from the tree
+(history keeps it) so the repo carries one sequel, not two.
