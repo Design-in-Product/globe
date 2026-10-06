@@ -18,9 +18,13 @@ set -euo pipefail
 # producer and fail the pipeline, and in an `if` that reads as "not staged" —
 # the gate would silently skip. Fail-open is the wrong direction for a gate.
 # (Brief 10/02, Pard's freeze-check: the -q optimisation is the hazard.)
-if git diff --cached --name-only | grep -x 'explore/index.html' >/dev/null; then
-  python3 scripts/check_explore_syntax.py explore/index.html || {
-    echo "pre-commit: explore/index.html failed its syntax gate — commit refused." >&2
+# Gate EVERY staged .html that carries an inline script, not one hardcoded path
+# (brief 10/06 finding 2: a hardcoded name is a coverage claim for one file).
+staged=$(git diff --cached --name-only --diff-filter=AM | grep -E '\.html$' || true)
+if [ -n "$staged" ]; then
+  # shellcheck disable=SC2086
+  python3 scripts/check_explore_syntax.py $staged || {
+    echo "pre-commit: a staged HTML page failed its script syntax gate — commit refused." >&2
     exit 1
   }
 fi

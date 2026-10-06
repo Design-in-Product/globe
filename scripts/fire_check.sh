@@ -44,7 +44,8 @@ print(max((b-a).days for a,b in zip(ds,ds[1:])) if len(ds)>1 else 1)")
 fi
 
 echo "--- site ---"
-python3 scripts/check_explore_syntax.py | sed "s/^/  /"
+# every tracked page, derived from git — not a hardcoded list (brief 10/06 finding 2)
+python3 scripts/check_explore_syntax.py $(git ls-files "*.html") | sed "s/^/  /"
 code=$(curl -s -o /dev/null -w "%{http_code}" https://globe.dinp.xyz/explore/); [ "$code" = 200 ] && echo "  live /explore/: 200" || echo "  live /explore/: $code (NOT OK)"
 python3 scripts/wait_pages.py --timeout 5 | sed "s/^/  /"
 

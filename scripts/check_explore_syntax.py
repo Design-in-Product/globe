@@ -23,7 +23,7 @@ command-substitution parse error — while exiting 0. A checker that breaks
 and reports success is the exact thing this file exists to prevent, so:
 Python, no shell quoting, explicit exit codes.
 
-Usage:  python3 scripts/check_explore_syntax.py [page.html]
+Usage:  python3 scripts/check_explore_syntax.py [page.html ...]   (default: explore/index.html)
 Exits:  0 ok · 1 syntax error · 2 extraction failed · 3 guard tripped
 """
 import os
@@ -40,40 +40,65 @@ STUBS = [
 ]
 
 
-def main(page="explore/index.html"):
+def blocks(html):
+    """Every inline <script> body — module or classic — that is not a src= include.
+    Brief 10/06 finding 2: a check that hardcodes one file/one kind is a coverage
+    claim for that file, not for 'the site'. Until 10-06 this matched only
+    type="module", so index.html's classic script (the live hero's film
+    chaining) had no gate at all."""
+    out = []
+    for m in re.finditer(r'<script\b([^>]*)>(.*?)</script>', html, re.S | re.I):
+        attrs, body = m.group(1), m.group(2)
+        if re.search(r'\bsrc\s*=', attrs, re.I):
+            continue
+        kind = "module" if re.search(r'type\s*=\s*["\']module["\']', attrs, re.I) else \
+               ("skip" if re.search(r'type\s*=', attrs, re.I) and not re.search(r'javascript', attrs, re.I) else "classic")
+        if kind != "skip":
+            out.append((kind, body))
+    return out
+
+
+def check_page(page):
     html = open(page).read()
-    m = re.search(r'<script type=["\']module["\'][^>]*>(.*?)</script>', html, re.S)
-    if not m:
-        print(f"EXTRACTION FAILED: no module script found in {page}", file=sys.stderr)
-        return 2
+    bs = blocks(html)
+    if not bs:
+        print(f"{page}: no inline scripts (nothing to check)")
+        return 0, 0
+    fails = 0
+    for i, (kind, src) in enumerate(bs, 1):
+        n = len(src)
+        if n < MIN_CHARS:
+            print(f"GUARD TRIPPED: {page} script #{i} ({kind}) extracted only {n} chars (< {MIN_CHARS}); "
+                  f"extraction, not the page, is suspect", file=sys.stderr)
+            return 3, len(bs)
+        for old, new_ in STUBS:
+            src = src.replace(old, new_)
+        fd, tmp = tempfile.mkstemp(suffix=".mjs" if kind == "module" else ".js")
+        try:
+            with os.fdopen(fd, "w") as f:
+                f.write(src)
+            r = subprocess.run(["node", "--check", tmp], capture_output=True, text=True)
+            if r.returncode != 0:
+                print(f"{page} script #{i} ({kind}): SYNTAX ERROR", file=sys.stderr)
+                print(r.stderr.rstrip(), file=sys.stderr)
+                fails += 1
+        finally:
+            os.unlink(tmp)
+    return (1 if fails else 0), len(bs)
 
-    src = m.group(1)
-    n = len(src)
-    if n < MIN_CHARS:
-        print(f"GUARD TRIPPED: extracted only {n} chars (< {MIN_CHARS}) from {page}.\n"
-              f"The extraction is probably broken, not the page — "
-              f"do not read this as a pass.", file=sys.stderr)
-        return 3
 
-    # Stub the CDN imports: we check our own syntax, not three.js.
-    for old, new in STUBS:
-        src = src.replace(old, new)
-
-    fd, tmp = tempfile.mkstemp(suffix=".mjs")
-    try:
-        with os.fdopen(fd, "w") as f:
-            f.write(src)
-        r = subprocess.run(["node", "--check", tmp], capture_output=True, text=True)
-        if r.returncode != 0:
-            print(f"{page}: MODULE SYNTAX ERROR", file=sys.stderr)
-            print(r.stderr.rstrip(), file=sys.stderr)
-            return 1
-    finally:
-        os.unlink(tmp)
-
-    print(f"{page}: module syntax OK ({n} chars checked)")
-    return 0
+def main(*pages):
+    pages = list(pages) or ["explore/index.html"]
+    worst, total = 0, 0
+    for page in pages:
+        if not os.path.exists(page):
+            print(f"EXTRACTION FAILED: {page} not found", file=sys.stderr); return 2
+        rc, n = check_page(page); total += n; worst = max(worst, rc)
+        if rc == 0 and n:
+            print(f"{page}: {n} inline script block(s) OK")
+    print(f"denominator: {total} script block(s) across {len(pages)} page(s)")
+    return worst
 
 
 if __name__ == "__main__":
-    sys.exit(main(*sys.argv[1:2]))
+    sys.exit(main(*sys.argv[1:]))
