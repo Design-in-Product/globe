@@ -46,6 +46,7 @@ fi
 echo "--- site ---"
 # every tracked page, derived from git — not a hardcoded list (brief 10/06 finding 2)
 python3 scripts/check_explore_syntax.py $(git ls-files "*.html") | sed "s/^/  /"
+dns=$(dig +short @8.8.8.8 globe.dinp.xyz CNAME 2>/dev/null | head -1); [ -n "$dns" ] && echo "  dns globe.dinp.xyz: CNAME $dns" || echo "  dns globe.dinp.xyz: NO RECORD at 8.8.8.8 (NXDOMAIN?) (NOT OK)"
 code=$(curl -s -o /dev/null -w "%{http_code}" https://globe.dinp.xyz/explore/); [ "$code" = 200 ] && echo "  live /explore/: 200" || echo "  live /explore/: $code (NOT OK)"
 python3 scripts/wait_pages.py --timeout 5 | sed "s/^/  /"
 
