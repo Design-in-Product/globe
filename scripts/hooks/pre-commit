@@ -28,3 +28,35 @@ if [ -n "$staged" ]; then
     exit 1
   }
 fi
+
+# Drain guard (xian's rule via Janus, 2026-10-08: "the fire is a wake, not a
+# time-box" — designinproduct/docs/conventions/duty-cycle-drain.md). Every NEW
+# fire entry ("## HH:MM PT — ...") added to a tessera log must carry a
+# "Drain:" line, and a Drain line that defers work must name a blocker.
+# Modelled on designinproduct/scripts/check-pulse-drain.mjs; bash here because
+# this repo has no node dependency. Only fires when a log is staged.
+logs_staged=$(git diff --cached --name-only --diff-filter=AM | grep -E '^logs/.*-tessera-log\.md$' || true)
+if [ -n "$logs_staged" ]; then
+  # shellcheck disable=SC2086
+  added=$(git diff --cached -U0 -- $logs_staged | grep -E '^\+' | grep -vE '^\+\+\+' | sed 's/^+//')
+  bad=0; head=""; seen_drain=0; in_block=0
+  check_block() {
+    if [ "$in_block" = 1 ] && [ "$seen_drain" = 0 ]; then
+      echo "pre-commit: fire entry without a Drain: line — commit refused:" >&2; echo "    $head" >&2; bad=1
+    fi
+  }
+  while IFS= read -r line; do
+    if printf '%s' "$line" | grep -qE '^## [0-9]{2}:[0-9]{2} PT'; then
+      check_block; head="$line"; in_block=1; seen_drain=0
+    elif printf '%s' "$line" | grep -qiE '^\**Drain:'; then
+      seen_drain=1
+      if printf '%s' "$line" | grep -qiE '\b(defer|later|next fire|tomorrow|by [0-9]{1,2}:[0-9]{2})\b' && \
+         ! printf '%s' "$line" | grep -qiE '(blocked on|blocker:|waits? on|waiting on|needs .* from|owed by|awaits)'; then
+        echo "pre-commit: Drain line defers work without naming a blocker — commit refused:" >&2
+        echo "    ${line:0:160}" >&2; bad=1
+      fi
+    fi
+  done <<< "$added"
+  check_block
+  [ "$bad" = 0 ] || { echo "    Rule: a fire is a wake, not a time-box. Do unblocked work now; defer only with a named blocker." >&2; exit 1; }
+fi
