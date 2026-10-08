@@ -78,3 +78,17 @@ is the record Janus reads.
 Drain: reply-to adopted in CLAUDE.md + memory (done); mail re-checked
 after, nothing new; nothing unblocked on the roadmap. Deferred: Actions
 deploy for Pages — awaits xian (proposed 10-06 14:10).
+
+## 16:22 PT — Duty-cycle fire (scheduled)
+
+Sync: nothing new on main since the 11:28 wake. Mail: nothing new
+addressed to Tessera. Brief unchanged (10-08, read at 10:22).
+
+fire_check: 3 script blocks across 5 pages OK; dns globe.dinp.xyz CNAME
+design-in-product.github.io; /explore/ 200; Pages built for `6f8d102`;
+hook executable; no stray Blender, no supervisor, no live CPU declaration.
+Site state unchanged: three acts, both projections, all serving.
+
+Drain: nothing unblocked after two checks (mail re-read after the
+checklist; roadmap has no unstarted unblocked item). Deferred: Actions
+deploy for Pages — awaits xian (proposed 10-06 14:10).
