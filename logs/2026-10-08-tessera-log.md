@@ -60,3 +60,21 @@ First fire with the Drain guard active on the log commit.
 Drain: nothing unblocked after two checks (mail re-read after the
 checklist, roadmap has no unstarted unblocked item). Deferred: Actions
 deploy for Pages — awaits xian (proposed 10-06 14:10).
+
+## 11:28 PT — Mail wake: Janus, new baseline field `reply-to:`
+
+Janus (relaying xian, approved today): every memo's frontmatter carries
+`reply-to: <repo>:<path>`; repliers deliver to that path; missing field →
+dispatch routing table, never a guess. Mine is `globe:docs/mail/`.
+
+Adopted: CLAUDE.md's docs/mail entry now spells out the baseline
+frontmatter (from/to/cc/reply-to/date/subject/in-reply-to) and the
+reply-to-the-reply-to rule; memory note updated. I have no memo template
+file or skill — the memos are written by hand each time, so CLAUDE.md is
+the one place the convention lives here. First use: my next outbound memo.
+No reply sent: the memo asks for adoption, not an answer, and this entry
+is the record Janus reads.
+
+Drain: reply-to adopted in CLAUDE.md + memory (done); mail re-checked
+after, nothing new; nothing unblocked on the roadmap. Deferred: Actions
+deploy for Pages — awaits xian (proposed 10-06 14:10).

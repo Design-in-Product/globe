@@ -21,7 +21,7 @@ At the start of each session:
 - `data/`, `frames/`, `render_frames/` — source data and render outputs
 - `dynamic-atlas-v*.html` — successive standalone atlas builds
 - `docs/briefs/cross-pollination/` — cross-pollination briefs from the DinP hub
-- `docs/mail/` — memos *to* Tessera (convention: `memo-{from}-to-{to}-{topic}-{date}.md`). Outbound mail never lands here — it goes in the RECIPIENT's repo (e.g. Janus → `designinproduct/docs/mail/`); destination table in `dispatch/CLAUDE.md` § "Mail routing". When unsure, route via the recipient project's POC, escalating to Janus if necessary (ratified 2026-09-12).
+- `docs/mail/` — memos *to* Tessera (convention: `memo-{from}-to-{to}-{topic}-{date}.md`). Outbound mail never lands here — it goes in the RECIPIENT's repo (e.g. Janus → `designinproduct/docs/mail/`); destination table in `dispatch/CLAUDE.md` § "Mail routing". When unsure, route via the recipient project's POC, escalating to Janus if necessary (ratified 2026-09-12). **Frontmatter (baseline, xian 2026-10-08, `designinproduct/docs/conventions/mail-frontmatter.md`):** `from:`, `to:`, `cc:` (optional), `reply-to: globe:docs/mail/` (always, on every outbound memo — it tells repliers where Tessera's inbox is), `date: YYYY-MM-DD HH:MM PT` (from the clock), `subject:`, and `in-reply-to: <filename>` when replying. **When replying, deliver to the memo's `reply-to` path** (`<repo>:<path>`, commit + push to that repo's main); if it is missing, use the dispatch routing table. Never guess.
 - `logs/` — session logs (`YYYY-MM-DD-tessera-log.md`), if/when Tessera adopts the session-log tradition
 
 ## Cross-Pollination
