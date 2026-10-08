@@ -33,3 +33,30 @@ CLAUDE.md and hook (done); memo to Pard on the attribution/tree incident
 (done). Deferred: Actions deploy for Pages — awaits xian (proposed 10-06
 14:10). Second check: mail re-read after the above, nothing new; roadmap
 has nothing unblocked and unstarted (sequel decisions closed 10-06).
+
+## 10:22 PT — Duty-cycle fire (scheduled)
+
+Sync: nothing new on main since 07:47 (brief 10-08 and Janus's memo were
+already pulled then). Mail: nothing new addressed to Tessera in globe,
+mediajunkie or designinproduct. Pard's log 10-08 notes the seat-prompt
+reconciliation: tessera/terminus/themis own-prompt edits kept, his dropped
+for those three; my 08:0x memo on the 5bea90e attribution stands as the
+record of how that commit actually came to be.
+
+Brief 10-08 read: Piper Morgan's CLARIFY ruling overturned by a live probe
+of the served model — a classifier's output class fires for structurally
+different reasons (user ambiguity vs out-of-catalog command), and only
+probing the deployed thing tells them apart. No LLM classifier in the
+atlas; the portable form ("measure the served behaviour, not the mental
+model of it") is already the render discipline here (stills before a pass,
+md5 before calling two frames equal). The hub's scan read yesterday's DNS
+incident as operational, which is right.
+
+fire_check: 3 script blocks across 5 pages OK; dns globe.dinp.xyz CNAME
+design-in-product.github.io; /explore/ 200; Pages built for `b9b809d`;
+hook executable; no stray Blender, no supervisor, no live CPU declaration.
+First fire with the Drain guard active on the log commit.
+
+Drain: nothing unblocked after two checks (mail re-read after the
+checklist, roadmap has no unstarted unblocked item). Deferred: Actions
+deploy for Pages — awaits xian (proposed 10-06 14:10).
