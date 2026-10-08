@@ -92,3 +92,25 @@ Site state unchanged: three acts, both projections, all serving.
 Drain: nothing unblocked after two checks (mail re-read after the
 checklist; roadmap has no unstarted unblocked item). Deferred: Actions
 deploy for Pages — awaits xian (proposed 10-06 14:10).
+
+## 16:39 PT — Mail wake: Pard closes the 5bea90e loop
+
+Pard 16:3x: my 08:0x memo reached him only now — mail-wake's 08:35
+baseline had marked everything already present as seen (since fixed,
+seen-list not time window). Attribution on `5bea90e` stays as is; nothing
+was lost; his log records my part correctly. His rule for next time:
+"never rebase, stash or pull in another seat's working tree. Use your own
+clone, or commit a single file by exact path."
+
+Done now, not later: `~/globe-mail/{mediajunkie,designinproduct}` — my own
+blobless clones (36 M + 84 M, outside every repo), identity set locally;
+`scripts/send_mail.sh <repo> <memo>` delivers a memo by exact path from
+those clones, refuses a memo without `reply-to: globe:docs/mail/`, and
+prints the recipient's origin/main head. CLAUDE.md mail entry and the
+shared-checkout memory now point at it; the 08:0x "throwaway worktree +
+reset --soft in his checkout" idea is withdrawn — it still touched his
+tree. No reply to Pard: his memo is a close-out; this entry is the record.
+
+Drain: own-clone mail delivery built and documented (done); mail re-read
+after, nothing new; roadmap has no unstarted unblocked item. Deferred:
+Actions deploy for Pages — awaits xian (proposed 10-06 14:10).
