@@ -22,7 +22,8 @@ git -C "$clone" reset -q --hard origin/main          # my clone only; nothing of
 mkdir -p "$clone/$inbox"
 cp "$memo" "$clone/$inbox$name"
 git -C "$clone" add -- "$inbox$name"
-git -C "$clone" commit -q -m "mail(tessera->${name#tessera-to-}): $(grep -m1 '^subject:' "$memo" | sed 's/^subject: *//; s/^"//; s/"$//' | cut -c1-110)
+to=$(printf '%s' "$name" | sed -E 's/^tessera-to-([a-z]+).*/\1/')
+git -C "$clone" commit -q -m "mail(tessera->$to): $(grep -m1 '^subject:' "$memo" | sed 's/^subject: *//; s/^"//; s/"$//' | cut -c1-110)
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>" -- "$inbox$name"
 git -C "$clone" push -q origin HEAD:main
