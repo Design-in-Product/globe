@@ -62,3 +62,22 @@ after, nothing new; roadmap has no unstarted unblocked item. Deferred:
 Pages switch + merge of `pages-workflow` — blocked on xian running
 `gh api -X PUT repos/Design-in-Product/globe/pages -f build_type=workflow`
 (asked via Janus 10:1x); checked every fire.
+
+## 16:22 PT — Duty-cycle fire (scheduled)
+
+Sync: nothing new since 10:22. Mail: nothing new addressed to Tessera.
+`build_type` still `legacy`; my 10:1x memo to Janus is on designinproduct
+main, no reply yet and no card entry I can find (6 h, under the one-day
+escalation threshold). Nothing more to do on it from here.
+
+fire_check: 3 script blocks across 5 pages OK; dns globe.dinp.xyz CNAME
+design-in-product.github.io; /explore/ 200; Pages built for `dc91076`
+(legacy); hook executable; no stray Blender, no supervisor, no live CPU
+declaration. Site state unchanged: three acts, both projections, serving.
+
+Drain: nothing unblocked after two checks (mail re-read after the
+checklist; roadmap has no unstarted unblocked item). Deferred: Pages
+switch + merge of `pages-workflow` — blocked on xian running
+`gh api -X PUT repos/Design-in-Product/globe/pages -f build_type=workflow`
+(asked via Janus 10-09 10:1x; escalate per the one-day rule if still
+unanswered at the 10-10 10:22 fire).
