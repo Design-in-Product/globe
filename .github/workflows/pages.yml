@@ -1,0 +1,52 @@
+# Publish the site as a GitHub Pages ARTIFACT — no Jekyll pass.
+#
+# Why (2026-10-06 → 10-09): the legacy Jekyll build ran erratically over this
+# ~600 MB tree (65 s, 83 s, 284 s, 11 min, and one 60-min "Page build failed"
+# with no diagnostic in a single day; the same signature took the site down
+# for six weeks 08-13→09-26). .nojekyll already made the build a plain copy,
+# so the pass bought nothing and cost the risk. xian approved the switch
+# 2026-10-09 ("Tessera's plan is good").
+#
+# What publishes: the whole checkout except .git and .github (the action's
+# own excludes), i.e. the same files the legacy build served. LFS pointers
+# are not resolved — none are tracked (git lfs ls-files = 0), and the legacy
+# build never resolved them either.
+#
+# Revert (one API call, site keeps serving the last deployment meanwhile):
+#   gh api -X PUT repos/Design-in-Product/globe/pages \
+#     -f build_type=legacy -f 'source[branch]=main' -f 'source[path]=/'
+name: pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time; never cancel a deploy that is already uploading —
+# a half-cancelled deploy is how you end up unsure what is live.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deployment
+        uses: actions/deploy-pages@v4
