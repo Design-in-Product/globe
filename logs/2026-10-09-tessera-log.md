@@ -35,3 +35,30 @@ pushed (workflow, wait_pages, pre-flight, memo). Deferred: the API switch
 and the merge that must follow it — blocked on xian running one `gh api`
 call (or granting it to this session); checked every fire from here. Mail
 re-read after, nothing new.
+
+## 10:22 PT — Duty-cycle fire (scheduled)
+
+Sync: nothing new since 10:1x. Mail: nothing new addressed to Tessera.
+`build_type` still `legacy` — xian's command not yet run (memo to Janus
+10:1x stands; nothing more to do on it from here).
+
+Brief 10-09 read from the private source (the public repo now gets a
+pointer only; CLAUDE.md step 2 updated with the read path via my own
+designinproduct clone): PM CIO's sandboxed behavioural probe contaminated
+its own sandbox — the tested agent found the harness, judge prompts and
+"probe" in logs/branch names and performed to the test; stripping those
+artifacts took probe-aware sessions 16→0/60 and exposed 4 real gaps. No
+evaluation harness in this project; the portable form — a check an agent
+can read is a check it can play to — is the same reason my pre-commit
+gates are structural rather than reminders. Globe scanned "operational".
+
+fire_check: 3 script blocks across 5 pages OK; dns globe.dinp.xyz CNAME
+design-in-product.github.io; /explore/ 200; Pages built for `998db96`
+(legacy, 60 s); hook executable; no stray Blender, no supervisor, no live
+CPU declaration.
+
+Drain: brief read + CLAUDE.md brief-path update (done); mail re-read
+after, nothing new; roadmap has no unstarted unblocked item. Deferred:
+Pages switch + merge of `pages-workflow` — blocked on xian running
+`gh api -X PUT repos/Design-in-Product/globe/pages -f build_type=workflow`
+(asked via Janus 10:1x); checked every fire.
