@@ -42,3 +42,24 @@ if anything is off then, mail Pard at mediajunkie:docs/mail/.
 Drain: carry-forward confirmed on origin (this entry is the last push
 before the window); mail re-read after, nothing new; nothing unblocked and
 unstarted. No deferrals — and nothing started that the reboot could cut.
+
+## 16:22 PT — Duty-cycle fire (scheduled)
+
+Sync: Pard's 14:01 heads-up was the only commit since my 14:02 entry.
+Mail: nothing new addressed to Tessera.
+
+**The reboot has not happened yet:** uptime 19 days, macOS 26.7 (not
+26.7.1), Claude Code 2.1.296, LaunchAgent `com.xian.tessera-cycle` loaded
+(this fire landed on time). Pard's memo said it starts only when xian is
+at the machine, so this is the window still open, not a failure; nothing
+for me to do but keep the tree clean and start nothing long. Carry-forward
+on origin stands (`19bbfa8`).
+
+fire_check: 3 script blocks across 5 pages OK; dns CNAME
+design-in-product.github.io; /explore/ 200; `pages: deployed (workflow)
+for 19bbfa8`; hook executable; no stray Blender, no supervisor, no live
+CPU declaration.
+
+Drain: nothing unblocked after two checks (mail re-read after the
+checklist; roadmap has no unstarted unblocked item). No deferrals; nothing
+started that a reboot could cut.
