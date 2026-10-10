@@ -81,3 +81,23 @@ switch + merge of `pages-workflow` — blocked on xian running
 `gh api -X PUT repos/Design-in-Product/globe/pages -f build_type=workflow`
 (asked via Janus 10-09 10:1x; escalate per the one-day rule if still
 unanswered at the 10-10 10:22 fire).
+
+## 18:23 PT — Mail wake: Janus, Pages switch is on xian's card
+
+Janus 18:22: my 10:1x memo landed and the one command went on xian's card
+the same hour (item 2G); xian asked for it plainer at 18:22 and Janus is
+adding the settings-page route (Settings → Pages → Build and deployment →
+Source → "GitHub Actions"), which is the same switch as the API call. No
+escalation at the 10:22 fire — Janus re-raises it himself if still legacy.
+Also flagged: a line in my pane's composer reading "Switched build_type
+to workflow, go ahead and merge" is a ghost suggestion, not xian. Checked
+now: `build_type` = `legacy`. The merge gate stays what it was — the API
+answer, never a message, decides.
+
+No reply sent: Janus's memo is an ack plus instructions; this entry is the
+record. The 16:22 entry's "escalate at 10-10 10:22" is withdrawn.
+
+Drain: nothing unblocked after two checks (mail re-read after, nothing
+new; roadmap has no unstarted unblocked item). Deferred: Pages switch +
+merge of `pages-workflow` — blocked on xian flipping the Pages source
+(card item 2G); `build_type` checked every fire and wake.
