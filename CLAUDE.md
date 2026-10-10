@@ -22,7 +22,8 @@ At the start of each session:
 - `dynamic-atlas-v*.html` — successive standalone atlas builds
 - `docs/briefs/cross-pollination/` — cross-pollination briefs from the DinP hub
 - `docs/mail/` — memos *to* Tessera (convention: `memo-{from}-to-{to}-{topic}-{date}.md`). Outbound mail never lands here — it goes in the RECIPIENT's repo (e.g. Janus → `designinproduct/docs/mail/`); destination table in `dispatch/CLAUDE.md` § "Mail routing". When unsure, route via the recipient project's POC, escalating to Janus if necessary (ratified 2026-09-12). **Frontmatter (baseline, xian 2026-10-08, `designinproduct/docs/conventions/mail-frontmatter.md`):** `from:`, `to:`, `cc:` (optional), `reply-to: globe:docs/mail/` (always, on every outbound memo — it tells repliers where Tessera's inbox is), `date: YYYY-MM-DD HH:MM PT` (from the clock), `subject:`, and `in-reply-to: <filename>` when replying. **Deliver with `scripts/send_mail.sh <repo> <memo>`** — it commits from Tessera's own clones in `~/globe-mail/`, never from a sibling seat's live checkout (Pard's rule, 2026-10-08, after an autostash in his tree swept his edit into a commit under my name). **When replying, deliver to the memo's `reply-to` path** (`<repo>:<path>`, commit + push to that repo's main); if it is missing, use the dispatch routing table. Never guess.
-- `logs/` — session logs (`YYYY-MM-DD-tessera-log.md`), if/when Tessera adopts the session-log tradition
+- `logs/` — session logs (`YYYY-MM-DD-tessera-log.md`): one entry per fire or wake since 2026-09-18, each ending in a `Drain:` line; the project's history lives here, not in ROADMAP/handoff (living-doc convention, Janus 2026-10-06)
+- `.github/workflows/pages.yml` — publishing: GitHub Pages via the Actions artifact deploy (`build_type=workflow`, no Jekyll pass) since 2026-10-09; `scripts/wait_pages.py` proves "deployed for <sha>" each fire; `scripts/fire_check.sh` is the per-fire health check
 
 ## Cross-Pollination
 
@@ -30,4 +31,4 @@ Tectonic Globe is a registered participant in the Design in Product cross-pollin
 
 ---
 
-*This file establishes the cross-pollination reader hookup (set up by Janus, 2026-06-26). Tessera + xian own the substantive mandate, roadmap, and any further conventions — expand this file as the project's agent practice develops.*
+*Cross-pollination reader hookup set up by Janus, 2026-06-26. Tessera + xian own the substantive mandate (ROADMAP.md), the current state (`docs/handoff-tessera-2026-09-29.md`, living) and the conventions above. Tessera runs on a duty cycle: LaunchAgent fires 10:22 and 16:22 PT plus mail wakes, all logged.*

@@ -1,6 +1,6 @@
 # Handoff: Tessera — current state (supersedes 2026-09-18)
 
-**Updated 2026-10-04** (sequel rendered; 🔒 rule adopted). Original rationale:
+**Updated 2026-10-10** (drift audit after brief 10-10 §1: publishing model, sequel shipped, operating model, mail delivery). Earlier: 10-04 (sequel rendered; 🔒 rule adopted). Original rationale:
 **Why now:** brief 9/29 (Klatch fork-identity finding) restated the first
 principle of multi-session work — *shared memory is exactly what's in git,
 nothing carried implicitly across session boundaries.* My last handoff is
@@ -13,14 +13,29 @@ is **superseded** — read this instead.
 
 Tectonic Globe: animated plate-tectonic reconstructions (GPlates/gplately)
 on globe.dinp.xyz (GitHub Pages, `Design-in-Product/globe`, single `main`,
-**legacy Jekyll build — see the trap below**). Roadmap #1 (main film) and
+**Actions artifact deploy since 2026-10-09** — `.github/workflows/pages.yml`, no Jekyll pass; see trap 2 for why). Roadmap #1 (main film) and
 #2 (deep-time prequel) shipped long ago. **Roadmap item 5 (WebGL scrubber)
 shipped 2026-09-22 and is live at `/explore/`** — free orbit plus a
 1800 Ma → +250 Myr slider: 23 past keyframes plus a **scenario picker**
 (four futures superposed or any one alone; shipped 10-02). **Roadmap #3
-(future sequel): rungs 1–5 done — v1 globe film rendered 10-03** (66 s,
-1,587 frames, `previews/` §8). **Not yet chained into the site: two
-decisions are 🔒 blocked on xian** (see Who owes what).
+(future sequel) SHIPPED 2026-10-06** as the site's third act, both
+projections (`tectonic_sequel_globe_v2.mp4` + `tectonic_sequel_flat_v2.mp4`,
+75 s). **Nothing is 🔒 blocked on anyone** (see Who owes what).
+
+## Operating model (how this seat actually runs, 2026-10-10)
+
+Duty cycle: Amber LaunchAgent fires at **10:22 and 16:22 PT** inject the
+prompt in `mediajunkie/docs/seat-prompts/tessera.md`; mail wakes fire on
+new mail to `docs/mail/`. Every fire/wake: sync, mail, `scripts/fire_check.sh`,
+log entry in `logs/YYYY-MM-DD-tessera-log.md` ending in a **`Drain:` line**
+(xian's rule 10-08: do all unblocked work, idle only after two clean checks,
+defer only with a named blocker; the pre-commit hook refuses an entry without
+it). Outbound mail: frontmatter with `reply-to: globe:docs/mail/`, delivered
+by `scripts/send_mail.sh <repo> <memo>` from my own clones in `~/globe-mail/`
+— never from a sibling seat's checkout (trap 1). Briefs: the public repo gets
+a pointer; the body is read from the private hub via that same clone
+(CLAUDE.md step 2). History lives in the logs; this file and ROADMAP.md are
+living documents with closed items removed.
 
 ## Traps that cost real time — read before touching anything
 
@@ -30,8 +45,13 @@ decisions are 🔒 blocked on xian** (see Who owes what).
    **173 + 23 commits of Pard's work were authored as me.** Use
    `git -c user.name="Tessera (Tectonic Globe)" -c user.email=... commit`.
    `globe` is mine alone and correctly configured. Full account:
-   `docs/mail/` + memory `shared-checkout-identity.md`.
-2. **`.nojekyll` must stay.** This repo publishes via legacy Jekyll, and
+   `docs/mail/` + memory `shared-checkout-identity.md`. **10-08 addendum:**
+   never `rebase`, `stash`, `pull` or `reset` in another seat's working
+   tree either — an autostash of mine swept Pard's uncommitted edit into
+   a commit under my name. Mail goes via `scripts/send_mail.sh` from
+   `~/globe-mail/<repo>` (my clones); sibling checkouts are read-only to me.
+2. **Publishing is the Actions artifact deploy (10-09); keep `.nojekyll`
+   anyway.** Under the legacy Jekyll build this repo used until 10-09,
    **the site silently failed to publish for six weeks (08-13 → 09-26)** —
    every build errored, so everything shipped in that window existed on
    `main` and was never served. `.nojekyll` fixed it; builds went from
@@ -39,13 +59,22 @@ decisions are 🔒 blocked on xian** (see Who owes what).
    exactly which input — my first diagnosis (a brief quoting `{%...%}`)
    was wrong and is corrected in `logs/2026-09-26` + commit `4271a59`.
    Best inference: ~579 MB of tracked content (mp4s, 22–33 MB `.gpml`)
-   that Jekyll walked every build.
+   that Jekyll walked every build. Even with `.nojekyll`, 10-06 saw builds
+   of 65 s, 83 s, 284 s, 11 min and one 60-min error in a day; xian
+   approved the switch 10-09 and flipped the source; first workflow run
+   52 s. `.nojekyll` stays because the one-call revert
+   (`gh api -X PUT repos/Design-in-Product/globe/pages -f build_type=legacy
+   -f 'source[branch]=main' -f 'source[path]=/'`) lands back on Jekyll.
+   That PUT is a human step — my session's permission layer refuses it.
 3. **Don't add bulk to this repo.** Consequence of #2. Source data belongs
    in `~/globe-render/` (outside git), which is where the future-scenario
    grids went.
 4. **Verify publishing, not just pushing.** `python3 scripts/wait_pages.py`
-   — exits 0 only when Pages has built **the sha on origin/main**. Checking
-   `status == built` alone matched the *previous* push once (10-02).
+   — exits 0 only when the **sha on origin/main** is deployed (reads
+   `build_type`: github-pages deployment status in workflow mode, Pages
+   build in legacy). Checking `status == built` alone matched the
+   *previous* push once (10-02). Deploy failures now show in
+   `gh run list --workflow pages`.
 5. **The renderer's camera latitude is not what the path says.**
    `render_globe.py` rotates the globe with Euler (0,−lat,−lon); the view
    latitude is ≈ `−lat·cos(lon) + 10°`. Shipped films were eye-framed
@@ -82,22 +111,22 @@ decisions are 🔒 blocked on xian** (see Who owes what).
 
 | | they owe me | I owe them |
 |---|---|---|
-| **xian** | Nothing — both sequel decisions answered 10-06 (dissolve; centroid + slow pan). Next eyeball: the assembled v2 film once the tour re-render lands (~13:00 10-06). | Nothing outstanding |
-| **Pard** | Nothing | Nothing; the identity incident is reported and owned |
+| **xian** | Nothing — sequel decisions answered and shipped 10-06; Pages source flipped 10-09. | Nothing outstanding |
+| **Pard** | Nothing | Nothing; the identity incident (09-18) and the autostash incident (10-08) are both reported and owned |
 | **Janus** | Relays xian's decisions (reliable) | Read/act on daily briefs |
 
 ## Deliberately unresolved — do not "fix" these
 
-1. **Nothing is unresolved as of 2026-10-06.** (Closed items live in the
+1. **Nothing is unresolved as of 2026-10-10.** (Closed items live in the
    daily logs, per the network's living-doc rule — Janus memo 10-06.)
    Trap 7, learned closing the last one: `render_globe.py` skips frames
    already on disk, so two candidate stills at the same frame index in the
    same RENDER_DIR are ONE still. One RENDER_DIR per candidate, and `md5`
    the outputs before calling them a comparison.
-3. **Roadmap items 7 (physical/POD) and 8 (biome painting)** — xian-confirmed
+2. **Roadmap items 7 (physical/POD) and 8 (biome painting)** — xian-confirmed
    someday/maybe. If 8 ever moves: the CESM1.2.2 dataset is CC BY 4.0 and
    fine commercially; the Köppen set is **CC BY-NC-ND — not for a POD product**.
-4. **Brightness/contrast in `/explore/`** (shader uniforms 0.10 / 1.18)
+3. **Brightness/contrast in `/explore/`** (shader uniforms 0.10 / 1.18)
    was tuned to xian's "more brightness and higher contrast" by measuring
    (+21% mean luma), and he has the A/B. Don't re-tune unprompted.
 
