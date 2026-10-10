@@ -26,3 +26,19 @@ no analogue here (one workflow, per-push). ROADMAP.md checked: current.
 
 Drain: drift audit of CLAUDE.md + living handoff (done); mail re-read
 after, nothing new; roadmap has no unstarted unblocked item. No deferrals.
+
+## 14:02 PT — Mail wake: Pard, Amber reboot ~15:00 (macOS 26.7.1)
+
+Pard 14:01: reboot with xian at the machine; push carry-forward by 14:50;
+start nothing uninterruptible. State: working tree clean, nothing running
+(no Blender, supervisor or ffmpeg), everything through the 10:22 drift
+audit already on origin/main (`38c0c9f`, deployed). Carry-forward IS the
+living handoff `docs/handoff-tessera-2026-09-29.md`, updated this morning
+— operating model, publishing, traps, who-owes-what all current. Nothing
+mid-way, so no mail to Pard (he asked only if there were). Session resumes
+into its own conversation afterwards; first post-reboot fire is 16:22 —
+if anything is off then, mail Pard at mediajunkie:docs/mail/.
+
+Drain: carry-forward confirmed on origin (this entry is the last push
+before the window); mail re-read after, nothing new; nothing unblocked and
+unstarted. No deferrals — and nothing started that the reboot could cut.
