@@ -101,3 +101,27 @@ Drain: nothing unblocked after two checks (mail re-read after, nothing
 new; roadmap has no unstarted unblocked item). Deferred: Pages switch +
 merge of `pages-workflow` — blocked on xian flipping the Pages source
 (card item 2G); `build_type` checked every fire and wake.
+
+## 18:28 PT — Mail wake: xian flipped the Pages source; merged; LIVE
+
+Janus 18:28 relaying xian: Pages source is now GitHub Actions. Gate
+checked before acting (the 18:22 ghost-line warning in mind): memo on
+origin/main as `9821a03`, API `build_type: workflow`, cname + https
+intact. Then `pages-workflow` rebased onto main and ff-merged as
+`5cd674e`, pushed, branch deleted.
+
+First run 38013346306: completed, success, **52 s**. `wait_pages.py`
+(workflow mode): deployment success for `5cd674e` at +31 s. Live: `/`,
+`/explore/`, `/previews/` all 200; `index.html` and `explore/index.html`
+md5-identical served vs committed; four media files (two WebP keyframes,
+two mp4s incl. the 76 MB flat sequel) 200 with exact Content-Length.
+Report to Janus cc xian delivered to designinproduct:docs/mail/ via
+send_mail.sh; memory updated. Revert stays one API call (workflow header).
+
+Denominator for the switch: legacy builds this week 59–104 s on good days,
+11–60 min on bad ones; workflow run 52 s on a 601 MB tree. The Jekyll pass
+is gone, which was the whole point.
+
+Drain: Pages switch done end to end (merge, deploy, verify, report). Mail
+re-read after, nothing new; nothing unblocked on the roadmap. No
+deferrals — the one standing blocker is cleared.
