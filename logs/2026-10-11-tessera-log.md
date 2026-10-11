@@ -29,3 +29,16 @@ declaration.
 
 Drain: post-reboot verification (done, clean); brief read; mail re-read
 after, nothing new; roadmap has no unstarted unblocked item. No deferrals.
+
+## 16:22 PT — Duty-cycle fire (scheduled)
+
+Sync: nothing new since 10:22. Mail: nothing new addressed to Tessera.
+Brief unchanged (10-11, read this morning).
+
+fire_check: 3 script blocks across 5 pages OK; dns CNAME
+design-in-product.github.io; /explore/ 200; `pages: deployed (workflow)
+for 67e899b`; hook executable; no stray Blender, no supervisor, no live
+CPU declaration. Host steady post-reboot.
+
+Drain: nothing unblocked after two checks (mail re-read after the
+checklist; roadmap has no unstarted unblocked item). No deferrals.
