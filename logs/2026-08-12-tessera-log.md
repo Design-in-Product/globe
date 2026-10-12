@@ -12,10 +12,10 @@ mediajunkie main, read the 8/12 cross-pollination brief, checked
   fail-open-verification lesson from the reboot runbook ("allowlist
   success, don't denylist failure" — consonant with the honest-accounting
   pattern already built into the render scripts; nothing new to change).
-- Mail: `docs/mail/janus-to-tessera-lamantia-physical-globe-lead-2026-08-12.md`
-  — heads-up that xian's call with Joe LaMantia landed on Tectonic Globe.
+- Mail: `docs/mail/janus-to-tessera-physical-globe-lead-2026-08-12.md`
+  — heads-up that xian's call with the hardware lead landed on Tectonic Globe.
 
-## Physical-globe idea (Joe LaMantia, via xian's 8/11 call)
+## Physical-globe idea (the hardware lead, via xian's 8/11 call)
 
 xian brought it directly. Read the full transcript at
 `mediajunkie/incoming/2026-08-11-transcript-joe-lamantia.txt` (relevant

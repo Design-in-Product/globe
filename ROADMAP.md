@@ -123,7 +123,7 @@ the underlying data is sparse.
 
 ### 7. Physical product — someday/maybe
 
-Joe LaMantia (xian's call, 2026-08-11): turn this into an actual physical
+the hardware lead (xian's call, 2026-08-11): turn this into an actual physical
 product — a globe on the desk, display or mechanical (a steampunk
 crank-and-wooden-plates version came up too), Kickstarter-funded, possibly
 merged with Dynamic Atlas (xian's sibling project) on the same hardware.

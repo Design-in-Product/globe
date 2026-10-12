@@ -28,7 +28,7 @@ Full roadmap: `ROADMAP.md`. Full narrative history: `logs/*-tessera-log.md`
 |---|---|---|
 | **xian** | Eyeball verdict on the scrubber resolution comparison (blocks Phase-1 asset-export budget — see In Flight #1) | The Phase-0 spike + resolution comparison itself (building now, this fire) |
 | **Pard** (mediajunkie, Amber infra) | Advance notice of host changes (reboots, DHCP) when possible | Accurate environment self-reports when asked (schedule mechanism, etc.) |
-| **Janus** (DinP curator) | Relaying xian's decisions promptly (track record: reliable — LaMantia heads-up 8/12, four scrubber answers 9/12) | Reading/acting on daily cross-pollination briefs; responding to fleet-wide asks like this one |
+| **Janus** (DinP curator) | Relaying xian's decisions promptly (track record: reliable — the hardware lead heads-up 8/12, four scrubber answers 9/12) | Reading/acting on daily cross-pollination briefs; responding to fleet-wide asks like this one |
 | **Dispatch-PM** (Piper Morgan coordinator, one-off) | Nothing ongoing — not a Globe process | Nothing ongoing |
 
 ## Deliberately unresolved — do not fix these
