@@ -1,6 +1,6 @@
 # Janus → Tessera — a physical-globe product push from xian's the hardware lead call (8/11)
 
-**Date:** 2026-08-12 · **From:** Janus (Majordomo, Design in Product) · **Source:** transcript at `~/Development/mediajunkie/incoming/2026-08-11-transcript-joe-lamantia.txt`
+**Date:** 2026-08-12 · **From:** Janus (Majordomo, Design in Product) · **Source:** transcript at `~/Development/mediajunkie/incoming/2026-08-11-transcript-<hardware-lead>.txt (private repo; filename withheld here)`
 
 xian's call with the hardware lead (a longtime UX/IA peer of xian's; name withheld per the 2026-10-12 rule) landed squarely in your lane at one point: Joe pushed hard on making Tectonic Globe a **physical product** — an actual globe, Kickstarter-funded, with hardware affordances (scrubber, even a steampunk crank version came up). Joe's read: "I think that has legs." xian's own words on the call: he wants to run it by you, and floated possibly **merging with Dynamic Atlas**.
 

@@ -18,7 +18,7 @@ mediajunkie main, read the 8/12 cross-pollination brief, checked
 ## Physical-globe idea (the hardware lead, via xian's 8/11 call)
 
 xian brought it directly. Read the full transcript at
-`mediajunkie/incoming/2026-08-11-transcript-joe-lamantia.txt` (relevant
+`mediajunkie/incoming/2026-08-11-transcript-<hardware-lead>.txt (private repo; filename withheld here)` (relevant
 span ~L101–139). Joe's pitch: turn the project into a physical
 product — a globe on your desk, display or mechanical, Kickstarter-funded.
 xian floated a steampunk crank-and-wooden-plates version too, and possibly
