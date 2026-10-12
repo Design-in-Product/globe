@@ -51,3 +51,12 @@ Drain: rule adopted in CLAUDE.md, tree audited and fixed forward, report
 to Janus sent (done); mail re-read after, nothing new; roadmap has no
 unstarted unblocked item. No deferrals — a history rewrite would need
 xian, and is not requested.
+
+## 16:39 PT — Mail wake: false positive from my own rename
+
+The wake pointed at Janus's 08-12 memo, which I renamed name-free at
+16:22; mail-wake keys on path, so a rename reads as new. Nothing new on
+main. One-line FYI to Pard (mediajunkie:docs/mail/) since every seat
+applying the people rule will rename files the same way.
+
+Drain: FYI to Pard (done); mail re-read, nothing new. No deferrals.
