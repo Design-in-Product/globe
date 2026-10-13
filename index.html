@@ -269,6 +269,64 @@
             border: 1px solid var(--border);
         }
 
+
+        /* ── Roadmap ───────────────────────────────── */
+
+        .roadmap-list { list-style: none; }
+
+        .roadmap-list li {
+            display: grid;
+            grid-template-columns: 7.5rem 1fr;
+            gap: 0.75rem;
+            padding: 0.7rem 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.88rem;
+            color: var(--text-muted);
+        }
+
+        .roadmap-list li:last-child { border-bottom: none; }
+
+        .roadmap-list .status {
+            font-size: 0.68rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding-top: 0.2rem;
+            color: var(--text-dim);
+        }
+
+        .roadmap-list .status.shipped { color: var(--accent); }
+        .roadmap-list .status.active { color: var(--text); }
+
+        .roadmap-list strong { color: var(--text); font-weight: 500; }
+
+        .roadmap-note {
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            margin-top: 1.25rem;
+        }
+
+        .roadmap-note a, .built p a {
+            color: var(--text-muted);
+            text-decoration: none;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .roadmap-note a:hover, .built p a:hover { color: var(--accent); }
+
+        /* ── How this was built ────────────────────── */
+
+        .built p {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .built p strong { color: var(--text); font-weight: 500; }
+
+        @media (max-width: 480px) {
+            .roadmap-list li { grid-template-columns: 1fr; gap: 0.2rem; }
+        }
+
         /* ── Footer ────────────────────────────────── */
 
         footer {
@@ -429,10 +487,43 @@
     </div>
 </section>
 
+<!-- ── How this was built ─────────────────────────── -->
+<section class="built" id="built">
+    <h2>How this was built</h2>
+
+    <p>The first six versions took four days in February 2025, Xian and Claude working in a loop: build, watch, fix, build again. Claude wrote the code; Xian watched every render and caught the bugs that only show in motion. Claude can look at a frame but cannot watch a film, so that division of labour was the method, not a convenience.</p>
+
+    <p><strong>The hardest bugs were geometric, not algorithmic.</strong> Which axis, which sign, radians or degrees. Getting rotations right ate more time than any of the clustering or pacing logic, and the pattern never stopped: in October 2026 we measured the renderer with Blender's own sphere and found its latitude is sign-inverted and coupled to longitude. The shipped films had all been framed by eye against that behaviour, so the fix went into the camera paths, not the renderer.</p>
+
+    <p><strong>The biggest improvement was more data, not a cleverer algorithm.</strong> Moving from 5-million-year to 1-million-year steps was a one-line change that turned a slideshow into continents that slide. The same lesson held for the deep-time prequel and the future sequel: the pipeline was already parameterised, and the real work was finding plate models that cover the span and chaining the eras so the seams disappear.</p>
+
+    <p><strong>Since July 2026 the project has had a resident agent.</strong> Tessera runs on a duty cycle on a Mac Studio, works this roadmap with Xian's standing authority, and checks in only for decisions. The things that went wrong in that period were operational, not creative: the site silently stopped publishing for six weeks behind a Jekyll build, and a DNS zone import dropped the globe's record. Both are now caught by a health check that runs twice a day and proves "deployed for this commit" rather than "pushed".</p>
+
+    <p>The full narrative, including the eleven-item backlog from which the first three were chosen, is in the <a href="https://github.com/Design-in-Product/globe#how-this-was-built">README</a>. The day-by-day record lives in the repo's logs.</p>
+</section>
+
+<!-- ── Roadmap ─────────────────────────────────────── -->
+<section class="roadmap" id="roadmap">
+    <h2>Where it's going</h2>
+
+    <ul class="roadmap-list">
+        <li><span class="status shipped">Shipped</span><span><strong>Spin reveals</strong> &mdash; a slow 360&deg; turn at each supercontinent hold. v7, July 2026.</span></li>
+        <li><span class="status shipped">Shipped</span><span><strong>Deep-time prequel</strong> &mdash; 1800 to 1000 Ma, chained into the main film. August 2026.</span></li>
+        <li><span class="status shipped">Shipped</span><span><strong>Future sequel</strong> &mdash; 250 million years ahead, four published scenarios and their superposition. October 2026.</span></li>
+        <li><span class="status shipped">Shipped</span><span><strong>Explore</strong> &mdash; a WebGL scrubber over the whole span, past and futures as layers. Phase 1, September 2026; later phases add keyframe density.</span></li>
+        <li><span class="status active">In progress</span><span><strong>Cinematic palette</strong> &mdash; gold land on midnight ocean across every film and this page. Candidates rendered October 2026, choice pending.</span></li>
+        <li><span class="status active">In progress</span><span><strong>This page</strong> &mdash; the story above, this list, and the new palette once it is chosen.</span></li>
+        <li><span class="status">Someday</span><span><strong>A physical globe</strong> &mdash; the animation on a real sphere. Explore is the prerequisite and now exists; no work started.</span></li>
+        <li><span class="status">Considering</span><span><strong>Biome and climate painting</strong> &mdash; vegetation and climate layers over the plates. Datasets surveyed, registration onto the plate model is the hard part.</span></li>
+    </ul>
+
+    <p class="roadmap-note">The north star behind all of it is a globe other people can extend: shared layers, open data, any era. Nothing on this list is allowed to foreclose that. Current detail and history: <a href="https://github.com/Design-in-Product/globe/blob/main/ROADMAP.md">ROADMAP.md</a>.</p>
+</section>
+
 <!-- ── Footer ─────────────────────────────────────── -->
 <footer>
-    <p>Built by Xian &amp; Claude &middot; February 2025 &ndash; July 2026 &middot; <a href="https://github.com/Design-in-Product/globe">View source on GitHub</a></p>
-    <p class="more">More to come.</p>
+    <p>Built by Xian &amp; Claude &middot; February 2025 &ndash; October 2026 &middot; <a href="https://github.com/Design-in-Product/globe">View source on GitHub</a></p>
+    <p class="more">Two of the four remaining items are underway. More to come.</p>
 </footer>
 
 <!-- ── Script ─────────────────────────────────────── -->

@@ -2,7 +2,7 @@
 
 ## Captured from working sessions (Feb 2025 – Feb 2026)
 
-### 1. Supercontinent "spin reveal" ← explore next
+### 1. Supercontinent "spin reveal" — SHIPPED 2026-07-14 as v7 (`tectonic_globe_v7.mp4`; Earth-axis sweep at all four holds via `add_spin_reveal.py`, flat companion `tectonic_flat_v7.mp4` with the projection morph). History in `logs/2026-07-13-tessera-log.md` and `logs/2026-07-14-tessera-log.md`.
 
 During the variable-pacing hold frames at major supercontinents (Rodinia, Gondwana, Pangaea, present day), add a slow 360° rotation to reveal the full surface. Worth exploring BEFORE the deep-time prequel, since it affects the overall animation feel.
 
@@ -23,7 +23,7 @@ During the variable-pacing hold frames at major supercontinents (Rodinia, Gondwa
 
 ---
 
-### 2. Deep time — prequel series
+### 2. Deep time — prequel series — SHIPPED 2026-08-10 (`tectonic_prequel_globe_v1.mp4` + `tectonic_prequel_v1.mp4`, 1800→1000 Ma, chains into the main film; commit `03d27b6`)
 
 Extend further into the past beyond 1 Ga (Rodinia).
 
@@ -47,7 +47,7 @@ Speculative plate tectonics going forward from present day.
 
 ---
 
-### 4. Visual polish — cinematic color palette
+### 4. Visual polish — cinematic color palette — IN PROGRESS since 2026-10-13 (xian: start items 4 then 6). Three gold/blue candidates rendered for xian's pick: `docs/design/palette-comparison-2026-10-13/`; tooling `scripts/recolor_texture.py` (palette remap of existing textures, no gplately rerun) + `scripts/render_palette_still.py`.
 
 Shift from current earth tones to gold/blue movie-poster aesthetic.
 
@@ -113,7 +113,7 @@ the underlying data is sparse.
 
 ---
 
-### 6. Landing page enhancements
+### 6. Landing page enhancements — IN PROGRESS since 2026-10-13 (after item 4)
 
 - Roadmap section on the site (once this list is finalized by Xian)
 - Case study / "How This Was Built" — the README narrative is already written for an audience, could become its own expanded page section

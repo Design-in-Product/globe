@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cinematic palette comparison — roadmap item 4, for xian's pick</title>
+<style>
+  body { margin: 0; padding: 24px; background: #0a0e14; color: #dfe6ee; font-family: -apple-system, "Segoe UI", sans-serif; }
+  h1 { font-size: 1.15rem; font-weight: 600; margin: 0 0 6px; }
+  h2 { font-size: 1rem; font-weight: 600; margin: 32px 0 8px; }
+  p.meta, p.note, li { color: #9fb0c3; font-size: 0.86rem; max-width: 780px; line-height: 1.5; }
+  code { color: #c9d6e4; font-size: 0.82em; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 22px; margin-top: 18px; }
+  .card { background: #111823; border: 1px solid #223047; border-radius: 8px; padding: 14px; }
+  .card h2 { margin: 0 0 4px; }
+  .card .tag { font-size: 0.78rem; color: #7fd1ff; margin-bottom: 10px; }
+  .card img { width: 100%; border-radius: 4px; display: block; margin-bottom: 8px; }
+  .label { font-size: 0.72rem; color: #9fb0c3; margin: 6px 0 3px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .swatches { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+  .sw { flex: 1 1 60px; min-width: 60px; height: 34px; border-radius: 4px; border: 1px solid #223047; font-size: 0.62rem; display: flex; align-items: flex-end; padding: 3px 4px; box-sizing: border-box; color: rgba(255,255,255,0.85); text-shadow: 0 0 3px #000; }
+  /* site-chrome mock: each card sets its own variables */
+  .mock { border-radius: 6px; padding: 16px 14px; background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+  .mock h3 { font-size: 1.2rem; font-weight: 300; letter-spacing: 0.15em; text-transform: uppercase; margin: 0 0 2px; }
+  .mock .tagline { color: var(--text-muted); font-size: 0.78rem; margin: 0 0 10px; }
+  .mock .btns { display: flex; gap: 8px; flex-wrap: wrap; }
+  .mock .btn { border: 1px solid var(--border); color: var(--text-muted); padding: 4px 11px; border-radius: 20px; font-size: 0.72rem; }
+  .mock .btn.active { border-color: var(--accent); color: var(--accent); }
+  .mock .card-line { margin-top: 12px; font-size: 0.8rem; }
+  .mock .card-line span { color: var(--accent); }
+  .mock .pipe { margin-top: 10px; background: var(--bg-raised); border: 1px solid var(--border); border-radius: 5px; padding: 8px 10px; font-family: "SF Mono", Menlo, monospace; font-size: 0.7rem; color: var(--text-muted); }
+  .mock .pipe b { color: var(--text); font-weight: 500; }
+  .mock .pipe i { color: var(--accent-dim); font-style: normal; }
+  table { border-collapse: collapse; font-size: 0.82rem; margin-top: 8px; }
+  td, th { border: 1px solid #223047; padding: 5px 10px; text-align: left; color: #c9d6e4; }
+  th { color: #9fb0c3; font-weight: 500; }
+</style>
+</head>
+<body>
+<h1>Cinematic palette — three gold/blue candidates on the real render (roadmap item 4)</h1>
+<p class="meta">
+  xian said on 2026-10-13: start roadmap items 4 then 6. Item 4 is "shift from
+  earth tones to a gold/blue movie-poster aesthetic". Rather than pick a palette
+  and re-render three films blind, each candidate below was applied to the
+  <em>existing</em> 4096×2048 texture frames by <code>scripts/recolor_texture.py</code>
+  (the six colour roles are remapped; anti-aliased edges keep their blend, so
+  no gplately rerun) and rendered as a real Cycles still by
+  <code>scripts/render_palette_still.py</code> with the production sphere,
+  camera, lights and world. Two poses: the Pangaea hold (250 Ma) and the
+  present-day hold, both at their camera-path rest positions. The flat strip
+  is the recoloured texture itself (what <code>render_flat.py</code> would
+  assemble). The site-chrome mock shows the landing page's CSS variables
+  re-pointed at the same palette (item 6's "gold/blue theme when the render
+  palette is ready").
+</p>
+
+<div class="grid">
+
+  <div class="card" style="--bg:#000;--bg-raised:#0a0a0f;--text:#e8e8e8;--text-muted:#888;--accent:#4a9eff;--accent-dim:#2a5a99;--border:#222">
+    <h2>Current — earth tones (baseline)</h2>
+    <div class="tag">ocean #1a425a · continent #a07c5a at 0.9 · coastline #5c442e · ridge #ff6b35 · trench #e63946</div>
+    <div class="swatches">
+      <div class="sw" style="background:#1a425a">ocean</div><div class="sw" style="background:#92765a">land</div><div class="sw" style="background:#5c442e">coast</div><div class="sw" style="background:#ff6b35">ridge</div><div class="sw" style="background:#e63946">trench</div>
+    </div>
+    <div class="label">Pangaea hold, 250 Ma</div><img src="stills/current_pangaea.webp" alt="current palette, Pangaea">
+    <div class="label">Present day</div><img src="stills/current_present.webp" alt="current palette, present day">
+    <div class="label">Flat (texture, present day)</div><img src="flat/current_present.webp" alt="current flat">
+    <div class="label">Site chrome as it is today (blue accent)</div>
+    <div class="mock"><h3>Tectonic Globe</h3><p class="tagline">1.8 billion years of continental drift</p><div class="btns"><span class="btn active">3D Globe</span><span class="btn">Flat Projection</span><span class="btn">&#9654; Begin at Rodinia</span></div><div class="card-line"><span>v7</span> &mdash; Spin reveals</div><div class="pipe"><b>render_globe.py</b> <i>&rarr;</i> Blender Cycles + crossfade</div></div>
+  </div>
+
+  <div class="card" style="--bg:#050a14;--bg-raised:#0b1526;--text:#ece6d6;--text-muted:#a79f8c;--accent:#c9a24a;--accent-dim:#7d6327;--border:#1c2a44">
+    <h2>A · midnight-gold</h2>
+    <div class="tag">ocean #0b1f3a · continent #c9a24a · coastline #6e5218 · ridge #ffb347 · trench #ff5f6d</div>
+    <div class="swatches">
+      <div class="sw" style="background:#0b1f3a">ocean</div><div class="sw" style="background:#c9a24a">land</div><div class="sw" style="background:#6e5218">coast</div><div class="sw" style="background:#ffb347">ridge</div><div class="sw" style="background:#ff5f6d">trench</div>
+    </div>
+    <div class="label">Pangaea hold, 250 Ma</div><img src="stills/midnight-gold_pangaea.webp" alt="midnight-gold, Pangaea">
+    <div class="label">Present day</div><img src="stills/midnight-gold_present.webp" alt="midnight-gold, present day">
+    <div class="label">Flat (texture, present day)</div><img src="flat/midnight-gold_present.webp" alt="midnight-gold flat">
+    <div class="label">Site chrome with this palette</div>
+    <div class="mock"><h3>Tectonic Globe</h3><p class="tagline">1.8 billion years of continental drift</p><div class="btns"><span class="btn active">3D Globe</span><span class="btn">Flat Projection</span><span class="btn">&#9654; Begin at Rodinia</span></div><div class="card-line"><span>v8</span> &mdash; Gold and midnight</div><div class="pipe"><b>render_globe.py</b> <i>&rarr;</i> Blender Cycles + crossfade</div></div>
+  </div>
+
+  <div class="card" style="--bg:#06101f;--bg-raised:#0d1b33;--text:#ebe4d3;--text-muted:#a39b88;--accent:#b8923e;--accent-dim:#6f5823;--border:#1f2f4d">
+    <h2>B · cobalt-brass</h2>
+    <div class="tag">ocean #10294d · continent #b8923e · coastline #5f4a1c · ridge #ffd166 · trench #ef476f</div>
+    <div class="swatches">
+      <div class="sw" style="background:#10294d">ocean</div><div class="sw" style="background:#b8923e">land</div><div class="sw" style="background:#5f4a1c">coast</div><div class="sw" style="background:#ffd166">ridge</div><div class="sw" style="background:#ef476f">trench</div>
+    </div>
+    <div class="label">Pangaea hold, 250 Ma</div><img src="stills/cobalt-brass_pangaea.webp" alt="cobalt-brass, Pangaea">
+    <div class="label">Present day</div><img src="stills/cobalt-brass_present.webp" alt="cobalt-brass, present day">
+    <div class="label">Flat (texture, present day)</div><img src="flat/cobalt-brass_present.webp" alt="cobalt-brass flat">
+    <div class="label">Site chrome with this palette</div>
+    <div class="mock"><h3>Tectonic Globe</h3><p class="tagline">1.8 billion years of continental drift</p><div class="btns"><span class="btn active">3D Globe</span><span class="btn">Flat Projection</span><span class="btn">&#9654; Begin at Rodinia</span></div><div class="card-line"><span>v8</span> &mdash; Cobalt and brass</div><div class="pipe"><b>render_globe.py</b> <i>&rarr;</i> Blender Cycles + crossfade</div></div>
+  </div>
+
+  <div class="card" style="--bg:#03070f;--bg-raised:#0a1222;--text:#efe8d8;--text-muted:#aaa18d;--accent:#d4a84b;--accent-dim:#86692a;--border:#182540">
+    <h2>C · ink-ember</h2>
+    <div class="tag">ocean #071426 · continent #d4a84b · coastline #8a6a24 · ridge #ff9f1c · trench #e63946 (unchanged)</div>
+    <div class="swatches">
+      <div class="sw" style="background:#071426">ocean</div><div class="sw" style="background:#d4a84b">land</div><div class="sw" style="background:#8a6a24">coast</div><div class="sw" style="background:#ff9f1c">ridge</div><div class="sw" style="background:#e63946">trench</div>
+    </div>
+    <div class="label">Pangaea hold, 250 Ma</div><img src="stills/ink-ember_pangaea.webp" alt="ink-ember, Pangaea">
+    <div class="label">Present day</div><img src="stills/ink-ember_present.webp" alt="ink-ember, present day">
+    <div class="label">Flat (texture, present day)</div><img src="flat/ink-ember_present.webp" alt="ink-ember flat">
+    <div class="label">Site chrome with this palette</div>
+    <div class="mock"><h3>Tectonic Globe</h3><p class="tagline">1.8 billion years of continental drift</p><div class="btns"><span class="btn active">3D Globe</span><span class="btn">Flat Projection</span><span class="btn">&#9654; Begin at Rodinia</span></div><div class="card-line"><span>v8</span> &mdash; Ink and ember</div><div class="pipe"><b>render_globe.py</b> <i>&rarr;</i> Blender Cycles + crossfade</div></div>
+  </div>
+
+</div>
+
+<h2>What I see (Tessera, from the stills)</h2>
+<ul>
+  <li><strong>A · midnight-gold</strong> keeps the globe's limb visible against space (the ocean is a shade lighter than the background) and the plate-boundary lines read on both land and sea. Boundaries stay legible at the Pangaea hold where land fills the frame. My recommendation.</li>
+  <li><strong>B · cobalt-brass</strong> is the gentler version: less saturated gold, bluer ocean. Reads more "atlas plate" than "movie poster". The trench pink is the loudest accent of the three.</li>
+  <li><strong>C · ink-ember</strong> has the most contrast on land, but the ocean is so close to the space background that the globe's edge disappears on the ocean side at the present-day pose. Fixable by lifting the world background or adding rim light, which is a renderer change beyond a palette swap.</li>
+  <li>All three keep the trench and ridge roles distinct from land and from each other. The anti-aliased edges survive the remap (2,088 unique colours in the recoloured present-day texture vs 3,850 in the source; no banding seen at 1:1).</li>
+  <li>None of this touches the Explore scrubber yet; its keyframes are exported from the same textures (<code>export_scrubber_keyframes.py</code>), so they follow whichever palette ships.</li>
+</ul>
+
+<h2>Cost to ship a palette across everything that is live</h2>
+<table>
+  <tr><th>Step</th><th>Scope</th><th>Estimate on Amber</th></tr>
+  <tr><td>Recolour textures</td><td>1,001 main + 801 prequel + 246 sequel = 2,048 PNGs</td><td>~8 s each single-thread; ~35 min 8-way</td></tr>
+  <tr><td>Re-render globe films (Cycles)</td><td>2,738 + 2,186 + 1,795 = 6,719 frames</td><td>~6 s each → ~11 h, nohup via <code>render_supervised.sh</code>; courtesy memo to Pard</td></tr>
+  <tr><td>Re-assemble flat films (PIL)</td><td>three films</td><td>minutes each</td></tr>
+  <tr><td>Explore keyframes + site theme + posters</td><td>20 keyframes, future layers, CSS variables, poster PNGs</td><td>under an hour</td></tr>
+</table>
+<p class="note">
+  Shipping order if you pick one: textures → flat films (fast, lets you
+  watch motion in the new palette the same day) → globe films overnight →
+  Explore keyframes → site theme last, so the page never shows a gold
+  theme around earth-tone films. Film versions would bump to v8 (main),
+  prequel v2, sequel v3. The earth-tone films stay in the version history.
+</p>
+<p class="note">Source stills: 1920×1080 Cycles, 64 samples, Metal, rendered 2026-10-13 16:44 PT; served here as WebP q86.</p>
+</body>
+</html>

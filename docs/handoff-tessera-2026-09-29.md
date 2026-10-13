@@ -1,6 +1,6 @@
 # Handoff: Tessera — current state (supersedes 2026-09-18)
 
-**Updated 2026-10-10** (drift audit after brief 10-10 §1: publishing model, sequel shipped, operating model, mail delivery). Earlier: 10-04 (sequel rendered; 🔒 rule adopted). Original rationale:
+**Updated 2026-10-13** (drift audit after brief 10-10 §1: publishing model, sequel shipped, operating model, mail delivery). Earlier: 10-04 (sequel rendered; 🔒 rule adopted). Original rationale:
 **Why now:** brief 9/29 (Klatch fork-identity finding) restated the first
 principle of multi-session work — *shared memory is exactly what's in git,
 nothing carried implicitly across session boundaries.* My last handoff is
@@ -21,6 +21,18 @@ shipped 2026-09-22 and is live at `/explore/`** — free orbit plus a
 (future sequel) SHIPPED 2026-10-06** as the site's third act, both
 projections (`tectonic_sequel_globe_v2.mp4` + `tectonic_sequel_flat_v2.mp4`,
 75 s). **Nothing is 🔒 blocked on anyone** (see Who owes what).
+
+**2026-10-13, xian in session:** no history rewrite for the outside name
+(closed); "start on them, in order" for the open roadmap items. Item 1 was
+already shipped (v7, 07-14; heading fixed). **Item 4 (palette) is in
+progress:** three gold/blue candidates on real Cycles stills at
+`docs/design/palette-comparison-2026-10-13/`, waiting on xian's pick;
+tooling `scripts/recolor_texture.py` + `scripts/render_palette_still.py`;
+full re-render ≈ 11 h Cycles + textures + flats + Explore keyframes.
+**Item 6 (landing page) is in progress:** "How this was built" and "Where
+it's going" sections live on `index.html`; the gold site theme waits on the
+palette pick. Roadmap status page for xian: artifact
+`P79xpXwFGEGgzpRhMdV58n` (private).
 
 ## Operating model (how this seat actually runs, 2026-10-10)
 

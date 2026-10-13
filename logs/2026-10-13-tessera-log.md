@@ -36,3 +36,42 @@ exposure). ROADMAP.md unchanged: no unstarted unblocked item.
 
 Drain: health check (done); mail re-read after the checklist, nothing new;
 roadmap has no unstarted unblocked item. No deferrals.
+
+## 16:30 PT — xian in session: roadmap directive (drain continues)
+
+xian: (1) no history rewrite for the outside name — closed; (2) "Roadmap:
+please start on them, in order!" for items 1, 4, 6; (3) asked for a roadmap
+status update as an artifact for a globe-atlas aficionado.
+
+Item 1 turned out to be SHIPPED already (v7, 2026-07-14, spin reveals at all
+four holds; flat-v7 morph) — the ROADMAP.md heading still said "explore
+next". Fixed: items 1 and 2 (prequel, commit 03d27b6, 2026-08-10) now carry
+SHIPPED markers; 4 and 6 marked IN PROGRESS.
+
+Item 4 (cinematic gold/blue palette): rather than re-render three films
+blind, built `scripts/recolor_texture.py` (remaps the six colour roles of an
+existing texture by nearest-segment decomposition; anti-aliased edges keep
+their blend; 2,088 unique colours out vs 3,850 in; ~8 s/frame) and
+`scripts/render_palette_still.py` (one Cycles still with the production
+sphere/camera/lights/world). Rendered 8 stills (current + 3 candidates ×
+Pangaea/present holds, 64 s total) and published the comparison at
+`docs/design/palette-comparison-2026-10-13/` (1.0 MB WebP) with site-chrome
+mocks, my read (A midnight-gold recommended; C ink-ember loses the limb
+against space) and the cost table (6,719 Cycles frames ≈ 11 h + 2,048
+textures + flats + Explore keyframes + theme). Waits on xian's pick.
+
+Item 6 (landing page): added "How this was built" (lessons from the README
+plus the Amber era: renderer mapping, publishing outage) and "Where it's
+going" (status list, north star, link to ROADMAP.md) to `index.html`;
+footer dates to October 2026. Gold theme on the page waits on the palette.
+
+Roadmap status artifact: a forked subagent researched ROADMAP/logs/handoff
+and published https://claude.ai/artifact/P79xpXwFGEGgzpRhMdV58n (private);
+one stale phrase fixed and republished.
+
+Handoff "Updated 2026-10-13" paragraph added; memory
+`roadmap-execution-mandate` rewritten with today's decisions.
+
+Drain: items 1/2 headings (done); item 4 comparison (done, awaits xian's
+palette pick — blocker: xian's choice); item 6 sections (done; theme
+awaits the same pick); artifact (done); mail re-read, nothing new.
