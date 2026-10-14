@@ -9,12 +9,12 @@
     <meta property="og:title" content="Tectonic Globe">
     <meta property="og:description" content="1 billion years of tectonic plate movement in two minutes">
     <meta property="og:type" content="video.other">
-    <meta property="og:video" content="https://globe.dinp.xyz/tectonic_globe_v7.mp4">
+    <meta property="og:video" content="https://globe.dinp.xyz/tectonic_globe_v8.mp4">
     <meta property="og:video:type" content="video/mp4">
     <meta property="og:video:width" content="1920">
     <meta property="og:video:height" content="1080">
     <meta property="og:url" content="https://globe.dinp.xyz">
-    <meta property="og:image" content="https://globe.dinp.xyz/verify_frames/check_01.png">
+    <meta property="og:image" content="https://globe.dinp.xyz/poster_v8.png">
 
     <!-- Twitter/X Card -->
     <meta name="twitter:card" content="player">
@@ -23,19 +23,21 @@
     <meta name="twitter:player" content="https://globe.dinp.xyz">
     <meta name="twitter:player:width" content="1920">
     <meta name="twitter:player:height" content="1080">
-    <meta name="twitter:image" content="https://globe.dinp.xyz/verify_frames/check_01.png">
+    <meta name="twitter:image" content="https://globe.dinp.xyz/poster_v8.png">
 
     <style>
         :root {
-            --bg: #000;
-            --bg-raised: #0a0a0f;
-            --bg-card: #111118;
-            --text: #e8e8e8;
-            --text-muted: #888;
-            --text-dim: #555;
-            --accent: #4a9eff;
-            --accent-dim: #2a5a99;
-            --border: #222;
+            /* cobalt-brass (roadmap item 4, xian's pick 2026-10-13): the
+               films' ocean and land, lifted for a page. */
+            --bg: #06101f;
+            --bg-raised: #0d1b33;
+            --bg-card: #13223d;
+            --text: #ebe4d3;
+            --text-muted: #a39b88;
+            --text-dim: #6b6552;
+            --accent: #b8923e;
+            --accent-dim: #6f5823;
+            --border: #1f2f4d;
             --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
@@ -393,8 +395,8 @@
 
     <div class="hero-video-wrap">
         <video id="hero-video"
-               src="tectonic_globe_v7.mp4"
-               poster="poster_v7.png"
+               src="tectonic_globe_v8.mp4"
+               poster="poster_v8.png"
                controls
                playsinline
                preload="metadata">
@@ -478,10 +480,16 @@
             <video src="tectonic_globe_v6.mp4" poster="verify_frames/check_01.png" controls playsinline preload="none"></video>
         </div>
 
-        <div class="version-card current">
+        <div class="version-card">
             <h3><span>v7</span> &mdash; Spin reveals</h3>
             <p class="version-desc">The camera learns to linger. At each supercontinent &mdash; Rodinia, Gondwana, Pangaea, and the present day &mdash; the flight pauses for a slow 360&deg; turn that reveals the whole surface, including the world-ocean hiding on the far side. Along the way we discovered Gondwana's camera had been sitting 41&deg; off-center, and that a supercontinent spanning most of the globe has no meaningful "center" at all. Rendered in a day by two Macs splitting the frames over the LAN.</p>
             <video src="tectonic_globe_v7.mp4" poster="poster_v7.png" controls playsinline preload="none"></video>
+        </div>
+
+        <div class="version-card current">
+            <h3><span>v8</span> &mdash; Cobalt and brass</h3>
+            <p class="version-desc">The palette. Earth tones give way to brass continents on a cobalt ocean, across every film, both projections and the Explore keyframes. No new science: the same frames, recoloured role by role (ocean, land, coastline, ridge, trench) with the anti-aliased edges and the prequel's probability cloud preserved, then re-rendered through the same Cycles setup. Three candidates were rendered as stills first; eleven hours of GPU time followed the pick, not the other way round.</p>
+            <video src="tectonic_globe_v8.mp4" poster="poster_v8.png" controls playsinline preload="none"></video>
         </div>
 
     </div>
@@ -511,8 +519,8 @@
         <li><span class="status shipped">Shipped</span><span><strong>Deep-time prequel</strong> &mdash; 1800 to 1000 Ma, chained into the main film. August 2026.</span></li>
         <li><span class="status shipped">Shipped</span><span><strong>Future sequel</strong> &mdash; 250 million years ahead, four published scenarios and their superposition. October 2026.</span></li>
         <li><span class="status shipped">Shipped</span><span><strong>Explore</strong> &mdash; a WebGL scrubber over the whole span, past and futures as layers. Phase 1, September 2026; later phases add keyframe density.</span></li>
-        <li><span class="status active">In progress</span><span><strong>Cinematic palette</strong> &mdash; gold land on midnight ocean across every film and this page. Candidates rendered October 2026, choice pending.</span></li>
-        <li><span class="status active">In progress</span><span><strong>This page</strong> &mdash; the story above, this list, and the new palette once it is chosen.</span></li>
+        <li><span class="status shipped">Shipped</span><span><strong>Cinematic palette</strong> &mdash; brass land on a cobalt ocean across every film, both projections, Explore and this page. v8, October 2026.</span></li>
+        <li><span class="status shipped">Shipped</span><span><strong>This page</strong> &mdash; the story above, this list, and the palette to match the films. October 2026.</span></li>
         <li><span class="status">Someday</span><span><strong>A physical globe</strong> &mdash; the animation on a real sphere. Explore is the prerequisite and now exists; no work started.</span></li>
         <li><span class="status">Considering</span><span><strong>Biome and climate painting</strong> &mdash; vegetation and climate layers over the plates. Datasets surveyed, registration onto the plate model is the hard part.</span></li>
     </ul>
@@ -523,7 +531,7 @@
 <!-- ── Footer ─────────────────────────────────────── -->
 <footer>
     <p>Built by Xian &amp; Claude &middot; February 2025 &ndash; October 2026 &middot; <a href="https://github.com/Design-in-Product/globe">View source on GitHub</a></p>
-    <p class="more">Two of the four remaining items are underway. More to come.</p>
+    <p class="more">Six of eight roadmap items are shipped. More to come.</p>
 </footer>
 
 <!-- ── Script ─────────────────────────────────────── -->
@@ -535,9 +543,9 @@
     // one timeline (flat parity is a rule — xian 10-06); a missing one
     // (null) would fall back to the globe and disable the Flat button.
     const FILMS = {
-        deep:   { globe: 'tectonic_prequel_globe_v1.mp4', flat: 'tectonic_prequel_v1.mp4' },
-        main:   { globe: 'tectonic_globe_v7.mp4',         flat: 'tectonic_flat_v7.mp4' },
-        future: { globe: 'tectonic_sequel_globe_v2.mp4',  flat: 'tectonic_sequel_flat_v2.mp4' },
+        deep:   { globe: 'tectonic_prequel_globe_v2.mp4', flat: 'tectonic_prequel_v2.mp4' },
+        main:   { globe: 'tectonic_globe_v8.mp4',         flat: 'tectonic_flat_v8.mp4' },
+        future: { globe: 'tectonic_sequel_globe_v3.mp4',  flat: 'tectonic_sequel_flat_v3.mp4' },
     };
     const ERA_BTNS = ['btn-deep', 'btn-main', 'btn-future'];
     const NEXT_ERA = { deep: 'main', main: 'future' };
@@ -555,7 +563,7 @@
         if (!FILMS[newEra][newView]) newView = 'globe';   // the future has no flat film
         era = newEra; view = newView;
         video.src = FILMS[era][view];
-        video.poster = (era === 'main' && view === 'globe') ? 'poster_v7.png' : '';
+        video.poster = (era === 'main' && view === 'globe') ? 'poster_v8.png' : '';
         setActive(view === 'globe' ? 'btn-globe' : 'btn-flat', ['btn-globe', 'btn-flat']);
         setActive('btn-' + era, ERA_BTNS);
         document.getElementById('btn-flat').disabled = !FILMS[era].flat;
