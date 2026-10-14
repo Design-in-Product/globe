@@ -75,3 +75,31 @@ Handoff "Updated 2026-10-13" paragraph added; memory
 Drain: items 1/2 headings (done); item 4 comparison (done, awaits xian's
 palette pick — blocker: xian's choice); item 6 sections (done; theme
 awaits the same pick); artifact (done); mail re-read, nothing new.
+
+## 16:50 PT — xian: "I lean toward B" (cobalt-brass) — re-render launched
+
+Taken as the pick (said so; he can stop it). Verified the recolour holds on
+the prequel's probability cloud and the sequel's scenario superposition
+(both blend ocean→#a07c5a continuously; added a `continent_full` basis so
+opaque land and the main film's alpha-0.9 land map to the same gold).
+`recolor_texture.py` gained `--pattern` and `--jobs` (8-way, atomic
+`.part` rename). New `scripts/palette_pipeline.sh <palette>`: textures →
+flats (main v8; prequel v2 with terminal blend into main's first frame;
+sequel v3 with initial blend out of main's last frame, PAN_SCROLL
+890:288:360 read from the sequel path, LENS_HOLDS=0) → globe films via
+`render_supervised.sh` + `assemble_globe.py` with the same seam blends.
+Everything lands in `~/globe-render/palette_cobalt-brass/`; the repo is
+untouched until xian has watched. First launch failed at once (PIL refused
+the `.part` extension; the driver did not stop) — both fixed, relaunched
+16:58, 56 textures in the first 80 s. Declared 12 h on origin/main; Pard
+memoed (mediajunkie `62ad00b`).
+
+xian also asked whether we would ever show greenery vs desert — that is
+roadmap item 8 (he asked 08-12; research done, not scoped). Answered in
+session: datasets exist (CESM 540 Myr, CC BY), registration onto
+Merdith/cao2024 is the hard part, and it would arrive as an Explore layer
+before it touches the films.
+
+Drain: pipeline running (textures ~35 min, flats minutes, Cycles ~11 h —
+blocker: wall clock); background watch set to check the flats when they
+land; mail re-read, nothing new. No other deferrals.
