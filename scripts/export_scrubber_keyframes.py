@@ -28,14 +28,14 @@ import os
 import sys
 from PIL import Image
 
-OUT_DIR = "scrubber_assets"
+OUT_DIR = os.environ.get("OUT_DIR", "scrubber_assets")
 WEBP_QUALITY = 90
 
-MAIN_SRC = os.path.expanduser("~/globe-render/frames")
+MAIN_SRC = os.path.expanduser(os.environ.get("MAIN_SRC", "~/globe-render/frames"))
 MAIN_CAMERA_PATH = "camera_path_spin_v8.json"
 MAIN_SIZE = (4096, 2048)
 
-PREQUEL_SRC = os.path.expanduser("~/globe-render/prequel_frames")
+PREQUEL_SRC = os.path.expanduser(os.environ.get("PREQUEL_SRC", "~/globe-render/prequel_frames"))
 PREQUEL_SIZE = (2048, 1024)
 # (time_ma, label) — ICS Proterozoic period boundaries (compute_prequel_path.py
 # PERIODS) plus the Nuna hold xian picked (1452 Ma). 1000 Ma comes from main.

@@ -40,11 +40,20 @@ from PIL import Image
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from read_future_grids import SCENARIOS, available_times, grid_path, read_grid  # noqa: E402
 
-OUT_DIR = "scrubber_assets/future"
+OUT_DIR = os.environ.get("OUT_DIR", "scrubber_assets/future")
 SIZE = (2048, 1024)
 WEBP_QUALITY = 90
-OCEAN = np.array([0x1a, 0x42, 0x5a], dtype=np.float32)
-CONTINENT = np.array([0xa0, 0x7c, 0x5a], dtype=np.float32)
+# PALETTE=<name> (recolor_texture.PALETTES) paints the mask in a film palette
+# other than the original earth tones — ocean -> opaque continent, as the
+# sequel's superposition does.
+_PAL = os.environ.get("PALETTE")
+if _PAL:
+    from recolor_texture import PALETTES, hex2rgb
+    OCEAN = hex2rgb(PALETTES[_PAL]["ocean"])
+    CONTINENT = hex2rgb(PALETTES[_PAL]["continent_full"])
+else:
+    OCEAN = np.array([0x1a, 0x42, 0x5a], dtype=np.float32)
+    CONTINENT = np.array([0xa0, 0x7c, 0x5a], dtype=np.float32)
 SUPER_END = 200  # all four scenarios exist to here
 
 
