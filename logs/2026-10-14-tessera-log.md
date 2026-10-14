@@ -41,3 +41,19 @@ site and Explore theme staged on the branch; Pard closed out; docs
 current. Deferred: the ship itself (blocker: xian's eyes on the films —
 I cannot watch motion, and the Gondwana lens hold and the Ultima pan are
 the two places it can go wrong). Mail re-checked twice, nothing new.
+
+## 16:22 PT — cycle fire
+
+Synced, already up to date. No new mail. Brief 10-14 records
+yesterday's renderer fix as not-brief-worthy; nothing addressed to me.
+Host: Blender idle, 89 GB free (someone cleared space since this
+morning's 53; none of it mine, the palette directory is still 13 GB).
+
+No word from xian on the films yet, so the state is exactly the 10:22
+entry: six cobalt-brass films in `~/globe-render/palette_cobalt-brass/`,
+ship staged on branch `palette-cobalt-brass`.
+
+Drain: nothing unblocked. The one open item is the v8 ship (blocker:
+xian watching the films in motion — a rule, not a preference). Items 7
+and 8 stay unprioritised by xian's standing word. Mail re-checked twice,
+nothing new.
