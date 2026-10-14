@@ -66,7 +66,8 @@ def main():
     ap.add_argument("--timeout", type=int, default=300)
     ap.add_argument("--every", type=int, default=10)
     a = ap.parse_args()
-    want = a.sha or sh("git", "rev-parse", "origin/main")
+    # the deployments API matches the full sha only; expand a short one
+    want = sh("git", "rev-parse", a.sha or "origin/main")
     mode = api(f"repos/{REPO}/pages").get("build_type", "legacy")
     probe = workflow if mode == "workflow" else legacy
     t0 = time.time()
