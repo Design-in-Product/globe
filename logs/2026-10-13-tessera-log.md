@@ -124,3 +124,16 @@ tonight) — mediajunkie `7dccd5f`.
 
 Drain: memo sent (done); pipeline at 230/1001 main textures. No
 deferrals beyond the running render (blocker: wall clock).
+
+## 17:30 PT — pipeline: textures done, flat stage restarted on the venv
+
+All 2,048 textures recoloured by 17:28 (main 1,001 / prequel 801 /
+sequel 246, ~30 min). The flat stage then died at once: `flat_morph.py`
+imports matplotlib, which the Homebrew python3 lacks — the shipped flats
+were built with the repo `.venv` (3.12, mpl 3.11). Pipeline now prefers
+`.venv/bin/python3`; the failure message also reports the real exit code
+(it printed 0). Relaunched 17:28:51, textures skipped as present, main
+flat rendering (1,884 crossfade frames). Background watch reset.
+
+Drain: fix + relaunch (done); waiting on the flats (blocker: wall clock,
+minutes). Mail re-read, nothing new.

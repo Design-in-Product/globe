@@ -19,9 +19,11 @@ set -uo pipefail
 P="${1:?palette name}"; DRY="${2:-}"
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
 R=~/globe-render; W=$R/palette_$P; mkdir -p "$W"
-PY=python3
+# render_flat.py's lens morph imports matplotlib: use the repo venv (the one
+# the shipped flats were built with), not the Homebrew python3.
+PY="${PY:-$REPO/.venv/bin/python3}"; [ -x "$PY" ] || PY=python3
 ts() { date "+%F %T"; }
-run() { echo "[$(ts)] $*"; [ "$DRY" = "--dry-run" ] || "$@" || { echo "[$(ts)] FAILED (exit $?): $1 — stopping"; exit 1; }; }
+run() { echo "[$(ts)] $*"; [ "$DRY" = "--dry-run" ] && return 0; "$@"; local rc=$?; [ $rc -eq 0 ] || { echo "[$(ts)] FAILED (exit $rc): $1 — stopping"; exit 1; }; }
 
 echo "[$(ts)] palette pipeline: $P -> $W"
 
