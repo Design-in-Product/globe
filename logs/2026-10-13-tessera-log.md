@@ -114,3 +114,13 @@ reply is needed. Pipeline still in the texture stage.
 
 Drain: nothing new to do; mail re-read, nothing else. No deferrals beyond
 the running render (blocker: wall clock).
+
+## 17:08 PT — xian: give Pard the disk heads-up anyway
+
+He is watching volume fluctuations; an unlabelled 13 GB curve would read
+as a red herring. Sent the footprint by stage and time (textures ~1.6 GB
+now, globe frames ~11 GB over ~11 h, fresh directory, nothing deleted
+tonight) — mediajunkie `7dccd5f`.
+
+Drain: memo sent (done); pipeline at 230/1001 main textures. No
+deferrals beyond the running render (blocker: wall clock).
