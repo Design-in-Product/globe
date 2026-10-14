@@ -237,6 +237,20 @@ def rolled(im, px):
     return out
 
 
+# Label-free dumps of the first and last composed frames (DUMP_FIRST /
+# DUMP_LAST env paths). A film that chains into this one blends into these,
+# not into the stamped frames: blending a stamped frame puts two labels on
+# screen during the dissolve (the shipped sequel v2 opening, seen 10-13).
+DUMP = {0: os.path.expanduser(os.environ.get("DUMP_FIRST", "")),
+        len(path_frames) - 1: os.path.expanduser(os.environ.get("DUMP_LAST", ""))}
+
+
+def stamped(frame, i, time_ma, era):
+    if DUMP.get(i):
+        frame.save(DUMP[i])
+    return stamp_overlay(frame, time_ma, era)
+
+
 for i, pf in enumerate(path_frames):
     dst = os.path.join(tmp_dir, f"frame_{i + 1:04d}.png")
     time_ma, era = pf["time_ma"], pf.get("era_label", "")
@@ -244,7 +258,7 @@ for i, pf in enumerate(path_frames):
     if initial_img is not None and i < INITIAL_BLEND_FRAMES:
         alpha = (INITIAL_BLEND_FRAMES - i) / (INITIAL_BLEND_FRAMES + 1)   # 1 → 0
         frame = Image.blend(load_resized(pf["geo_frame_idx"]), initial_img, alpha)
-        stamp_overlay(frame, time_ma, era).save(dst)
+        stamped(frame, i, time_ma, era).save(dst)
         blend_count += 1
         prev_static = None
         continue
@@ -252,7 +266,7 @@ for i, pf in enumerate(path_frames):
     if pan_shift(i):
         # Panning hold: a rolled static frame; never hardlinked (each shift is unique)
         frame = rolled(load_resized(pf["geo_frame_idx"]), pan_shift(i))
-        stamp_overlay(frame, time_ma, era).save(dst)
+        stamped(frame, i, time_ma, era).save(dst)
         blend_count += 1
         prev_static = None
         continue
@@ -262,7 +276,7 @@ for i, pf in enumerate(path_frames):
         alpha = (i - (total_frames - TERMINAL_BLEND_FRAMES) + 1) / (TERMINAL_BLEND_FRAMES + 1)
         geo_idx = pf["geo_frame_idx"]
         frame = Image.blend(load_resized(geo_idx), terminal_img, alpha)
-        stamp_overlay(frame, time_ma, era).save(dst)
+        stamped(frame, i, time_ma, era).save(dst)
         blend_count += 1
         prev_static = None
         continue
@@ -275,13 +289,13 @@ for i, pf in enumerate(path_frames):
             fm.load_texture(os.path.join(FRAMES_DIR, f"{FRAME_PREFIX}{geo_idx:04d}.png"))
             morph_loaded_geo[lens] = geo_idx
         fm.render(s, lon0, dst)
-        stamp_overlay(Image.open(dst).convert("RGB"), time_ma, era).save(dst)
+        stamped(Image.open(dst).convert("RGB"), i, time_ma, era).save(dst)
         morph_count += 1
         prev_static = None
     elif i in crossfade_map:
         geo_a, geo_b, alpha = crossfade_map[i]
         blended = Image.blend(load_resized(geo_a), load_resized(geo_b), alpha)
-        stamp_overlay(blended, time_ma, era).save(dst)
+        stamped(blended, i, time_ma, era).save(dst)
         blend_count += 1
         prev_static = None
         # Evict cache entries no longer needed (keep only current pair)
@@ -295,9 +309,11 @@ for i, pf in enumerate(path_frames):
         if key == prev_static and prev_dst:
             os.link(prev_dst, dst)
             link_count += 1
+            if DUMP.get(i):
+                load_resized(geo_idx).save(DUMP[i])
         else:
             frame = load_resized(geo_idx).copy()
-            stamp_overlay(frame, time_ma, era).save(dst)
+            stamped(frame, i, time_ma, era).save(dst)
             prev_static, prev_dst = key, dst
 
     # Progress reporting every 200 frames

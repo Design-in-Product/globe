@@ -137,3 +137,28 @@ flat rendering (1,884 crossfade frames). Background watch reset.
 
 Drain: fix + relaunch (done); waiting on the flats (blocker: wall clock,
 minutes). Mail re-read, nothing new.
+
+## 17:58 PT — flats verified; label-free dissolves; Cycles pace measured
+
+Flats (first pass, 17:39): frame counts match the shipped films exactly
+(2,738 / 2,186 / 1,795); seams checked by eye (prequel last = main first,
+sequel first = main last, Gondwana lens hold, Pangaea Ultima pan mid,
+superposition end). Bitrates run 27–75 % higher at the same crf 18 (gold
+has more luma detail): main flat 97 MB vs 76 MB shipped.
+
+Found one inherited cosmetic: during the sequel's opening dissolve two
+labels overlap ("Present day" under "four futures, superposed") — identical
+in the shipped v2, because the chained film blends into the previous film's
+STAMPED last frame. `render_flat.py` now dumps label-free first/last
+composed frames (`DUMP_FIRST`/`DUMP_LAST`), the pipeline blends into those,
+and `--flats-only` re-makes flats without starting a second supervisor.
+Re-made 17:43–17:55; both dissolves clean (the globe films never had this:
+labels are stamped at assembly).
+
+Cycles pace: ~7 s/frame (144 frames by 17:57) → main ~23:00, prequel
+~03:15, sequel ~07:00 PT; the 12 h row expires 04:57 and cannot be longer.
+Memoed Pard to read the 05:00–07:00 Blender as this pass, or kill it.
+
+Drain: flats done and verified; renderer fix committed; Pard memoed.
+Waiting on the Cycles pass (blocker: wall clock, ~07:00). Mail re-read,
+nothing new.

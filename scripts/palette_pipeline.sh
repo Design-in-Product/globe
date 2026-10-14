@@ -3,7 +3,9 @@
 # into ~/globe-render/palette_<name>/ — nothing in the repo changes until a
 # human has watched the result and the films are copied in by hand.
 #
-#   scripts/palette_pipeline.sh cobalt-brass [--dry-run]
+#   scripts/palette_pipeline.sh cobalt-brass [--dry-run | --flats-only]
+# --flats-only stops before the Cycles stage (re-make the flats while a
+# globe pass is already running; never start a second supervisor).
 #
 # Stages (each resumable; a rerun skips what is already on disk):
 #   1. recolour the three texture sets (recolor_texture.py, 8-way)
@@ -51,11 +53,13 @@ print(f"{best[0]}:{best[1]}:360")
 PYEOF
 )
 echo "[$(ts)] sequel PAN_SCROLL=$PAN"
-if [ ! -s "$W/tectonic_flat_v8.mp4" ]; then
-  run env FRAMES_DIR="$W/frames" CAMERA_PATH_FILE=camera_path_spin_v8.json OUTPUT_PATH="$W/tectonic_flat_v8.mp4" $PY scripts/render_flat.py
+# The chained films blend into LABEL-FREE copies of main's first/last frames
+# (DUMP_FIRST/DUMP_LAST), so the dissolve never shows two labels at once.
+if [ ! -s "$W/tectonic_flat_v8.mp4" ] || [ ! -s "$W/flat_main_last.png" ]; then
+  run env FRAMES_DIR="$W/frames" CAMERA_PATH_FILE=camera_path_spin_v8.json OUTPUT_PATH="$W/tectonic_flat_v8.mp4" \
+      DUMP_FIRST="$W/flat_main_first.png" DUMP_LAST="$W/flat_main_last.png" $PY scripts/render_flat.py
+  rm -f "$W/tectonic_prequel_v2.mp4" "$W/tectonic_sequel_flat_v3.mp4"   # their blend sources just changed
 fi
-run ffmpeg -y -loglevel error -i "$W/tectonic_flat_v8.mp4" -vframes 1 "$W/flat_main_first.png"
-run ffmpeg -y -loglevel error -sseof -0.05 -i "$W/tectonic_flat_v8.mp4" -update 1 -vframes 1 "$W/flat_main_last.png"
 if [ ! -s "$W/tectonic_prequel_v2.mp4" ]; then
   run env FRAMES_DIR="$W/prequel_frames" FRAME_PREFIX=prequel_frame_ CAMERA_PATH_FILE=prequel_camera_path.json \
       TERMINAL_BLEND_SRC="$W/flat_main_first.png" OUTPUT_PATH="$W/tectonic_prequel_v2.mp4" $PY scripts/render_flat.py
@@ -66,6 +70,7 @@ if [ ! -s "$W/tectonic_sequel_flat_v3.mp4" ]; then
       OUTPUT_PATH="$W/tectonic_sequel_flat_v3.mp4" $PY scripts/render_flat.py
 fi
 echo "[$(ts)] flats done: $(ls "$W"/*.mp4 2>/dev/null | xargs -n1 basename | tr '\n' ' ')"
+[ "$DRY" = "--flats-only" ] && { echo "[$(ts)] flats-only: stopping before the Cycles stage"; exit 0; }
 
 # ── 3. globe films (Cycles, hours) ─────────────────────────────
 globe() {  # name frames prefix path total
