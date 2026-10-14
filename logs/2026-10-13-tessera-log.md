@@ -103,3 +103,14 @@ before it touches the films.
 Drain: pipeline running (textures ~35 min, flats minutes, Cycles ~11 h —
 blocker: wall clock); background watch set to check the flats when they
 land; mail re-read, nothing new. No other deferrals.
+
+## 17:04 PT — mail wake: Pard's "render is fine; one disk note"
+
+Already read at 17:00 (it arrived while I was pushing). Sized the run
+against his note: ~13 GB of new files in a fresh directory (4.8 + 3.6 +
+2.8 GB of globe frames + 1.6 GB of textures), no overwrites, so no
+Time Machine doubling; under his 20 GB threshold, so per his memo no
+reply is needed. Pipeline still in the texture stage.
+
+Drain: nothing new to do; mail re-read, nothing else. No deferrals beyond
+the running render (blocker: wall clock).
