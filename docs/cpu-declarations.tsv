@@ -9,3 +9,4 @@
 Blender	2026-10-06T13:07	tessera	sequel v2 tour re-render (Ultima centroid + pan), frames 757-1795
 Blender	2026-10-14T04:57	tessera	palette B (cobalt-brass) re-render: main 2738 + prequel 2186 + sequel 1795 Cycles frames, ~11 h; nohup, supervised
 Blender	2026-10-16T21:24	tessera	palette B second cut after xian's review: main 2738 + sequel 1795 Cycles frames (land ramp, overlap merge); nohup, supervised
+Blender	2026-10-16T23:22	tessera	palette B second cut, extension: main at 1987/2738 at 16:22 (7.9 s/frame); sequel 1795 follows; projected end ~22:10, before Pard's 00:00 model run
