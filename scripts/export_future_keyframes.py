@@ -51,10 +51,10 @@ if _PAL:
     from recolor_texture import PALETTES, hex2rgb, land_ramp
     OCEAN = hex2rgb(PALETTES[_PAL]["ocean"])
     CONTINENT = hex2rgb(PALETTES[_PAL]["continent_full"])
-_RAMP = os.environ.get("LAND_RAMP")   # e.g. #6b5530, same as recolor --land-ramp
 else:
     OCEAN = np.array([0x1a, 0x42, 0x5a], dtype=np.float32)
     CONTINENT = np.array([0xa0, 0x7c, 0x5a], dtype=np.float32)
+_RAMP = os.environ.get("LAND_RAMP")   # e.g. #6b5530, same as recolor --land-ramp (needs PALETTE)
 SUPER_END = 200  # all four scenarios exist to here
 
 
