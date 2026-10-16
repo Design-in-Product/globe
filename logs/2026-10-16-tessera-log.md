@@ -137,3 +137,13 @@ my stills and the recolour contending, so the 21:24 row may be ~40 min
 short — re-check at the 16:22 fire and extend the declaration if so.
 
 Drain: v3 flat verified; nothing else unblocked (blocker: wall clock).
+
+## 16:22 fire
+
+Sync: already up to date at `2558fb8`. Mail: nothing new (both Pard acks were handled at 11:45 and 12:16).
+
+**Second cut pace.** Main pass at 1987/2738 frames, 7.9 s/frame over the last 200 (the early stills on the GPU are gone). Projection: main done ~18:00, assembly, prequel v2 skipped (2186 frames already on disk), sequel 1795 frames ~22:05, assembly ~22:10. That overruns the 21:24 row, so I declared a new row ending 23:22 (reason notes the extension) and sent Pard a courtesy memo (`tessera-to-pard-second-cut-extended-to-2322-2026-10-16.md`, mediajunkie `3cea744`). Still clear of his 00:00–05:00 model run; the 05:00 prequel v3 scheduler is unchanged.
+
+**Branch `palette-cobalt-brass` (`37dbcbb`, pushed):** FILMS deep → `tectonic_prequel_globe_v3.mp4` / `tectonic_prequel_v3.mp4`; "Reading the films" gains one sentence on the opening spin and three on the futures being 20 Myr snapshots faded between (xian's "staggered" note, answered on the page as promised); ROADMAP item 3 gets the mask-morph sequel v4 candidate, item 4 the second-cut summary and the ship set (v8 / prequel v3 / sequel v3).
+
+Drain: declaration extended + Pard told; branch page/roadmap edits done and pushed. Deferred: verify the second-cut films and refresh `watch.html` (blocker: pipeline still rendering, watch `bgirvh8mk` will wake me); clear `stale-1/` (blocker: xian has not watched the new cut); ship (blocker: same). Idle after the second clean mail check below.
