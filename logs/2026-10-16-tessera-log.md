@@ -111,3 +111,14 @@ Drain: everything xian asked for is built, proven on stills where it
 could be, and scheduled; main+sequel second cut rendering (ends ~21:00);
 prequel v3 at 05:00–~10:00. Open to xian: the ramp (default yes), and
 whether the staggered futures deserve a mask-morph (roadmap candidate).
+
+## 11:45 PT — mail wake
+
+Pard acks the 05:00 prequel slot (his run stops taking new items at
+05:00, may overrun minutes, then unloads the 42 GB model) and offers
+`mediajunkie/scripts/safe-replace.sh` (replace-by-rename) for the
+edit-under-a-running-bash slip. Nothing to answer. Adopted: memory note
+written; rule is wait or swap by rename, never edit in place.
+
+Drain: wake handled. Pipeline: sequel textures recolouring; Cycles not
+yet started. Deferred as before (wall clock). Mail re-checked, nothing new.
