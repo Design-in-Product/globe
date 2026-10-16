@@ -157,6 +157,14 @@ if LENS_HOLDS:
             run_start, prev_t = i, pf["time_ma"]
     if len(path_frames) - run_start >= MIN_HOLD:
         holds.append((run_start, len(path_frames)))
+    if PAN_SCROLL:
+        # a hold rendered as a pan (e.g. the prequel's opening spin) is not a
+        # lens hold — otherwise it would take the first lens of the arc
+        ps, pn, _ = (int(x) for x in PAN_SCROLL.split(":"))
+        before = len(holds)
+        holds = [(a, b) for (a, b) in holds if b <= ps or a >= ps + pn]
+        if before != len(holds):
+            print(f"  {before - len(holds)} hold(s) inside the pan window {ps}-{ps + pn - 1} left to the pan")
 
     if len(holds) != len(LENS_ARC):
         print(f"⚠ {len(holds)} holds detected but {len(LENS_ARC)} lenses in the arc"

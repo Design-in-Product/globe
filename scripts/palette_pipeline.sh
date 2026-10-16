@@ -27,6 +27,12 @@ R=~/globe-render; W=$R/palette_$P; mkdir -p "$W"
 # the shipped flats were built with), not the Homebrew python3.
 PY="${PY:-$REPO/.venv/bin/python3}"; [ -x "$PY" ] || PY=python3
 LAND_RAMP="${LAND_RAMP-#6b5530}"; PREQUEL_LAND_RAMP="${PREQUEL_LAND_RAMP-}"
+# Prequel variant knobs (v3 = opening spin + amber cloud, xian 10-16):
+#   PREQUEL_TAG=v3 PREQUEL_PATH=prequel_camera_path_v3.json PREQUEL_PAN=0:132:360 \
+#   PREQUEL_LAND_RAMP='#6b5530' PREQUEL_FRAMES=$W/prequel_frames_ramp
+PREQUEL_TAG="${PREQUEL_TAG-v2}"; PREQUEL_PATH="${PREQUEL_PATH-prequel_camera_path.json}"
+PREQUEL_PAN="${PREQUEL_PAN-}"; PREQUEL_FRAMES="${PREQUEL_FRAMES-$W/prequel_frames}"
+nframes() { $PY -c "import json,sys; print(len(json.load(open(sys.argv[1]))['frames']))" "$1"; }
 ts() { date "+%F %T"; }
 run() { echo "[$(ts)] $*"; [ "$DRY" = "--dry-run" ] && return 0; "$@"; local rc=$?; [ $rc -eq 0 ] || { echo "[$(ts)] FAILED (exit $rc): $1 — stopping"; exit 1; }; }
 
@@ -34,7 +40,7 @@ echo "[$(ts)] palette pipeline: $P -> $W"
 
 # ── 1. textures ────────────────────────────────────────────────
 run $PY "$REPO/scripts/recolor_texture.py" --palette "$P" --jobs 8 "$R/frames" "$W/frames"
-run $PY "$REPO/scripts/recolor_texture.py" --palette "$P" --jobs 8 --pattern 'prequel_frame_*.png' ${PREQUEL_LAND_RAMP:+--land-ramp "$PREQUEL_LAND_RAMP"} "$R/prequel_frames" "$W/prequel_frames"
+run $PY "$REPO/scripts/recolor_texture.py" --palette "$P" --jobs 8 --pattern 'prequel_frame_*.png' ${PREQUEL_LAND_RAMP:+--land-ramp "$PREQUEL_LAND_RAMP"} "$R/prequel_frames" "$PREQUEL_FRAMES"
 run $PY "$REPO/scripts/recolor_texture.py" --palette "$P" --jobs 8 --pattern 'sequel_frame_*.png' ${LAND_RAMP:+--land-ramp "$LAND_RAMP"} "$R/sequel_frames" "$W/sequel_frames"
 
 # ── 2. flat films ──────────────────────────────────────────────
@@ -61,11 +67,11 @@ echo "[$(ts)] sequel PAN_SCROLL=$PAN"
 if [ ! -s "$W/tectonic_flat_v8.mp4" ] || [ ! -s "$W/flat_main_last.png" ]; then
   run env FRAMES_DIR="$W/frames" CAMERA_PATH_FILE=camera_path_spin_v8.json OUTPUT_PATH="$W/tectonic_flat_v8.mp4" \
       DUMP_FIRST="$W/flat_main_first.png" DUMP_LAST="$W/flat_main_last.png" $PY scripts/render_flat.py
-  rm -f "$W/tectonic_prequel_v2.mp4" "$W/tectonic_sequel_flat_v3.mp4"   # their blend sources just changed
+  rm -f "$W/tectonic_prequel_$PREQUEL_TAG.mp4" "$W/tectonic_sequel_flat_v3.mp4"   # their blend sources just changed
 fi
-if [ ! -s "$W/tectonic_prequel_v2.mp4" ]; then
-  run env FRAMES_DIR="$W/prequel_frames" FRAME_PREFIX=prequel_frame_ CAMERA_PATH_FILE=prequel_camera_path.json \
-      TERMINAL_BLEND_SRC="$W/flat_main_first.png" OUTPUT_PATH="$W/tectonic_prequel_v2.mp4" $PY scripts/render_flat.py
+if [ ! -s "$W/tectonic_prequel_$PREQUEL_TAG.mp4" ]; then
+  run env FRAMES_DIR="$PREQUEL_FRAMES" FRAME_PREFIX=prequel_frame_ CAMERA_PATH_FILE="$PREQUEL_PATH" ${PREQUEL_PAN:+PAN_SCROLL="$PREQUEL_PAN"} \
+      TERMINAL_BLEND_SRC="$W/flat_main_first.png" OUTPUT_PATH="$W/tectonic_prequel_$PREQUEL_TAG.mp4" $PY scripts/render_flat.py
 fi
 if [ ! -s "$W/tectonic_sequel_flat_v3.mp4" ]; then
   run env FRAMES_DIR="$W/sequel_frames" FRAME_PREFIX=sequel_frame_ CAMERA_PATH_FILE=sequel_camera_path.json \
@@ -81,12 +87,13 @@ globe() {  # name frames prefix path total
   run env FRAMES_DIR="$frames" FRAME_PREFIX="$prefix" CAMERA_PATH_FILE="$REPO/$path" RENDER_DIR="$W/render_$name" \
       TOTAL_FRAMES="$total" LOG="$W/render_$name.supervisor.log" bash scripts/render_supervised.sh
 }
-globe main    "$W/frames"         globe_frame_   camera_path_spin_v8.json 2738
+globe main    "$W/frames"         globe_frame_   camera_path_spin_v8.json "$(nframes camera_path_spin_v8.json)"
 run env CAMERA_PATH_FILE=camera_path_spin_v8.json RENDER_DIR="$W/render_main" OUTPUT_PATH="$W/tectonic_globe_v8.mp4" $PY scripts/assemble_globe.py
-globe prequel "$W/prequel_frames" prequel_frame_ prequel_camera_path.json 2186
-run env CAMERA_PATH_FILE=prequel_camera_path.json RENDER_DIR="$W/render_prequel" TERMINAL_BLEND_SRC="$W/render_main/render_0001.png" \
-    OUTPUT_PATH="$W/tectonic_prequel_globe_v2.mp4" $PY scripts/assemble_globe.py
-globe sequel  "$W/sequel_frames"  sequel_frame_  sequel_camera_path.json  1795
+PRE_RENDER=render_prequel; [ "$PREQUEL_TAG" = v2 ] || PRE_RENDER="render_prequel_$PREQUEL_TAG"   # a new path never resumes into old frames
+globe "${PRE_RENDER#render_}" "$PREQUEL_FRAMES" prequel_frame_ "$PREQUEL_PATH" "$(nframes "$PREQUEL_PATH")"
+run env CAMERA_PATH_FILE="$PREQUEL_PATH" RENDER_DIR="$W/$PRE_RENDER" TERMINAL_BLEND_SRC="$W/render_main/render_0001.png" \
+    OUTPUT_PATH="$W/tectonic_prequel_globe_$PREQUEL_TAG.mp4" $PY scripts/assemble_globe.py
+globe sequel  "$W/sequel_frames"  sequel_frame_  sequel_camera_path.json  "$(nframes sequel_camera_path.json)"
 run env CAMERA_PATH_FILE=sequel_camera_path.json RENDER_DIR="$W/render_sequel" INITIAL_BLEND_SRC="$W/render_main/render_2738.png" \
     OUTPUT_PATH="$W/tectonic_sequel_globe_v3.mp4" $PY scripts/assemble_globe.py
 echo "[$(ts)] PIPELINE COMPLETE: $(ls "$W"/*.mp4 | xargs -n1 basename | tr '\n' ' ')"
