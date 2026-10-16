@@ -122,3 +122,18 @@ written; rule is wait or swap by rename, never edit in place.
 
 Drain: wake handled. Pipeline: sequel textures recolouring; Cycles not
 yet started. Deferred as before (wall clock). Mail re-checked, nothing new.
+
+## 12:16 PT — prequel v3 flat proven
+
+The watcher built the ramped prequel textures (801) and the v3 flat:
+2318 frames, 96.6 s. Opening pan rolls the map a full turn over frames
+0–131 and frame 132 matches frame 0 exactly; the pan hold was left to
+the pan (not given a lens), so Nuna → sinusoidal and 1000 Ma →
+azimuthal exactly as shipped. Cloud amber throughout. The 05:00 Cycles
+pass will find this flat present and skip straight to the globe.
+
+Tonight's main Cycles pass started 11:59; early pace ~8–9 s/frame with
+my stills and the recolour contending, so the 21:24 row may be ~40 min
+short — re-check at the 16:22 fire and extend the declaration if so.
+
+Drain: v3 flat verified; nothing else unblocked (blocker: wall clock).
