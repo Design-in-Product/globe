@@ -68,3 +68,46 @@ of me now; no reply needed. Pipeline: recolouring main textures
 Drain: wake handled (no action owed). Deferred: `stale-1` clearance and
 the Pard note (blocker: second cut not yet verified, ~21:00). Mail
 re-checked, nothing else new.
+
+## 11:35–12:00 PT — xian's second round
+
+xian: 1:31 and 3:25 chain dissolves fine. Three more items.
+
+1. **"Futures appear staggered — a continent suddenly in three places."**
+   Diagnosed: the four scenario datasets are raster snapshots every
+   20 Myr; `generate_sequel_frames.py` crossfades masks between snapshots
+   (fade out here, fade in there), so a continent that moved 2000 km in
+   20 Myr fades rather than slides — 2.6 s per step at the film's pace.
+   True motion would need per-plate rotations the data does not carry, or
+   a mask-morph (track connected components between snapshots and warp).
+   Reported to xian with the options; not started — his call on scope.
+2. **Warmer cloud:** rendered the prequel cloud with/without the amber
+   ramp at 1717 Ma and the Nuna hold (`cloud_compare.png`, sent). The
+   ramp reads as "maybe land" where the old blend read as blue-grey. The
+   05:00 prequel pass applies it unless xian objects first.
+3. **Opening spin — approved.** `scripts/add_opening_spin.py` prepends an
+   eased 132-frame 360° at 1800 Ma (direction +1 as the v8 holds; join
+   step 0.002°) → `prequel_camera_path_v3.json`, 2318 frames, 96.6 s.
+   Flat parity via `PAN_SCROLL=0:132:360`; `render_flat.py` now leaves a
+   hold inside the pan window to the pan instead of giving it the first
+   lens of the arc. Pipeline grew prequel knobs (`PREQUEL_TAG/PATH/PAN/
+   LAND_RAMP/FRAMES`; a new path renders into its own dir, never resuming
+   into old frames; frame totals read from the path). `d777738`.
+
+**Scheduling:** Pard runs a local model 00:00–05:00, so the prequel v3
+Cycles pass (2318 frames, ~4.5 h) is scheduled for 05:00 by a watcher in
+this session (declares 6 h itself, waits for tonight's PIPELINE COMPLETE),
+not chained onto tonight. Pard memoed (`aea3f5b`). A second watcher builds
+the ramped prequel textures and the v3 flat as soon as tonight's flats
+are done, so the flat path is proven before the GPU hours.
+
+**Slip:** I edited `palette_pipeline.sh` while the launched copy was still
+executing — bash reads a script lazily by byte offset, so that can
+derail it. Killed and relaunched at 11:48 (resumable; lost a few minutes
+of texture recolour). Rule for me: never edit a running shell script;
+copy it or wait.
+
+Drain: everything xian asked for is built, proven on stills where it
+could be, and scheduled; main+sequel second cut rendering (ends ~21:00);
+prequel v3 at 05:00–~10:00. Open to xian: the ramp (default yes), and
+whether the staggered futures deserve a mask-morph (roadmap candidate).
