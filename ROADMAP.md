@@ -47,7 +47,7 @@ Speculative plate tectonics going forward from present day.
 
 ---
 
-### 4. Visual polish — cinematic color palette — IN PROGRESS since 2026-10-13 (xian: start items 4 then 6). Three gold/blue candidates rendered for xian's pick: `docs/design/palette-comparison-2026-10-13/`; tooling `scripts/recolor_texture.py` (palette remap of existing textures, no gplately rerun) + `scripts/render_palette_still.py`.
+### 4. Visual polish — cinematic color palette — STAGED 2026-10-14, ships when xian has watched the films. xian leaned B (cobalt-brass) on 10-13 from three Cycles stills (`docs/design/palette-comparison-2026-10-13/`); every film re-rendered overnight (`scripts/palette_pipeline.sh cobalt-brass`: textures → flats → Cycles, 17:40→05:48) into `~/globe-render/palette_cobalt-brass/` (v8 / prequel v2 / sequel v3, both projections, seams verified); site theme, v8 references, poster and recoloured Explore keyframes on branch `palette-cobalt-brass`. Tooling: `scripts/recolor_texture.py` (palette remap, no gplately rerun), `scripts/render_palette_still.py`, `scripts/palette_pipeline.sh`.
 
 Shift from current earth tones to gold/blue movie-poster aesthetic.
 
@@ -113,7 +113,7 @@ the underlying data is sparse.
 
 ---
 
-### 6. Landing page enhancements — IN PROGRESS since 2026-10-13 (after item 4)
+### 6. Landing page enhancements — STAGED 2026-10-14 with item 4 ("How this was built" + "Where it's going" live since 10-13; the cobalt-brass theme is on branch `palette-cobalt-brass` and ships with the films)
 
 - Roadmap section on the site (once this list is finalized by Xian)
 - Case study / "How This Was Built" — the README narrative is already written for an audience, could become its own expanded page section

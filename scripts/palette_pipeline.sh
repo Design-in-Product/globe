@@ -8,7 +8,9 @@
 # globe pass is already running; never start a second supervisor).
 #
 # Stages (each resumable; a rerun skips what is already on disk):
-#   1. recolour the three texture sets (recolor_texture.py, 8-way)
+#   1. recolour the three texture sets (recolor_texture.py, 8-way). The sequel's
+#      superposition takes a land ramp (LAND_RAMP, default #6b5530: any land at
+#      all is amber — xian 10-16); PREQUEL_LAND_RAMP applies one to the cloud.
 #   2. flat films, fast (PIL): main v8 -> prequel v2 (dissolves into main's
 #      first frame) -> sequel v3 (dissolves out of main's last frame, PAN_SCROLL
 #      from the sequel path's pan window, LENS_HOLDS=0 as shipped 10-06)
@@ -24,6 +26,7 @@ R=~/globe-render; W=$R/palette_$P; mkdir -p "$W"
 # render_flat.py's lens morph imports matplotlib: use the repo venv (the one
 # the shipped flats were built with), not the Homebrew python3.
 PY="${PY:-$REPO/.venv/bin/python3}"; [ -x "$PY" ] || PY=python3
+LAND_RAMP="${LAND_RAMP-#6b5530}"; PREQUEL_LAND_RAMP="${PREQUEL_LAND_RAMP-}"
 ts() { date "+%F %T"; }
 run() { echo "[$(ts)] $*"; [ "$DRY" = "--dry-run" ] && return 0; "$@"; local rc=$?; [ $rc -eq 0 ] || { echo "[$(ts)] FAILED (exit $rc): $1 — stopping"; exit 1; }; }
 
@@ -31,8 +34,8 @@ echo "[$(ts)] palette pipeline: $P -> $W"
 
 # ── 1. textures ────────────────────────────────────────────────
 run $PY "$REPO/scripts/recolor_texture.py" --palette "$P" --jobs 8 "$R/frames" "$W/frames"
-run $PY "$REPO/scripts/recolor_texture.py" --palette "$P" --jobs 8 --pattern 'prequel_frame_*.png' "$R/prequel_frames" "$W/prequel_frames"
-run $PY "$REPO/scripts/recolor_texture.py" --palette "$P" --jobs 8 --pattern 'sequel_frame_*.png' "$R/sequel_frames" "$W/sequel_frames"
+run $PY "$REPO/scripts/recolor_texture.py" --palette "$P" --jobs 8 --pattern 'prequel_frame_*.png' ${PREQUEL_LAND_RAMP:+--land-ramp "$PREQUEL_LAND_RAMP"} "$R/prequel_frames" "$W/prequel_frames"
+run $PY "$REPO/scripts/recolor_texture.py" --palette "$P" --jobs 8 --pattern 'sequel_frame_*.png' ${LAND_RAMP:+--land-ramp "$LAND_RAMP"} "$R/sequel_frames" "$W/sequel_frames"
 
 # ── 2. flat films ──────────────────────────────────────────────
 cd "$REPO"

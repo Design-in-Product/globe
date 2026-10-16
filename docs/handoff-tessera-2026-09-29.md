@@ -1,6 +1,6 @@
 # Handoff: Tessera — current state (supersedes 2026-09-18)
 
-**Updated 2026-10-13** (drift audit after brief 10-10 §1: publishing model, sequel shipped, operating model, mail delivery). Earlier: 10-04 (sequel rendered; 🔒 rule adopted). Original rationale:
+**Updated 2026-10-14** (drift audit after brief 10-10 §1: publishing model, sequel shipped, operating model, mail delivery). Earlier: 10-04 (sequel rendered; 🔒 rule adopted). Original rationale:
 **Why now:** brief 9/29 (Klatch fork-identity finding) restated the first
 principle of multi-session work — *shared memory is exactly what's in git,
 nothing carried implicitly across session boundaries.* My last handoff is
@@ -33,6 +33,20 @@ full re-render ≈ 11 h Cycles + textures + flats + Explore keyframes.
 it's going" sections live on `index.html`; the gold site theme waits on the
 palette pick. Roadmap status page for xian: artifact
 `P79xpXwFGEGgzpRhMdV58n` (private).
+
+**2026-10-14:** xian leaned **B (cobalt-brass)**; taken as the pick. The
+whole series was re-rendered overnight by `scripts/palette_pipeline.sh`
+(textures → flats → Cycles, 17:40→05:48, 0 crashes) into
+`~/globe-render/palette_cobalt-brass/`: `tectonic_globe_v8.mp4`,
+`tectonic_flat_v8.mp4`, `tectonic_prequel_globe_v2.mp4`,
+`tectonic_prequel_v2.mp4`, `tectonic_sequel_globe_v3.mp4`,
+`tectonic_sequel_flat_v3.mp4` — same frame counts as shipped, seams
+verified. **Everything but the films is staged on branch
+`palette-cobalt-brass`** (site theme, v8 references, `poster_v8.png`,
+Explore theme, recoloured keyframes — 13 + 3.9 MB, up from 9.9 + 3.3).
+**Ship = xian watches the films → merge the branch → copy the six mp4s to
+the repo root → push → `scripts/wait_pages.py` 200s → tell Pard before
+deleting the old earth-tone frame sets.** Blocker: xian's eyes on motion.
 
 ## Operating model (how this seat actually runs, 2026-10-10)
 

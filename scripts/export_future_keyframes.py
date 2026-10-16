@@ -48,18 +48,22 @@ WEBP_QUALITY = 90
 # sequel's superposition does.
 _PAL = os.environ.get("PALETTE")
 if _PAL:
-    from recolor_texture import PALETTES, hex2rgb
+    from recolor_texture import PALETTES, hex2rgb, land_ramp
     OCEAN = hex2rgb(PALETTES[_PAL]["ocean"])
     CONTINENT = hex2rgb(PALETTES[_PAL]["continent_full"])
 else:
     OCEAN = np.array([0x1a, 0x42, 0x5a], dtype=np.float32)
     CONTINENT = np.array([0xa0, 0x7c, 0x5a], dtype=np.float32)
+_RAMP = os.environ.get("LAND_RAMP")   # e.g. #6b5530, same as recolor --land-ramp (needs PALETTE)
 SUPER_END = 200  # all four scenarios exist to here
 
 
 def mask_image(m):
     """m: (lat, lon) float 0..1 land fraction -> PIL image in the film palette."""
-    img = OCEAN[None, None, :] + (CONTINENT - OCEAN)[None, None, :] * m[..., None]
+    if _RAMP:
+        img = land_ramp(m.astype(np.float32), OCEAN, CONTINENT, hex2rgb(_RAMP))
+    else:
+        img = OCEAN[None, None, :] + (CONTINENT - OCEAN)[None, None, :] * m[..., None]
     return Image.fromarray(np.clip(img, 0, 255).astype(np.uint8)).resize(SIZE, Image.BILINEAR)
 
 

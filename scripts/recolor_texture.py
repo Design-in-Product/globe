@@ -47,7 +47,9 @@ PALETTES = {
     },
     # Cobalt ocean, brass land — lower-contrast, more "atlas" than "poster".
     "cobalt-brass": {
-        "ocean": "#10294d", "continent": "#b8923e", "continent_full": "#b8923e", "continent_overlap": "#c7a252",
+        # overlap == land: overlapping plate polygons are a dataset artefact and a
+        # lighter shade read as an offset ghost of the continent (xian, 10-16)
+        "ocean": "#10294d", "continent": "#b8923e", "continent_full": "#b8923e", "continent_overlap": "#b8923e",
         "coastline": "#5f4a1c", "ridge": "#ffd166", "trench": "#ef476f",
     },
     # Near-black ink ocean, bright gold land — highest contrast; keeps the
@@ -64,9 +66,28 @@ def hex2rgb(h):
     return np.array([int(h[i:i + 2], 16) for i in (0, 2, 4)], dtype=np.float32)
 
 
-def recolor(img, palette):
+def land_ramp(t, ocean, land, mid, knee=0.25):
+    """Colour for a fractional land value t on the ocean->land blend.
+
+    A straight ocean->land mix passes through blue-grey, so "one scenario in
+    four says land" looked like shallow sea (xian, 10-16). With a ramp, the
+    blend reaches a dim amber `mid` already at t=knee and climbs to full land
+    from there: any land at all is amber, and the levels stay distinct.
+    """
+    t = t[..., None]
+    lo = ocean + (t / knee) * (mid - ocean)
+    hi = mid + ((t - knee) / (1.0 - knee)) * (land - mid)
+    return np.where(t < knee, lo, hi)
+
+
+def recolor(img, palette, ramp_mid=None):
     src = np.stack([hex2rgb(SOURCE[r]) for r in ROLES])        # (R,3)
     dst = np.stack([hex2rgb(palette[r]) for r in ROLES])       # (R,3)
+    # every ocean->land pair takes the ramp: the three land shades sit almost
+    # on one line from the ocean, so a blend pixel may snap to any of them
+    io = ROLES.index("ocean")
+    land_idx = {ROLES.index(r) for r in ("continent", "continent_full", "continent_overlap")}
+    mid = hex2rgb(ramp_mid) if ramp_mid else None
     px = np.asarray(img.convert("RGB"), dtype=np.float32)      # (H,W,3)
     flat = px.reshape(-1, 3)
     best_res = np.full(flat.shape[0], np.inf, dtype=np.float32)
@@ -87,14 +108,17 @@ def recolor(img, palette):
             better = res < best_res
             if better.any():
                 best_res[better] = res[better]
-                out[better] = da + t[better, None] * (db - da)
+                if mid is not None and a == io and b in land_idx:
+                    out[better] = land_ramp(t[better], da, db, mid)
+                else:
+                    out[better] = da + t[better, None] * (db - da)
     return Image.fromarray(np.clip(out + 0.5, 0, 255).astype(np.uint8).reshape(px.shape))
 
 
 def _job(t):
-    f, o, name = t
+    f, o, name, ramp = t
     tmp = o + ".part"
-    recolor(Image.open(f), PALETTES[name]).save(tmp, format="PNG", optimize=True)
+    recolor(Image.open(f), PALETTES[name], ramp).save(tmp, format="PNG", optimize=True)
     os.replace(tmp, o)   # never leave a truncated PNG under the final name
 
 
@@ -104,6 +128,8 @@ def main():
     ap.add_argument("--list", action="store_true")
     ap.add_argument("--pattern", default="globe_frame_*.png", help="glob inside a src dir (prequel_frame_*.png, sequel_frame_*.png)")
     ap.add_argument("--jobs", type=int, default=1)
+    ap.add_argument("--land-ramp", default=None, metavar="HEX",
+                    help="dim-amber midpoint for the continuous ocean->land blend (sequel superposition, prequel cloud); e.g. #6b5530")
     ap.add_argument("src", nargs="?")
     ap.add_argument("dst", nargs="?")
     args = ap.parse_args()
@@ -122,17 +148,17 @@ def main():
         if args.jobs > 1 and todo:
             from multiprocessing import Pool
             with Pool(args.jobs) as pool:
-                for k, _ in enumerate(pool.imap_unordered(_job, [(f, o, args.palette) for f, o in todo]), 1):
+                for k, _ in enumerate(pool.imap_unordered(_job, [(f, o, args.palette, args.land_ramp) for f, o in todo]), 1):
                     if k % 50 == 0:
                         print(f"  {k}/{len(todo)} recoloured", flush=True)
         else:
             for k, (f, o) in enumerate(todo, 1):
-                _job((f, o, args.palette))
+                _job((f, o, args.palette, args.land_ramp))
                 if k % 50 == 0:
                     print(f"  {k}/{len(todo)} recoloured", flush=True)
         print(f"recolor {args.palette}: {len(todo)} written, {len(files) - len(todo)} already present, of {len(files)}")
     else:
-        recolor(Image.open(args.src), pal).save(args.dst, optimize=True)
+        recolor(Image.open(args.src), pal, args.land_ramp).save(args.dst, optimize=True)
         print(f"recolor {args.palette}: {args.dst}")
 
 
