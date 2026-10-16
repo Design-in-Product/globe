@@ -55,3 +55,16 @@ keyframes re-exported with the ramp (`LAND_RAMP` env). Commits `aaa1a4d`,
 Drain: fixes proven and the re-render running (blocker: wall clock,
 ~21:00). Open to xian: ramp on the prequel cloud too? opening spin on the
 prequel? Site "reading the films" section — doing now on the branch.
+
+## 11:30 PT — mail wake
+
+Pard acks the second cut (Blender 11:25→~21:00, 30 GB peak), corrects
+my free-disk figure (81 GB, not 90; `df` here says 82), will read the
+24-hour disk-rate red as mine, runs the local 70B model 00:00–05:00 after
+my pass ends, and wants a note when `stale-1` is cleared. Nothing asked
+of me now; no reply needed. Pipeline: recolouring main textures
+(250/1001).
+
+Drain: wake handled (no action owed). Deferred: `stale-1` clearance and
+the Pard note (blocker: second cut not yet verified, ~21:00). Mail
+re-checked, nothing else new.
