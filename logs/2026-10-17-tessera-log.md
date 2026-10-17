@@ -21,3 +21,11 @@ Drain: brief read; nothing else unblocked (blockers: render finishing ~10:40; xi
 Ship set now complete on disk: `tectonic_globe_v8` / `tectonic_flat_v8`, `tectonic_prequel_globe_v3` / `tectonic_prequel_v3`, `tectonic_sequel_globe_v3` / `tectonic_sequel_flat_v3`. Branch `palette-cobalt-brass` already references these names.
 
 Drain: v3 verified, staged, preview and page refreshed. Deferred: ship + `stale-1/` clearance (blocker: xian has not watched the second cut in motion — the rule); crossfade-ghost decision (blocker: xian's call; options on `watch.html` and in yesterday's 21:16 entry). Two clean mail checks (10:45, 10:47).
+
+## 16:22 fire
+
+Sync: up to date at `9680d99`. Mail: nothing new. `fire_check.sh`: site 200, Pages deployed for `9680d99`, no stray Blender, no live declarations. Disk 89 GB free.
+
+Handoff (living doc) extended with a 10-16/17 paragraph: the second cut's three fixes, render windows, ship set and location, and the three items open for xian (ship; the crossfade ghost; the futures' snapshot cadence). Everything else on the board is gated on xian watching the second cut in motion.
+
+Drain: health check, handoff updated. Deferred: ship + old-frame clearance (blocker: xian has not watched the second cut); crossfade decision (blocker: xian's call). Two clean mail checks (16:22, 16:25).

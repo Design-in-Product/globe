@@ -48,6 +48,29 @@ Explore theme, recoloured keyframes — 13 + 3.9 MB, up from 9.9 + 3.3).
 the repo root → push → `scripts/wait_pages.py` 200s → tell Pard before
 deleting the old earth-tone frame sets.** Blocker: xian's eyes on motion.
 
+**2026-10-16/17 — second cut after xian's first viewing** (review in
+session 10-16; details in `logs/2026-10-16-tessera-log.md`). Three fixes,
+all re-rendered: the lighter shade for overlapping plate polygons merged
+into land (the 1:03 "ghost" patches); every ocean→land blend ramped
+through dim amber `#6b5530` so the sequel superposition and the prequel
+cloud never read blue-grey (`recolor_texture.py --land-ramp`); and a
+132-frame eased opening spin at 1800 Ma (`prequel_camera_path_v3.json`,
+`scripts/add_opening_spin.py`). Rendered 10-16 11:59→21:15 (main + sequel)
+and 10-17 05:12→10:44 (prequel v3), 0 crashes, around Pard's 00:00–05:00
+model window. **Ship set:** `tectonic_globe_v8` / `tectonic_flat_v8`,
+`tectonic_prequel_globe_v3` / `tectonic_prequel_v3`,
+`tectonic_sequel_globe_v3` / `tectonic_sequel_flat_v3`, all in
+`~/globe-render/palette_cobalt-brass/review-2/` with `watch.html` and
+comparison stills; the branch's FILMS table and "Reading the films" section
+already name them. **Open for xian:** (a) watch and say ship; (b) the
+remaining faint offset copy at 1:03 is `render_globe.py`'s 2-frame texture
+crossfade across 1 Myr steps (median 10 % of land pixels move per step),
+present since v7 — removing it is a hard-cut main re-render (~6 h), his call;
+(c) the futures "stagger" is the 20 Myr snapshot cadence of the source rasters,
+explained on the page, mask-morphing listed as a sequel v4 candidate.
+After ship: clear `review-1/`, `stale-1/` (9.1 GB) and the earth-tone frame
+sets, telling Pard first. Scheduler lesson in memory: gate on epoch, not HHMM.
+
 ## Operating model (how this seat actually runs, 2026-10-10)
 
 Duty cycle: Amber LaunchAgent fires at **10:22 and 16:22 PT** inject the
