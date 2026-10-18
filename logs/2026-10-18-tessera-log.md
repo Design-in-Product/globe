@@ -7,3 +7,9 @@ Sync: `2f6e936` (brief pointer). Mail: nothing new. `fire_check.sh`: site and /e
 Second cut still staged in `~/globe-render/palette_cobalt-brass/review-2/` for xian (since 10-17 10:44).
 
 Drain: health check, brief read and checked against this repo. Deferred: ship + old-frame clearance (blocker: xian has not watched the second cut in motion); crossfade decision (blocker: xian's call). Two clean mail checks (10:22, 10:24).
+
+## 16:22 fire
+
+Sync: up to date at `7635066`. Mail: nothing new. `fire_check.sh`: site and /explore/ 200, Pages deployed for `7635066`, no stray Blender, no live declarations. Second cut still staged in `review-2/` for xian.
+
+Drain: health check only; nothing else unblocked. Deferred: ship + old-frame clearance (blocker: xian has not watched the second cut in motion); crossfade decision (blocker: xian's call). Two clean mail checks (16:22, 16:23).
