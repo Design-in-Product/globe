@@ -23,7 +23,7 @@ During the variable-pacing hold frames at major supercontinents (Rodinia, Gondwa
 
 ---
 
-### 2. Deep time — prequel series — SHIPPED 2026-08-10 (`tectonic_prequel_globe_v1.mp4` + `tectonic_prequel_v1.mp4`, 1800→1000 Ma, chains into the main film; commit `03d27b6`)
+### 2. Deep time — prequel series — SHIPPED 2026-08-10, now v3 (2026-10-20: opening spin + amber cloud, `tectonic_prequel_globe_v3.mp4` + `tectonic_prequel_v3.mp4`; v1 was `tectonic_prequel_globe_v1.mp4` + `tectonic_prequel_v1.mp4`, 1800→1000 Ma, chains into the main film; commit `03d27b6`)
 
 Extend further into the past beyond 1 Ga (Rodinia).
 
@@ -34,7 +34,7 @@ Extend further into the past beyond 1 Ga (Rodinia).
 
 ---
 
-### 3. Future projection — sequel — SHIPPED 2026-10-06 as the site's third act (`tectonic_sequel_globe_v2.mp4` + `tectonic_sequel_flat_v2.mp4`, 75 s, both projections; chains from the main film's end)
+### 3. Future projection — sequel — SHIPPED 2026-10-06 as the site's third act, now v3 (2026-10-20: cobalt-brass, amber superposition; v2 was `tectonic_sequel_globe_v2.mp4` + `tectonic_sequel_flat_v2.mp4`, 75 s, both projections; chains from the main film's end)
 
 Decisions taken 2026-10-06 (xian): opening dissolve from the main film's last frame; Pangaea Ultima framed on its centroid with a 12 s westward half-turn onto the world ocean. Both projections, one 1,795-frame timeline. History in `logs/2026-10-06-tessera-log.md`. **Nothing 🔒.**
 
@@ -48,7 +48,7 @@ Speculative plate tectonics going forward from present day.
 
 ---
 
-### 4. Visual polish — cinematic color palette — STAGED 2026-10-14, ships when xian has watched the films. xian leaned B (cobalt-brass) on 10-13 from three Cycles stills (`docs/design/palette-comparison-2026-10-13/`); every film re-rendered overnight (`scripts/palette_pipeline.sh cobalt-brass`: textures → flats → Cycles, 17:40→05:48) into `~/globe-render/palette_cobalt-brass/` (v8 / prequel v2 / sequel v3, both projections, seams verified); site theme, v8 references, poster and recoloured Explore keyframes on branch `palette-cobalt-brass`. Tooling: `scripts/recolor_texture.py` (palette remap, no gplately rerun), `scripts/render_palette_still.py`, `scripts/palette_pipeline.sh`. **Second cut 2026-10-16** after xian's first viewing: overlapping-polygon shade merged into land (the 1:03 ghost), ocean→land blends ramped through dim amber `#6b5530` so any land at all reads amber (sequel superposition, prequel cloud), and a 132-frame opening spin at 1800 Ma (`prequel_camera_path_v3.json`, `scripts/add_opening_spin.py`); main + sequel re-rendered 10-16, prequel v3 10-17 05:00. Ship set: v8 / prequel v3 / sequel v3.
+### 4. Visual polish — cinematic color palette — SHIPPED 2026-10-20 (cobalt-brass; `tectonic_globe_v8.mp4` + `tectonic_flat_v8.mp4`, prequel v3, sequel v3, `poster_v8.png`; xian watched the second cut on 10-20: "I love all six of these"; commit `a5779f7`). Staged 2026-10-14; xian leaned B (cobalt-brass) on 10-13 from three Cycles stills (`docs/design/palette-comparison-2026-10-13/`); every film re-rendered overnight (`scripts/palette_pipeline.sh cobalt-brass`: textures → flats → Cycles, 17:40→05:48) into `~/globe-render/palette_cobalt-brass/` (v8 / prequel v2 / sequel v3, both projections, seams verified); site theme, v8 references, poster and recoloured Explore keyframes on branch `palette-cobalt-brass`. Tooling: `scripts/recolor_texture.py` (palette remap, no gplately rerun), `scripts/render_palette_still.py`, `scripts/palette_pipeline.sh`. **Second cut 2026-10-16** after xian's first viewing: overlapping-polygon shade merged into land (the 1:03 ghost), ocean→land blends ramped through dim amber `#6b5530` so any land at all reads amber (sequel superposition, prequel cloud), and a 132-frame opening spin at 1800 Ma (`prequel_camera_path_v3.json`, `scripts/add_opening_spin.py`); main + sequel re-rendered 10-16, prequel v3 10-17 05:00. Ship set: v8 / prequel v3 / sequel v3.
 
 Shift from current earth tones to gold/blue movie-poster aesthetic.
 
@@ -114,7 +114,7 @@ the underlying data is sparse.
 
 ---
 
-### 6. Landing page enhancements — STAGED 2026-10-14 with item 4 ("How this was built" + "Where it's going" live since 10-13; the cobalt-brass theme is on branch `palette-cobalt-brass` and ships with the films)
+### 6. Landing page enhancements — SHIPPED 2026-10-20 with item 4 (cobalt-brass theme, "Reading the films", v8 references, poster; merge `2332bbe`). Staged 2026-10-14 ("How this was built" + "Where it's going" live since 10-13; the cobalt-brass theme is on branch `palette-cobalt-brass` and ships with the films)
 
 - Roadmap section on the site (once this list is finalized by Xian)
 - Case study / "How This Was Built" — the README narrative is already written for an audience, could become its own expanded page section

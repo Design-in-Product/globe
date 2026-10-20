@@ -62,7 +62,11 @@ model window. **Ship set:** `tectonic_globe_v8` / `tectonic_flat_v8`,
 `tectonic_sequel_globe_v3` / `tectonic_sequel_flat_v3`, all in
 `~/globe-render/palette_cobalt-brass/review-2/` with `watch.html` and
 comparison stills; the branch's FILMS table and "Reading the films" section
-already name them. **Open for xian:** (a) watch and say ship; (b) the
+already name them. **SHIPPED 2026-10-20** — xian watched the second cut on
+kindbook ("I love all six of these. Bravo!"); branch merged (`2332bbe`), six
+films + `poster_v8.png` pushed (`a5779f7`), Pages deployed in 75 s, all nine
+URLs 200 with byte-exact sizes. Items 4 and 6 are done; nothing on the
+roadmap is in flight. **Still open for xian:** (b) the
 remaining faint offset copy at 1:03 is `render_globe.py`'s 2-frame texture
 crossfade across 1 Myr steps (median 10 % of land pixels move per step),
 present since v7 — removing it is a hard-cut main re-render (~6 h), his call;
