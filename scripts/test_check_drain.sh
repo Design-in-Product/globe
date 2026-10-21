@@ -44,6 +44,16 @@ expect 1 "first of two entries lacks Drain" <<< '## 10:22 fire
 Sync.
 ## 16:22 fire
 Drain: ok.'
+# Editing an existing heading (rename, time fix) adds only the heading line;
+# its Drain line is unchanged and absent from the diff — must pass.
+expect 0 "renamed heading, no added body" <<< '## 16:51 — xian in session: second cut approved and SHIPPED (heading time from the ship commit'"'"'s clock)'
+expect 0 "renamed heading then a new full entry" <<< '## 16:51 — ship (time fixed)
+## 17:05 — mail wake
+Pard acked.
+Drain: corrections sent.'
+expect 1 "renamed heading then a new entry lacking Drain" <<< '## 16:51 — ship (time fixed)
+## 17:05 — mail wake
+Pard acked.'
 # Non-entry additions (a top-level title, body text) do not open a block
 expect 0 "title and prose only" <<< '# 2026-10-19 — Tessera log
 some added prose'
