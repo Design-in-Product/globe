@@ -14,3 +14,12 @@ Found while writing: the repo has no LICENSE file and the films carry no terms �
 
 Mail: clean after the reply (second check below).
 Drain: every unblocked item done. Deferred with blockers: building the new home page (blocker: xian's yes on the direction); the blog post's venue (blocker: xian's decision); the frame-set deletion (blocker: rm denied for this seat, waits on xian running it); telling Pard the space is back (blocker: the deletion).
+
+## 07:25 — xian in session: proposal approved in direction; roadmap questions answered
+
+xian: "I love your proposal for the site … the draft copy looks good. I can do a final edit review once we're previewing." Blog: his personal blog, plus LinkedIn. Asked to read the draft here (sent as a file + GitHub link), asked seven roadmap questions, floated a printable PDF poster (download or merch), and confirmed the frame sets are on Amber.
+
+Done: `docs/design/roadmap-conversation-2026-10-21.md` (ba0fc2e, pushed) — licence options; the 1:03 ghost with four options and an offer to render hard cuts for 1:00–1:10 only for a side-by-side; the sequel's step motion explained from the data (0.25° land/sea grids, 20 Myr snapshots, 11–14 per scenario, rotations unpublished), shapes hold in the source (rigid blocks) and distort only in our crossfade/superposition, sea level not modelled (t=0 mask 34.6 % land vs 29 % real), four options with "extrapolate the first 30 Myr now, letter to the authors if willing"; Explore density numbers (23 past + 56 future keyframes, 13 MB; 10 Myr ≈ 100 MB, 1 Myr > 1 GB) and hosting options with R2 recommended, plus the prior question of whether denser is wanted; items 7/8 summarised with the poster filed under 7's POD stepping stone; duty-cycle options with a "first edition" item 9 recommended; the captions read spelled out; poster PDF shape; frame-set paths.
+
+Not changed: index.html (preview comes after his explicit yes on building; he said he'd review once previewing — I read that as the yes and will build on a branch next).
+Drain: all answered and pushed. Next unblocked: build the below-the-fold rebuild on a branch with a preview at previews/home-2026-10-21/ (starting now). Deferred with blockers: the ghost test render (waits on xian's eyeball verdict); the sequel extrapolation and the authors' letter (wait on xian's choice); LICENSE file (xian's licence decision); the deletion (rm denied for this seat; waits on xian running it on Amber); telling Pard (the deletion).
