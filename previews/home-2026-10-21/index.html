@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tectonic Globe</title>
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Tectonic Globe">
+    <meta property="og:description" content="1.8 billion years of continental drift, and 250 million more, on a globe">
+    <meta property="og:type" content="video.other">
+    <meta property="og:video" content="https://globe.dinp.xyz/tectonic_globe_v8.mp4">
+    <meta property="og:video:type" content="video/mp4">
+    <meta property="og:video:width" content="1920">
+    <meta property="og:video:height" content="1080">
+    <meta property="og:url" content="https://globe.dinp.xyz">
+    <meta property="og:image" content="https://globe.dinp.xyz/poster_v8.png">
+
+    <!-- Twitter/X Card -->
+    <meta name="twitter:card" content="player">
+    <meta name="twitter:title" content="Tectonic Globe">
+    <meta name="twitter:description" content="1.8 billion years of continental drift, and 250 million more, on a globe">
+    <meta name="twitter:player" content="https://globe.dinp.xyz">
+    <meta name="twitter:player:width" content="1920">
+    <meta name="twitter:player:height" content="1080">
+    <meta name="twitter:image" content="https://globe.dinp.xyz/poster_v8.png">
+
+    <style>
+        :root {
+            /* cobalt-brass (roadmap item 4, xian's pick 2026-10-13): the
+               films' ocean and land, lifted for a page. */
+            --bg: #06101f;
+            --bg-raised: #0d1b33;
+            --bg-card: #13223d;
+            --text: #ebe4d3;
+            --text-muted: #a39b88;
+            --text-dim: #6b6552;
+            --accent: #b8923e;
+            --accent-dim: #6f5823;
+            --border: #1f2f4d;
+            --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── Hero ──────────────────────────────────── */
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 2rem;
+            font-weight: 300;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+        }
+
+        .hero .tagline {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .hero-video-wrap {
+            width: 100%;
+            max-width: 960px;
+        }
+
+        .hero-video-wrap video {
+            width: 100%;
+            border-radius: 4px;
+            background: #000;
+        }
+
+        .video-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .video-toggle button,
+        .video-toggle a {
+            background: none;
+            text-decoration: none;
+            display: inline-block;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-family: var(--font);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .video-toggle button.active {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .video-toggle button:hover,
+        .video-toggle a:hover {
+            border-color: var(--text-muted);
+            color: var(--text);
+        }
+
+        .video-toggle button:disabled {
+            opacity: 0.35;
+            cursor: default;
+            border-color: var(--border);
+            color: var(--text-muted);
+        }
+
+        .era-toggle {
+            margin-top: 0.5rem;
+        }
+
+        .chain-note {
+            text-align: center;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-top: 0.45rem;
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 2rem;
+            color: var(--text-dim);
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            animation: fade-pulse 3s ease-in-out infinite;
+        }
+
+        .scroll-hint::after {
+            content: "";
+            display: block;
+            width: 1px;
+            height: 24px;
+            background: var(--text-dim);
+            margin: 0.5rem auto 0;
+        }
+
+        @keyframes fade-pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        /* ── Sections ─────────────────────────────── */
+
+        section {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 4rem 1.25rem;
+        }
+
+        section h2 {
+            font-size: 1.4rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+        }
+
+        /* ── About ─────────────────────────────────── */
+
+        .about p {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .pipeline {
+            background: var(--bg-raised);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+            font-size: 0.8rem;
+            line-height: 1.8;
+            color: var(--text-muted);
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        .pipeline .step { color: var(--text); }
+        .pipeline .arrow { color: var(--accent-dim); }
+        .pipeline .output { color: var(--text-dim); }
+
+        /* ── Timeline ──────────────────────────────── */
+
+        .timeline {
+            position: relative;
+            padding-left: 0;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 0.5rem;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: var(--border);
+        }
+
+        .version-card {
+            position: relative;
+            padding-left: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .version-card::before {
+            content: "";
+            position: absolute;
+            left: 0.25rem;
+            top: 0.35rem;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--accent-dim);
+            border: 2px solid var(--bg);
+        }
+
+        .version-card.current::before {
+            background: var(--accent);
+            box-shadow: 0 0 8px var(--accent);
+        }
+
+        .version-card h3 {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .version-card h3 span {
+            color: var(--accent);
+        }
+
+        .version-card .version-desc {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .version-card video {
+            width: 100%;
+            border-radius: 4px;
+            background: #000;
+            border: 1px solid var(--border);
+        }
+
+
+        /* ── Roadmap ───────────────────────────────── */
+
+        .roadmap-list { list-style: none; }
+
+        .roadmap-list li {
+            display: grid;
+            grid-template-columns: 7.5rem 1fr;
+            gap: 0.75rem;
+            padding: 0.7rem 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.88rem;
+            color: var(--text-muted);
+        }
+
+        .roadmap-list li:last-child { border-bottom: none; }
+
+        .roadmap-list .status {
+            font-size: 0.68rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding-top: 0.2rem;
+            color: var(--text-dim);
+        }
+
+        .roadmap-list .status.shipped { color: var(--accent); }
+        .roadmap-list .status.active { color: var(--text); }
+
+        .roadmap-list strong { color: var(--text); font-weight: 500; }
+
+        .roadmap-note {
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            margin-top: 1.25rem;
+        }
+
+        .roadmap-note a, .built p a {
+            color: var(--text-muted);
+            text-decoration: none;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .roadmap-note a:hover, .built p a:hover { color: var(--accent); }
+
+        /* ── How this was built ────────────────────── */
+
+        .built p {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .built p strong { color: var(--text); font-weight: 500; }
+
+        @media (max-width: 480px) {
+            .roadmap-list li { grid-template-columns: 1fr; gap: 0.2rem; }
+        }
+
+        /* ── Footer ────────────────────────────────── */
+
+        footer {
+            border-top: 1px solid var(--border);
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 2rem 1.25rem 3rem;
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 0.8rem;
+        }
+
+        footer a {
+            color: var(--text-muted);
+            text-decoration: none;
+            border-bottom: 1px solid var(--border);
+            transition: color 0.2s;
+        }
+
+        footer a:hover {
+            color: var(--accent);
+        }
+
+        footer .more {
+            margin-top: 0.5rem;
+            font-style: italic;
+            color: var(--text-dim);
+        }
+
+        /* ── Desktop ───────────────────────────────── */
+
+        @media (min-width: 768px) {
+            .hero h1 { font-size: 2.8rem; }
+            .hero .tagline { font-size: 1rem; }
+
+            section { padding: 5rem 2rem; }
+
+            .timeline { padding-left: 0; }
+
+            .timeline::before {
+                left: 2rem;
+            }
+
+            .version-card {
+                padding-left: 5rem;
+            }
+
+            .version-card::before {
+                left: 1.75rem;
+            }
+
+            .version-card video {
+                max-width: 560px;
+            }
+        }
+        .chapters { margin-top: 1.5rem; }
+        .chapters a { color: var(--accent, #c9a24a); text-decoration: none; border-bottom: 1px solid currentColor; }
+        .chapters a:hover { opacity: .8; }
+        .licence-pending { opacity: .7; }
+    </style>
+</head>
+<body>
+
+<!-- ── Hero ───────────────────────────────────────── -->
+<div class="hero">
+    <h1>Tectonic Globe</h1>
+    <p class="tagline">1.8 billion years of continental drift &mdash; from probability cloud to the present day, and 250 million years beyond</p>
+
+    <div class="hero-video-wrap">
+        <video id="hero-video"
+               src="/tectonic_globe_v8.mp4"
+               poster="/poster_v8.png"
+               controls
+               playsinline
+               preload="metadata">
+        </video>
+        <div class="video-toggle">
+            <button class="active" id="btn-globe" onclick="switchView('globe')">3D Globe</button>
+            <button id="btn-flat" onclick="switchView('flat')">Flat Projection</button>
+        </div>
+        <div class="video-toggle era-toggle">
+            <button id="btn-deep" onclick="startEra('deep')">&#9654; Begin in deep time (1800&nbsp;Ma)</button>
+            <button class="active" id="btn-main" onclick="startEra('main')">&#9654; Begin at Rodinia (1000&nbsp;Ma)</button>
+            <button id="btn-future" onclick="startEra('future')">&#9654; Continue into the future (+250&nbsp;Myr)</button>
+        </div>
+        <p class="chain-note" id="chain-note">Deep time plays straight through the main film and on into the future &mdash; one continuous journey, 1.8&nbsp;billion years back and 250&nbsp;million ahead.</p>
+        <div class="video-toggle era-toggle">
+            <a href="/explore/" id="btn-explore">&#8635; Explore freely &mdash; 1.8&nbsp;billion years back, 250&nbsp;million ahead</a>
+        </div>
+        <p class="chain-note">The films are the story; Explore is the toy. The past is one story; after today, pick a future or hold all four.</p>
+    </div>
+
+    <a href="#about" class="scroll-hint" aria-label="Scroll down">Scroll</a>
+</div>
+
+<!-- ── What you're watching ─────────────────────── -->
+<section class="about" id="about">
+    <h2>What you're watching</h2>
+
+    <p>Earth's continents, moving. Three films, one timeline: deep time from 1800 to 1000 million years ago, the main film from the assembly of Rodinia to the present day, and a future that runs 250 million years ahead. The plates move at one-million-year steps, drawn from published plate reconstructions and rendered onto a globe, so the continents genuinely slide rather than jump.</p>
+
+    <p>Every era exists in two projections that share every frame: the globe, and a flat map for when you want to see the whole surface at once. Press play from any of the three starting points and the series runs straight through; the seams between films are dissolves, not cuts.</p>
+
+    <p>If you would rather hold a moment still, <a href="/explore/"><strong>Explore</strong></a> puts the same span under a scrubber: spin the globe, pick a time, and after today pick a future or hold all four.</p>
+
+    <p class="chapters"><strong>Chapters in the main film</strong> &mdash;
+        <a href="#" data-t="9.5">Rodinia &middot; 0:09</a> &nbsp;
+        <a href="#" data-t="54.2">Gondwana &middot; 0:54</a> &nbsp;
+        <a href="#" data-t="83.7">Pangaea &middot; 1:24</a> &nbsp;
+        <a href="#" data-t="108.6">Today &middot; 1:49</a></p>
+</section>
+
+<!-- ── Reading the films ──────────────────────────── -->
+<section class="built" id="reading">
+    <h2>How to read it</h2>
+
+    <p>The films carry no legend, so here is the one they would have. <strong>Cobalt is ocean, brass is land.</strong> The thin dark lines on the land are coastlines and plate boundaries as the reconstruction has them; the faint lines across the ocean are plate boundaries too. <strong>Pale gold ridges</strong> are where new ocean floor is being made. <strong>Coral lines with teeth</strong> are trenches, where one plate dives under another; the teeth point toward the plate that stays on top. The label in the corner gives the era and the time in millions of years before present, or after it in the future film.</p>
+
+    <p><strong>When the camera lingers, look at the whole sphere.</strong> At Rodinia, Gondwana, Pangaea and the present day the flight pauses and the globe makes one full turn, because a supercontinent always has a world ocean hiding on its far side. The flat view cannot turn, so it changes projection instead and returns when the hold ends.</p>
+
+    <p><strong>In deep time, land that looks faint is land the model is unsure of.</strong> Before about a billion years ago no reconstruction is certain, so the prequel draws nine versions of the same model, each nudged within the published uncertainty of where the continents were, and averages them. Where they agree the land is solid brass; where they scatter, it is a dim amber haze over the ocean. The haze is not a rendering flaw. It is the honest shape of what is known. The deep-time film opens with one slow full turn of the globe at 1800 million years ago, so you can take in the whole ensemble before anything moves.</p>
+
+    <p><strong>Near 1000 Ma two reconstructions hand over to each other.</strong> The deep-time model (Cao et al. 2024) and the main model (Merdith et al. 2021) describe the same continents from different evidence and place them somewhat differently. For a few seconds around the Rodinia hold both are drawn while the camera eases from one to the other, which is why continents appear briefly as translucent overlapping shapes. The main film then runs on one model to the present day.</p>
+
+    <p><strong>The future is four films at once.</strong> Geologists have published four candidate supercontinents, Pangaea Ultima, Novopangaea, Aurica and Amasia, and no one knows which is right. The sequel draws all four on top of each other: dim amber where one scenario puts land, brighter where more agree, full brass where all four do. It then visits each scenario alone, dwelling longest on Pangaea Ultima, and ends with the four together again. The future models are published as snapshots 20 million years apart rather than as a continuous motion, so the sequel fades from one snapshot to the next: a continent may seem to arrive in a new place rather than travel there. That is the resolution of the source, and the step motion is deliberate.</p>
+
+    <p><strong>The three films are one timeline.</strong> Deep time runs 1800 to 1000 million years ago and dissolves into the first frame of the main film; the main film runs to the present and dissolves into the future, which runs 250 million years ahead. Every era exists in both projections, globe and flat, and the two share every frame.</p>
+</section>
+
+<!-- ── The data ─────────────────────────────────────── -->
+<section class="built" id="data">
+    <h2>The data</h2>
+
+    <p><strong>1000 million years ago to today:</strong> Merdith et&nbsp;al. 2021, <em>Extending full-plate tectonic models into deep time: Linking the Neoproterozoic and the Phanerozoic</em> (Earth-Science Reviews), via the EarthByte GPlates ecosystem. <strong>1800 to 1000 million years ago:</strong> Cao et&nbsp;al. 2024, <em>Earth's tectonic and plate boundary evolution over 1.8 billion years</em> (Geoscience Frontiers), which extends Merdith's model back; CC&nbsp;BY&nbsp;4.0. <strong>The next 250 million years:</strong> the four supercontinent scenarios of Davies, Green &amp; Duarte 2018 (Global and Planetary Change), from their published land&ndash;sea grids, 20 million years apart; CC0.</p>
+
+    <p>Reconstructions were turned into frames with gplately and pygplates, rendered in Blender Cycles, assembled with ffmpeg; Explore is Three.js. The pipeline and every frame-generating script are in <a href="https://github.com/Design-in-Product/globe">the repository</a>.</p>
+
+    <p class="licence-pending"><em>Licence for the films, stills and code: to be stated.</em></p>
+</section>
+
+<!-- ── Who made it ──────────────────────────────────── -->
+<section class="built" id="built">
+    <h2>Who made it</h2>
+
+    <p>Tectonic Globe began in February 2025 as a four-day collaboration between <strong>Xian</strong> and <strong>Claude</strong>: six versions, each built, watched, fixed and built again. Xian brought the idea and watched every render; Claude wrote the code. That division was the method, not a convenience: an AI can inspect a frame but cannot watch a film, and the bugs that mattered only showed in motion.</p>
+
+    <p>Since July 2026 the project has had a resident agent, Tessera, working a roadmap Xian set: the spin reveals at each supercontinent, the deep-time prequel, Explore, the future sequel, and the cobalt-and-brass palette. The rule did not change: no film ships until a person has watched it in motion. The full story, version by version, is on the <a href="making-of/">making-of page</a>.</p>
+</section>
+
+<!-- ── What's next ──────────────────────────────────── -->
+<section class="roadmap" id="roadmap">
+    <h2>What's next</h2>
+
+    <p class="roadmap-note">This is the first complete edition: three eras, two projections, Explore. Two ideas are on the table and neither has started: painting climate and vegetation onto the plates, and putting the animation on a physical globe. The north star behind all of it is a globe other people can extend: shared layers, open data, any era. Nothing here is allowed to foreclose that. Detail and history: <a href="https://github.com/Design-in-Product/globe/blob/main/ROADMAP.md">ROADMAP.md</a>.</p>
+</section>
+
+<!-- ── Footer ─────────────────────────────────────── -->
+<footer>
+    <p>Built by Xian &amp; Claude &middot; February 2025 &ndash; October 2026 &middot; <a href="https://github.com/Design-in-Product/globe">View source on GitHub</a></p>
+</footer>
+
+<!-- ── Script ─────────────────────────────────────── -->
+<script>
+    // The series plays end-to-end: deep time (1800→1000 Ma) chains straight
+    // into the main film (1000 Ma→present), which chains into the future
+    // (present→+250 Myr). Films stay separate assets; dissolves at each
+    // junction make the seams invisible. Every era has both projections on
+    // one timeline (flat parity is a rule — xian 10-06); a missing one
+    // (null) would fall back to the globe and disable the Flat button.
+    const FILMS = {
+        deep:   { globe: '/tectonic_prequel_globe_v3.mp4', flat: '/tectonic_prequel_v3.mp4' },
+        main:   { globe: '/tectonic_globe_v8.mp4',         flat: '/tectonic_flat_v8.mp4' },
+        future: { globe: '/tectonic_sequel_globe_v3.mp4',  flat: '/tectonic_sequel_flat_v3.mp4' },
+    };
+    const ERA_BTNS = ['btn-deep', 'btn-main', 'btn-future'];
+    const NEXT_ERA = { deep: 'main', main: 'future' };
+    let era = 'main';
+    let view = 'globe';
+
+    const video = document.getElementById('hero-video');
+
+    function setActive(id, group) {
+        group.forEach(b => document.getElementById(b).classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    function load(newEra, newView, t, play) {
+        if (!FILMS[newEra][newView]) newView = 'globe';   // the future has no flat film
+        era = newEra; view = newView;
+        video.src = FILMS[era][view];
+        video.poster = (era === 'main' && view === 'globe') ? '/poster_v8.png' : '';
+        setActive(view === 'globe' ? 'btn-globe' : 'btn-flat', ['btn-globe', 'btn-flat']);
+        setActive('btn-' + era, ERA_BTNS);
+        document.getElementById('btn-flat').disabled = !FILMS[era].flat;
+        if (t) video.currentTime = t;
+        if (play) video.play();
+    }
+
+    function switchView(v) {
+        // same era, other projection — timelines are frame-identical
+        if (!FILMS[era][v]) return;
+        load(era, v, video.currentTime, !video.paused);
+    }
+
+    function startEra(e) {
+        load(e, view, 0, true);
+    }
+
+    video.addEventListener('ended', () => {
+        const next = NEXT_ERA[era];
+        if (next && FILMS[next][view]) load(next, view, 0, true);
+    });
+    // Chapters: jump the hero video to a hold in the main film. load() keeps
+    // the current projection; if the main film is already loaded, seek in place.
+    document.querySelectorAll('.chapters a[data-t]').forEach(a => {
+        a.addEventListener('click', e => {
+            e.preventDefault();
+            const t = parseFloat(a.dataset.t);
+            if (era === 'main') { video.currentTime = t; video.play(); }
+            else load('main', view, t, true);
+            document.querySelector('.hero').scrollIntoView({behavior: 'smooth'});
+        });
+    });
+</script>
+
+</body>
+</html>
