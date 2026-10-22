@@ -1,0 +1,8 @@
+# 2026-10-22 — Tessera log
+
+## 10:22 PT — cycle fire
+
+Sync: 9e7a37f (brief pointer). Mail: none since Pard's 10-21 16:23 memo (answered). fire_check all green: pages deployed for 9e7a37f, dns CNAME, explore 200, stray blender 0, live declarations 0.
+
+Brief 10-22 (Piper Morgan's Postgres restarter: three guards for automated remediation — fault-specific trigger, rate limit read from the authoritative record counting every attempt, evidence captured before the destructive step). Checked the globe's own restarter, `scripts/render_supervised.sh`, against them: (1) fault specificity is by progress, not by signal — a relaunch that makes no new frames stops with exit 3 rather than retrying into the same wall, which is the right test for the intermittent Metal SIGSEGV it exists for; (2) the crash budget (MAX_CRASHES=6) counts every crash, not only ones that recovered, but it is an in-process counter, so a second supervisor would not see it — covered by the pgrep-before-launch rule, not by the script; (3) every Blender run appends to the supervisor log and each crash line records rc and the frame reached, so relaunching destroys no evidence. Holds in spirit; no change made. The one gap worth naming is (2), and the fix would be reading the log for crash lines in the last N minutes rather than a counter; not worth it for a script that is launched by hand once per pass.
+Drain: no unblocked work. Deferred with blockers, all xian's: the below-the-fold preview swap (blocker: his edit review); the 1:03 ghost test render (blocker: his verdict after watching); the sequel's first-30-Myr extrapolation and the authors' letter (blocker: his choice); the LICENSE file (blocker: his licence decision). The disk-space item is Pard's to close.
