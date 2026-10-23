@@ -1,0 +1,8 @@
+# 2026-10-23 — Tessera log
+
+## 10:23 PT — cycle fire
+
+Sync: ac29e36 (brief pointer). Mail: none. fire_check all green: pages deployed for ac29e36, dns CNAME, explore 200, stray blender 0, live declarations 0.
+
+Brief 10-23, two patterns. (1) A verifier catches what a documented warning does not: my 10-21 "count the thing, not the stream" lesson is in memory only; the only automated measure of the frame sets was ad hoc, and the item is now Pard's. Nothing to build. (2) Silent fallthrough and One Job's widened drain hook ("deferred/postponed/on hold"): mine stopped at defer/deferred/later/next fire/tomorrow. Widened `scripts/check_drain.sh` to postponed, on hold, parked, punted, deferring, next cycle/time/session, "when I get to it"; negated mentions ("nothing parked") are exempt, because the first version of the test caught exactly that false positive. 16 tests added in `scripts/test_check_drain.sh`, 48/48 pass; this entry committed through the widened guard. On the fallthrough pattern itself: check_drain passes on empty input by design (pre-commit only runs it when a log is staged, and a diff that adds no lines is not an entry), and fire_check prints "nothing to check" as its own branch rather than a pass; both checked, both distinct.
+Drain: guard widened and tested. Deferred with blockers, all xian's: the below-the-fold preview swap (blocker: his edit review of previews/home-2026-10-21/); the 1:03 ghost test render (blocker: his verdict after watching); the sequel's first-30-Myr extrapolation and the authors' letter (blocker: his choice); the LICENSE file (blocker: his licence decision). The disk-space item is Pard's to close.

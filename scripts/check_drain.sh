@@ -7,6 +7,8 @@
 # (designinproduct/docs/conventions/duty-cycle-drain.md). Called from
 # scripts/hooks/pre-commit; tested by scripts/test_check_drain.sh.
 #
+# Deferral vocabulary widened 2026-10-23 after One Job's hook caught "postponed/on hold"
+# variants the narrower list let through (brief 10-23).
 # Block opener: ANY "## " heading. Brief 10-19 (One Job, DinP): a guard that
 # opens blocks only on one canonical heading shape ("## HH:MM PT — ...")
 # silently checks nothing once the headings drift — here they drifted to
@@ -31,8 +33,9 @@ while IFS= read -r line; do
   fi
   if printf '%s' "$line" | grep -qiE '^\**Drain:'; then
     seen_drain=1
-    if printf '%s' "$line" | grep -qiE '\b(defer|deferred|later|next fire|tomorrow|by [0-9]{1,2}:[0-9]{2})\b' && \
-       ! printf '%s' "$line" | grep -qiE '(blocked on|blocker:|waits? on|waiting on|needs .* from|owed by|awaits)'; then
+    if printf '%s' "$line" | grep -qiE '\b(defer|deferred|deferring|later|next (fire|cycle|time|session)|tomorrow|postponed?|on hold|parked?|punt(ed)?|when (I|time) (get|allow)s?|by [0-9]{1,2}:[0-9]{2})\b' && \
+       ! printf '%s' "$line" | grep -qiE '(blocked on|blocker:|waits? on|waiting on|needs .* from|owed by|awaits)' && \
+       ! printf '%s' "$line" | grep -qiE '\b(nothing|none|no|not) (is |was |were )?(deferred|postponed|parked|punted|on hold)\b'; then
       echo "check_drain: Drain line defers work without naming a blocker — refused:" >&2
       echo "    ${line:0:160}" >&2; bad=1
     fi

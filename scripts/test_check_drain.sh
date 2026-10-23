@@ -39,6 +39,19 @@ expect 0 "deferral with blocker:" <<< '## 16:22 fire
 Drain: health check. Deferred: ship (blocker: xian has not watched the cut).'
 expect 0 "deferral with waits on" <<< '## 16:22 fire
 Drain: ship waits on xian watching the cut.'
+# Deferral vocabulary (widened 2026-10-23, brief: One Job's hook caught these variants)
+for w in 'postponed the ship' 'ship on hold' 'parked the ship' 'punted the ship' 'ship next cycle' 'ship next session' 'deferring the ship'; do
+  expect 1 "deferral variant without blocker: $w" <<< "## 16:22 fire
+Drain: $w."
+  expect 0 "deferral variant with blocker: $w" <<< "## 16:22 fire
+Drain: $w (blocker: xian has not watched the cut)."
+done
+# Ordinary words that are not deferrals must not trip it
+expect 0 "prose containing 'later' only outside Drain" <<< '## 16:22 fire
+Later in the day the render finished.
+Drain: all done.'
+expect 0 "Drain mentions a park (the noun) with no deferral" <<< '## 16:22 fire
+Drain: done; nothing parked.'
 # Two entries in one diff: the first lacks Drain, the second has it
 expect 1 "first of two entries lacks Drain" <<< '## 10:22 fire
 Sync.
