@@ -148,6 +148,10 @@ def registration_rotation(pid, w, sample_point):
 
 # Topology plotting (boundary fade-in) via gplately, same as generate_frames.py
 import gplately
+def _lib_versions():  # brief 10-24: say which library made these frames
+    pg = getattr(pygplates, "__version__", None) or (pygplates.Version.get_imported_version() if hasattr(pygplates, "Version") else "?")
+    return f"gplately {getattr(gplately, '__version__', '?')} · pygplates {pg}"
+print(_lib_versions())
 _gplot_model = gplately.PlateReconstruction(
     model_data.get_rotation_model(),
     model_data.get_topologies(),

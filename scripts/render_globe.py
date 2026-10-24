@@ -19,6 +19,19 @@ import os
 import glob
 import json
 import math
+import sys
+
+# Which Blender is this, really? (brief 10-24: a probe should print and verify its
+# own SDK version before running.) The node wiring below assumes Blender 5.x:
+# ShaderNodeMix input indices Factor=0/A=6/B=7 and the 5.0 frame_offset
+# workaround. Print the resolved version into every render log, and refuse a
+# different major unless BLENDER_MAJOR_OK says it has been driven.
+_BLENDER_MAJOR_EXPECTED = 5
+print(f"Blender {bpy.app.version_string} ({bpy.app.binary_path})")
+if bpy.app.version[0] != _BLENDER_MAJOR_EXPECTED and os.environ.get("BLENDER_MAJOR_OK") != str(bpy.app.version[0]):
+    print(f"ERROR: render_globe.py is written against Blender {_BLENDER_MAJOR_EXPECTED}.x; "
+          f"this is {bpy.app.version_string}. Drive it once by hand, then set BLENDER_MAJOR_OK={bpy.app.version[0]}.")
+    sys.exit(4)
 
 # ── Configuration ──────────────────────────────────────────────
 # CAMERA_PATH_FILE / RENDER_DIR / OUTPUT_PATH can be overridden via env vars

@@ -82,6 +82,8 @@ except Exception as e:
     USE_GPLATELY = False
 
     import pygplates
+    _pg = getattr(pygplates, "__version__", None) or (pygplates.Version.get_imported_version() if hasattr(pygplates, "Version") else "?")
+    print(f"gplately {getattr(gplately, '__version__', '?')} · pygplates {_pg}")  # brief 10-24: record the library that made the frames
 
     rot_files = []
     gpml_coast = []

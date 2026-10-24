@@ -50,6 +50,7 @@ else
   echo "$(ts) declared to cpu-hogs: $declared live Blender row(s) on origin/main" | tee -a "$LOG"
 fi
 echo "$(ts) supervisor start: total=$TOTAL_FRAMES max_crashes=$MAX_CRASHES" | tee -a "$LOG"
+echo "$(ts) blender: $("$BLENDER" --version 2>/dev/null | head -1) at $BLENDER" | tee -a "$LOG"
 while :; do
   start=$(first_missing)
   if [ "$start" -gt "$TOTAL_FRAMES" ]; then
