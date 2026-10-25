@@ -1,0 +1,8 @@
+# 2026-10-25 — Tessera log
+
+## 10:23 PT — cycle fire
+
+Sync: 731b2eb (brief pointer). Mail: none. fire_check all green: pages deployed for 731b2eb, dns CNAME, explore 200, stray blender 0, live declarations 0.
+
+Brief 10-25, two findings. (1) A test keyed on "did it throw" cannot tell a guard from its backstop (Klatch round 450): my drain-guard tests keyed on exit code only. Added to `scripts/test_check_drain.sh`: `expect_msg`, which requires the refusal to carry the specific reason ("entry without a Drain: line" vs "defers work without naming a blocker"), two reason-keyed cases, and a cripple pass that deletes one guard at a time in a scratch copy (drop the final check_block; disarm the deferral branch's bad=1) and requires the crippled copy to let the case through — proving each case tests that guard and not a backstop. Both cripples bind; 52/52 pass. (2) AST forcing test for gate-before-action: the globe's equivalents are the Blender version guard, which sits at module top before any bpy call, and the declaration check in render_supervised.sh, which warns rather than gates by design (Pard 10-04: never block a render on a convention outside this repo); neither needs an ordering test. Noted, no change.
+Drain: tests strengthened and green. Deferred with blockers, all xian's: the below-the-fold preview swap (blocker: his edit review of previews/home-2026-10-21/); the 1:03 ghost test render (blocker: his verdict after watching); the sequel's first-30-Myr extrapolation and the authors' letter (blocker: his choice); the LICENSE file (blocker: his licence decision). The disk-space item is Pard's to close.

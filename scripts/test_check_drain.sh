@@ -12,6 +12,16 @@ expect() {  # expect <0|1> <name> <<< input
   bash "$G" >/dev/null 2>&1; got=$?
   if [ "$got" = "$want" ]; then pass=$((pass+1)); else fail=$((fail+1)); echo "FAIL: $name (want exit $want, got $got)"; fi
 }
+# Brief 10-25 (Klatch round 450): a test keyed on "did it refuse" cannot tell a
+# guard from its backstop. expect_msg keys the REASON: the refusal must carry
+# the named message substring.
+MSG_NODRAIN='entry without a Drain: line'
+MSG_DEFER='defers work without naming a blocker'
+expect_msg() {  # expect_msg <substring> <name> <<< input   (must refuse, with this reason)
+  local want=$1 name=$2 err got
+  err=$(bash "$G" 2>&1 >/dev/null); got=$?
+  if [ "$got" = 1 ] && printf '%s' "$err" | grep -qF -- "$want"; then pass=$((pass+1)); else fail=$((fail+1)); echo "FAIL: $name (want refusal with '$want', got exit $got: ${err:0:120})"; fi
+}
 # Real heading shapes observed in logs/2026-10-1[2-9]-tessera-log.md as of 2026-10-19:
 HEADS=(
   '## 10:22 PT — cycle fire'
@@ -70,5 +80,26 @@ Pard acked.'
 # Non-entry additions (a top-level title, body text) do not open a block
 expect 0 "title and prose only" <<< '# 2026-10-19 — Tessera log
 some added prose'
+# Reason-keyed refusals: the two guards have different messages.
+expect_msg "$MSG_NODRAIN" "missing Drain refuses for the missing-Drain reason" <<< '## 16:22 fire
+Sync: fine.'
+expect_msg "$MSG_DEFER" "bare deferral refuses for the deferral reason" <<< '## 16:22 fire
+Drain: postponed the ship.'
+# Cripple pass: delete one guard at a time in a scratch copy and prove the
+# cases above go green against the crippled guard — i.e. they were testing THAT
+# guard, not a backstop. If a crippled copy still refuses, the test is not binding.
+SCRATCH="${TMPDIR:-/tmp}/check_drain_cripple.$$"
+cripple() {  # cripple <name> <sed-expr> <input> : crippled guard must now exit 0
+  local name=$1 expr=$2 input=$3 got
+  sed -e "$expr" "$G" > "$SCRATCH"
+  cmp -s "$G" "$SCRATCH" && { fail=$((fail+1)); echo "FAIL: cripple '$name' changed nothing (sed matched no line)"; return; }
+  printf '%s\n' "$input" | bash "$SCRATCH" >/dev/null 2>&1; got=$?
+  if [ "$got" = 0 ]; then pass=$((pass+1)); else fail=$((fail+1)); echo "FAIL: cripple '$name' still refuses (exit $got) — the test above is proving a backstop, not this guard"; fi
+}
+cripple "no check_block at end"    '/^check_block$/d'                               '## 16:22 fire
+Sync: fine.'
+cripple "deferral branch disarmed" '/defers work without naming a blocker/,/bad=1/s/bad=1/:/' '## 16:22 fire
+Drain: postponed the ship.'
+rm -f "$SCRATCH"
 echo "check_drain tests: $pass passed, $fail failed"
 [ "$fail" = 0 ]
