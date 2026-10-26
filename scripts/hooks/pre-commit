@@ -29,6 +29,31 @@ if [ -n "$staged" ]; then
   }
 fi
 
+# Explore manifest gate (brief 10-26): when a keyframe manifest or asset is
+# staged, every declared file must be present in the index-to-be. Checks the
+# working tree (the hook runs before the commit object exists); a declared file
+# that exists on disk but is not staged is caught by the fire check's Pages
+# proof, not here.
+# Full-read grep, not -q (same SIGPIPE/pipefail hazard as the syntax gate above).
+assets_staged=$(git diff --cached --name-only --diff-filter=AMD | grep -E '^scrubber_assets/' || true)
+if [ -n "$assets_staged" ]; then
+  python3 scripts/check_explore_manifest.py scrubber_assets/keyframes.json scrubber_assets/future/keyframes-future.json || {
+    echo "pre-commit: a staged Explore manifest declares a keyframe that is not on disk — commit refused." >&2; exit 1
+  }
+fi
+
+# Size gate: GitHub refuses any blob of 100 MiB or more, and a refused push is
+# how the site stops updating without a visible failure. Films are the only
+# legitimate large files here (tectonic_flat_v8.mp4 is 95.8 MiB — close). The
+# limit is the host's, so the number is not a judgement call.
+while IFS= read -r f; do
+  [ -f "$f" ] || continue
+  sz=$(stat -f %z "$f" 2>/dev/null || stat -c %s "$f")
+  if [ "$sz" -ge 104857600 ]; then
+    echo "pre-commit: $f is $((sz/1048576)) MiB — GitHub refuses blobs of 100 MiB or more; commit refused (re-encode or host it elsewhere)." >&2; exit 1
+  fi
+done < <(git diff --cached --name-only --diff-filter=AM)
+
 # Drain guard (xian's rule via Janus, 2026-10-08: "the fire is a wake, not a
 # time-box" — designinproduct/docs/conventions/duty-cycle-drain.md). Every NEW
 # entry (any "## " heading) added to a tessera log must carry a "Drain:" line,

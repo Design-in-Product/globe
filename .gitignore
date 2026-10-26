@@ -25,3 +25,6 @@ test_flat_morph_hd/
 test_recenter_check/
 render_v7.log
 data/plate-models/cao2024/
+
+# gplately writes this on every import (PyGMT import error only); never useful in history
+gplately.log

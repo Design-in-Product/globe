@@ -46,6 +46,10 @@ fi
 echo "--- site ---"
 # every tracked page, derived from git — not a hardcoded list (brief 10/06 finding 2)
 python3 scripts/check_explore_syntax.py $(git ls-files "*.html") | sed "s/^/  /"
+# Explore manifest coverage (brief 10-26, Klatch round 457): the two kinds of
+# absence named separately — DECLARED-ABSENT (page 404s) vs PRESENT-UNDECLARED
+# (dead weight shipped). One "missing" word would hide one behind the other.
+python3 scripts/check_explore_manifest.py scrubber_assets/keyframes.json scrubber_assets/future/keyframes-future.json
 dns=$(dig +short @8.8.8.8 globe.dinp.xyz CNAME 2>/dev/null | head -1); [ -n "$dns" ] && echo "  dns globe.dinp.xyz: CNAME $dns" || echo "  dns globe.dinp.xyz: NO RECORD at 8.8.8.8 (NXDOMAIN?) (NOT OK)"
 code=$(curl -s -o /dev/null -w "%{http_code}" https://globe.dinp.xyz/explore/); [ "$code" = 200 ] && echo "  live /explore/: 200" || echo "  live /explore/: $code (NOT OK)"
 python3 scripts/wait_pages.py --timeout 5 | sed "s/^/  /"
@@ -55,3 +59,22 @@ echo "  hook: $(git config core.hooksPath) exec=$(test -x scripts/hooks/pre-comm
 echo "  stray blender: $(pgrep -fl "[B]lender" | wc -l | tr -d " ")   supervisor: $(pgrep -fl "[r]ender_supervised" | wc -l | tr -d " ")"
 live=$(grep -v "^#" docs/cpu-declarations.tsv 2>/dev/null | awk -F"\t" -v now="$(TZ=America/Los_Angeles date +%Y-%m-%dT%H:%M)" '$2 > now {n++} END{print n+0}')
 echo "  live cpu declarations: $live"
+# Ignore-list coverage sweep (brief 10-26, Piper Morgan whats-armed): .gitignore
+# denies bulk by NAME (test_spin_*/, check_*/, render_frames_v7/ ...). A frame
+# set that lands under a name no pattern anticipates is one `git add .` from
+# the publishing trap (memory: globe-repo-publishing-trap). So each fire lists
+# every untracked, non-ignored path and flags any that is big: a file over
+# 5 MB or a directory holding over 50 files. "none" is the only clean verdict.
+bulk=$(git status --porcelain -uall | grep '^??' | cut -c4- | python3 -c '
+import os,sys
+big=[]; dirs={}
+for l in sys.stdin:
+    f=l.rstrip("\n").strip("\"")
+    if not os.path.isfile(f): continue
+    if os.path.getsize(f) > 5*1024*1024: big.append(f"{f} ({os.path.getsize(f)//1048576} MB)")
+    top=f.split("/")[0]
+    if "/" in f: dirs[top]=dirs.get(top,0)+1
+big += [f"{d}/ ({n} files)" for d,n in dirs.items() if n > 50]
+print("\n".join(big))')
+if [ -z "$bulk" ]; then echo "  unignored bulk: none (every untracked path is small; the ignore list covers the rest)"
+else echo "  UNIGNORED BULK (no .gitignore pattern covers these; add one before any git add .) (NOT OK):"; echo "$bulk" | sed 's/^/    /'; fi
