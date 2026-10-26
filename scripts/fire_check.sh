@@ -18,11 +18,19 @@ echo "fire check $(ts)"
 echo "--- sync ---"
 git fetch -q origin && git merge --ff-only origin/main 2>&1 | tail -1
 
-echo "--- mail (newest 3 per repo) ---"
-for d in . ../mediajunkie ../designinproduct; do
-  [ -d "$d/.git" ] || { echo "  $d: not a repo"; continue; }
-  [ "$d" != "." ] && git -C "$d" pull -q origin main 2>/dev/null
-  echo "  $(basename "$(cd "$d" && pwd)"):"; (cd "$d" && ls -t docs/mail 2>/dev/null | head -3 | sed "s/^/    /")
+echo "--- mail (newest 3 per repo, read from origin/main) ---"
+# Sibling repos are read from Tessera's OWN clones in ~/globe-mail (fetch +
+# ls-tree on origin/main), never by pulling ../mediajunkie or
+# ../designinproduct: those are other seats' live working trees and a pull
+# there can autostash their edits into a commit under my name (Pard's rule,
+# 2026-10-08). Until 2026-10-26 this block pulled them every fire.
+echo "  globe:"; ls -t docs/mail 2>/dev/null | head -3 | sed "s/^/    /"
+for r in mediajunkie designinproduct; do
+  c="$HOME/globe-mail/$r"
+  [ -d "$c/.git" ] || { echo "  $r: UNMEASURABLE (no clone at $c)"; continue; }
+  git -C "$c" fetch -q origin 2>/dev/null || echo "  $r: fetch failed (showing last known origin/main)"
+  echo "  $r (origin/main $(git -C "$c" log origin/main -1 --format=%h -- docs/mail)):"
+  git -C "$c" log origin/main --format=%h -n 40 -- docs/mail | while read -r h; do git -C "$c" show --name-only --format= --diff-filter=A "$h" -- docs/mail; done | awk '!seen[$0]++' | head -3 | sed "s|^docs/mail/|    |"
 done
 echo "  addressed to tessera, newest 2:"; ls -t docs/mail | grep -iE "to-tessera|to-all" | head -2 | sed "s/^/    /"
 
