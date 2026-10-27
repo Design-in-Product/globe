@@ -67,6 +67,10 @@ echo "  hook: $(git config core.hooksPath) exec=$(test -x scripts/hooks/pre-comm
 echo "  stray blender: $(pgrep -fl "[B]lender" | wc -l | tr -d " ")   supervisor: $(pgrep -fl "[r]ender_supervised" | wc -l | tr -d " ")"
 live=$(grep -v "^#" docs/cpu-declarations.tsv 2>/dev/null | awk -F"\t" -v now="$(TZ=America/Los_Angeles date +%Y-%m-%dT%H:%M)" '$2 > now {n++} END{print n+0}')
 echo "  live cpu declarations: $live"
+# Living-doc content pointers (brief 10-27, Piper Morgan CIO): a commit date
+# cannot see content staleness. Four states: present / gaps / error / nothing.
+scripts/check_handoff_pointers.sh; hrc=$?
+[ "$hrc" -le 1 ] || echo "  handoff check did not run (exit $hrc) — that is not a pass (NOT OK)"
 # Ignore-list coverage sweep (brief 10-26, Piper Morgan whats-armed): .gitignore
 # denies bulk by NAME (test_spin_*/, check_*/, render_frames_v7/ ...). A frame
 # set that lands under a name no pattern anticipates is one `git add .` from

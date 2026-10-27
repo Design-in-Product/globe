@@ -1,6 +1,6 @@
 # Handoff: Tessera — current state (supersedes 2026-09-18)
 
-**Updated 2026-10-14** (drift audit after brief 10-10 §1: publishing model, sequel shipped, operating model, mail delivery). Earlier: 10-04 (sequel rendered; 🔒 rule adopted). Original rationale:
+**Updated 2026-10-27** (content-pointer audit after brief 10-27: the header said 10-14 while the last commit was 10-20 and the body still had item 4 "waiting on xian's pick" beside "SHIPPED 2026-10-20" — commit-fresh, content-stale; `scripts/check_handoff_pointers.sh` now catches that each fire). Earlier: 10-14 (drift audit), 10-04 (sequel rendered; 🔒 rule adopted). Original rationale:
 **Why now:** brief 9/29 (Klatch fork-identity finding) restated the first
 principle of multi-session work — *shared memory is exactly what's in git,
 nothing carried implicitly across session boundaries.* My last handoff is
@@ -23,63 +23,57 @@ projections (`tectonic_sequel_globe_v2.mp4` + `tectonic_sequel_flat_v2.mp4`,
 75 s). **Nothing is 🔒 blocked on anyone** (see Who owes what).
 
 **2026-10-13, xian in session:** no history rewrite for the outside name
-(closed); "start on them, in order" for the open roadmap items. Item 1 was
-already shipped (v7, 07-14; heading fixed). **Item 4 (palette) is in
-progress:** three gold/blue candidates on real Cycles stills at
-`docs/design/palette-comparison-2026-10-13/`, waiting on xian's pick;
-tooling `scripts/recolor_texture.py` + `scripts/render_palette_still.py`;
-full re-render ≈ 11 h Cycles + textures + flats + Explore keyframes.
-**Item 6 (landing page) is in progress:** "How this was built" and "Where
-it's going" sections live on `index.html`; the gold site theme waits on the
-palette pick. Roadmap status page for xian: artifact
-`P79xpXwFGEGgzpRhMdV58n` (private).
+(closed); "start on them, in order" for the open roadmap items.
 
-**2026-10-14:** xian leaned **B (cobalt-brass)**; taken as the pick. The
-whole series was re-rendered overnight by `scripts/palette_pipeline.sh`
-(textures → flats → Cycles, 17:40→05:48, 0 crashes) into
-`~/globe-render/palette_cobalt-brass/`: `tectonic_globe_v8.mp4`,
-`tectonic_flat_v8.mp4`, `tectonic_prequel_globe_v2.mp4`,
-`tectonic_prequel_v2.mp4`, `tectonic_sequel_globe_v3.mp4`,
-`tectonic_sequel_flat_v3.mp4` — same frame counts as shipped, seams
-verified. **Everything but the films is staged on branch
-`palette-cobalt-brass`** (site theme, v8 references, `poster_v8.png`,
-Explore theme, recoloured keyframes — 13 + 3.9 MB, up from 9.9 + 3.3).
-**Ship = xian watches the films → merge the branch → copy the six mp4s to
-the repo root → push → `scripts/wait_pages.py` 200s → tell Pard before
-deleting the old earth-tone frame sets.** Blocker: xian's eyes on motion.
+**Items 4 and 6 SHIPPED 2026-10-20.** Cobalt-brass palette (xian leaned B
+on 10-13 from three Cycles stills; whole series re-rendered by
+`scripts/palette_pipeline.sh`, then a second cut 10-16/17 after his first
+viewing: ghost polygons merged into land, ocean→land ramped through amber
+`#6b5530`, 132-frame opening spin at 1800 Ma). He watched the second cut
+on 10-20 ("I love all six of these. Bravo!"); branch merged (`2332bbe`),
+six films + `poster_v8.png` pushed (`a5779f7`). **Live ship set, as
+`index.html`'s FILMS table names it:** `tectonic_globe_v8` /
+`tectonic_flat_v8`, `tectonic_prequel_globe_v3` / `tectonic_prequel_v3`,
+`tectonic_sequel_globe_v3` / `tectonic_sequel_flat_v3` (~4:45 in three
+acts). Roadmap items 1–6 are all shipped; nothing on the roadmap is in
+flight; 7 and 8 stay someday/maybe until xian says.
 
-**2026-10-16/17 — second cut after xian's first viewing** (review in
-session 10-16; details in `logs/2026-10-16-tessera-log.md`). Three fixes,
-all re-rendered: the lighter shade for overlapping plate polygons merged
-into land (the 1:03 "ghost" patches); every ocean→land blend ramped
-through dim amber `#6b5530` so the sequel superposition and the prequel
-cloud never read blue-grey (`recolor_texture.py --land-ramp`); and a
-132-frame eased opening spin at 1800 Ma (`prequel_camera_path_v3.json`,
-`scripts/add_opening_spin.py`). Rendered 10-16 11:59→21:15 (main + sequel)
-and 10-17 05:12→10:44 (prequel v3), 0 crashes, around Pard's 00:00–05:00
-model window. **Ship set:** `tectonic_globe_v8` / `tectonic_flat_v8`,
-`tectonic_prequel_globe_v3` / `tectonic_prequel_v3`,
-`tectonic_sequel_globe_v3` / `tectonic_sequel_flat_v3`, all in
-`~/globe-render/palette_cobalt-brass/review-2/` with `watch.html` and
-comparison stills; the branch's FILMS table and "Reading the films" section
-already name them. **SHIPPED 2026-10-20** — xian watched the second cut on
-kindbook ("I love all six of these. Bravo!"); branch merged (`2332bbe`), six
-films + `poster_v8.png` pushed (`a5779f7`), Pages deployed in 75 s, all nine
-URLs 200 with byte-exact sizes. Items 4 and 6 are done; nothing on the
-roadmap is in flight. **Still open for xian:** (b) the
-remaining faint offset copy at 1:03 is `render_globe.py`'s 2-frame texture
-crossfade across 1 Myr steps (median 10 % of land pixels move per step),
-present since v7 — removing it is a hard-cut main re-render (~6 h), his call;
-(c) the futures "stagger" is the 20 Myr snapshot cadence of the source rasters,
-explained on the page, mask-morphing listed as a sequel v4 candidate.
-After ship: clear `review-1/`, `stale-1/` (9.1 GB) and the earth-tone frame
-sets, telling Pard first. Scheduler lesson in memory: gate on epoch, not HHMM.
+**2026-10-21 — "ready for prime time" round (xian via Janus, memo
+`xian-via-janus-to-tessera-home-page-below-the-fold-...-2026-10-21.md`).**
+Four deliverables, all his to act on: (1) the below-the-fold rebuild,
+proposed in `docs/design/home-page-below-the-fold-2026-10-21.md` and
+**built as a live preview at `previews/home-2026-10-21/` (+ `making-of/`)**
+— xian: "I love your proposal … I can do a final edit review once we're
+previewing"; the live `index.html` is untouched until he reviews; (2) a
+blog draft, `docs/drafts/blog-post-tectonic-globe-first-edition-2026-10-21.md`
+(his voice, ~750 words, for Mediajunkie + LinkedIn); (3) the roadmap
+conversation he asked for, `docs/design/roadmap-conversation-2026-10-21.md`
+(licence — suggested CC BY 4.0 films/stills, MIT code; the 1:03 ghost with
+four options and an offered 1:00–1:10 hard-cut test render; the sequel's
+20 Myr step motion, rigid shapes, no sea level, four options; Explore
+keyframe density vs asset hosting; items 7/8; a "first edition" close for
+the duty cycle; a geoscientist's read; the poster PDF); (4) the advisor's
+data-separation question answered to Janus (separated at the
+raster-per-Myr layer; a second dataset is one adapter). Also: the three
+old frame sets are gone from Amber (xian deleted them before 07:38 on
+10-21; freed space was pinned by local Time Machine snapshots — Pard's item
+to close; I stopped tracking df).
+
+**Guards added since ship** (one per brief, each with reason-keyed tests):
+drain guard `scripts/check_drain.sh` (52 cases, cripple pass); Blender
+major-version guard in `render_globe.py` (exit 4 unless `BLENDER_MAJOR_OK`);
+Explore manifest coverage `scripts/check_explore_manifest.py`
+(DECLARED-ABSENT vs PRESENT-UNDECLARED, in the hook and the fire check);
+unignored-bulk sweep and a 100 MiB hook gate; and the fire check's mail
+block now reads sibling repos from my own clones on `origin/main` (it had
+pulled their live trees since 9/30, against trap 1).
 
 ## Operating model (how this seat actually runs, 2026-10-10)
 
 Duty cycle: Amber LaunchAgent fires at **10:22 and 16:22 PT** inject the
 prompt in `mediajunkie/docs/seat-prompts/tessera.md`; mail wakes fire on
-new mail to `docs/mail/`. Every fire/wake: sync, mail, `scripts/fire_check.sh`,
+new mail to `docs/mail/`. Every fire/wake: sync, mail, `scripts/fire_check.sh`
+(health + mail + manifests + bulk sweep + this file's content pointers),
 log entry in `logs/YYYY-MM-DD-tessera-log.md` ending in a **`Drain:` line**
 (xian's rule 10-08: do all unblocked work, idle only after two clean checks,
 defer only with a named blocker; the pre-commit hook refuses an entry without
@@ -147,32 +141,43 @@ living documents with closed items removed.
 | Live explore page | `explore/index.html` → globe.dinp.xyz/explore/ |
 | Its keyframes + manifests | `scrubber_assets/` (23 past, `keyframes.json`) + `scrubber_assets/future/` (56, `keyframes-future.json`); WebP q90 at native res |
 | Keyframe export | `scripts/export_scrubber_keyframes.py` (manifest-driven) |
-| Syntax check (only automated check `/explore/` gets) | `scripts/check_explore_syntax.py` — exit 0/1/2/3, guarded against vacuous pass |
+| Syntax check for every tracked page | `scripts/check_explore_syntax.py` — exit 0/1/2/3, guarded against vacuous pass |
+| Manifest coverage (declared vs present, two absences named) | `scripts/check_explore_manifest.py` + `scripts/test_check_explore_manifest.sh` |
+| Drain guard (log entries) | `scripts/check_drain.sh` + `scripts/test_check_drain.sh` (52 cases incl. a cripple pass) |
+| Handoff content pointers (this file) | `scripts/check_handoff_pointers.sh` — exit 0 present / 1 gaps / 2 pattern error / 3 nothing matched |
+| Below-the-fold preview awaiting xian's edit review | `previews/home-2026-10-21/` (+ `making-of/`); proposal `docs/design/home-page-below-the-fold-2026-10-21.md` |
+| Blog draft, roadmap conversation | `docs/drafts/blog-post-tectonic-globe-first-edition-2026-10-21.md`, `docs/design/roadmap-conversation-2026-10-21.md` |
 | Fire depth signal | `scripts/fire_rollup.py` |
 | Future-scenario grids (rung 3) | `~/globe-render/future-scenarios/` — **not in git**, CC0 from OSF 10.17605/OSF.IO/8NEQ4 |
 | Its reader | `scripts/read_future_grids.py` — self-test: all four scenarios are present-day Earth at t=0, so masks must agree (100/99.06/99.06/100%) |
 | Future keyframe export | `scripts/export_future_keyframes.py` |
 | Sequel textures + sidecar | `scripts/generate_sequel_frames.py` → `~/globe-render/sequel_frames/` (246 geo frames, `sequel_frames.json` owns the sequence + aim points) |
 | Sequel camera path | `scripts/compute_sequel_path.py` → `sequel_camera_path.json` (eased pacing, holds, tour aims via `renderer_cam()`; `PUN_SEA_BIAS` env) |
-| Sequel v1 film | `~/globe-render/tectonic_sequel_globe_v1.mp4` and `previews/tectonic_sequel_globe_v1.mp4` |
+| Shipped films (six, repo root) | `tectonic_globe_v8` / `tectonic_flat_v8`, `tectonic_prequel_globe_v3` / `tectonic_prequel_v3`, `tectonic_sequel_globe_v3` / `tectonic_sequel_flat_v3` (.mp4); candidates under `~/globe-render/palette_cobalt-brass/` |
 | Crash-resilient render driver | `scripts/render_supervised.sh` (proven on a stub: recover / budget / no-progress / complete) |
 | Deploy check | `scripts/wait_pages.py` |
-| Pre-commit gate (explore page) | `scripts/hooks/pre-commit` via repo-local `core.hooksPath` — fine here only because `globe` is single-seat |
+| Pre-commit gates (page syntax, drain line, manifest coverage, 100 MiB) | `scripts/hooks/pre-commit` via repo-local `core.hooksPath` — fine here only because `globe` is single-seat |
 | Render workspace | `~/globe-render/` (frames, prequel frames, sequel frames/renders, camera paths, OSF grids) |
 
 ## Who owes what
 
 | | they owe me | I owe them |
 |---|---|---|
-| **xian** | Nothing — sequel decisions answered and shipped 10-06; Pages source flipped 10-09. | Nothing outstanding |
-| **Pard** | Nothing | Nothing; the identity incident (09-18) and the autostash incident (10-08) are both reported and owned |
+| **xian** | Four decisions (all 10-21, none urgent, his pace): edit review of `previews/home-2026-10-21/`; his eyeball verdict on the 1:03 ghost; the sequel treatment (extrapolate / letter to authors / mask-morph v4 / leave); the licence. | The preview → live swap the moment he says go, then tell Janus; the 1:03 hard-cut test render if his verdict is "not OK"; a LICENSE file once he picks |
+| **Pard** | Closing the disk-space item (Time Machine local snapshots pin the freed 14 GB; thinning is xian's console step) | Nothing; the identity incident (09-18) and the autostash incident (10-08) are both reported and owned |
 | **Janus** | Relays xian's decisions (reliable) | Read/act on daily briefs |
 
 ## Deliberately unresolved — do not "fix" these
 
-1. **Nothing is unresolved as of 2026-10-10.** (Closed items live in the
-   daily logs, per the network's living-doc rule — Janus memo 10-06.)
-   Trap 7, learned closing the last one: `render_globe.py` skips frames
+1. **The 1:03 ghost and the sequel's step motion are xian's calls, not
+   bugs to fix unprompted.** The ghost is `render_globe.py`'s 2-frame
+   texture crossfade across 1 Myr steps (present since v7; removing it is
+   a ~6 h hard-cut re-render); the stagger is the 20 Myr snapshot cadence
+   of the source rasters (true motion = mask morphing, a sequel v4 data
+   task). Both are explained on the page and in the roadmap conversation
+   doc; he said "don't rush the sequel". Closed items live in the daily
+   logs, per the network's living-doc rule (Janus memo 10-06).
+   Trap 7, learned closing an earlier one: `render_globe.py` skips frames
    already on disk, so two candidate stills at the same frame index in the
    same RENDER_DIR are ONE still. One RENDER_DIR per candidate, and `md5`
    the outputs before calling them a comparison.
