@@ -66,7 +66,8 @@ echo "--- repo + host ---"
 echo "  hook: $(git config core.hooksPath) exec=$(test -x scripts/hooks/pre-commit && echo yes || echo NO)"
 echo "  stray blender: $(pgrep -fl "[B]lender" | wc -l | tr -d " ")   supervisor: $(pgrep -fl "[r]ender_supervised" | wc -l | tr -d " ")"
 live=$(grep -v "^#" docs/cpu-declarations.tsv 2>/dev/null | awk -F"\t" -v now="$(TZ=America/Los_Angeles date +%Y-%m-%dT%H:%M)" '$2 > now {n++} END{print n+0}')
-echo "  live cpu declarations: $live"
+expired=$(grep -v "^#" docs/cpu-declarations.tsv 2>/dev/null | awk -F"\t" -v now="$(TZ=America/Los_Angeles date +%Y-%m-%dT%H:%M)" '$2 != "" && $2 <= now {n++} END{print n+0}')
+echo "  live cpu declarations: $live   expired rows still in file: $expired$( [ "$expired" -gt 0 ] && echo "  <-- remove (Pard 10-28: noise that hides a real stale case)")"
 # Disk (brief 10-28, Piper Morgan CIO re-run: a duty kept as a log habit lapses
 # within days). On 10-21 I wrote "will log when df actually moves" after local
 # Time Machine snapshots pinned the 14 GB the frame-set delete freed; df moved

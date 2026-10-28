@@ -17,6 +17,12 @@ FILE=docs/cpu-declarations.tsv
 if [ "$HOURS" -gt 12 ]; then echo "refusing: $HOURS h exceeds the 12 h ceiling; the row would be reported and not honoured" >&2; exit 2; fi
 cd "$(git rev-parse --show-toplevel)"
 expires=$(TZ=America/Los_Angeles date -v+"${HOURS}"H "+%Y-%m-%dT%H:%M")
+# Prune rows whose window has closed before adding the new one (Pard, 2026-10-28:
+# six expired rows sat on origin/main for up to three weeks; an expired row is
+# noise that can hide a real stale case). The sweep rides the launch, so it is
+# not a habit anyone has to remember.
+now=$(TZ=America/Los_Angeles date "+%Y-%m-%dT%H:%M")
+awk -F"\t" -v now="$now" '/^#/ || $2 > now' "$FILE" > "$FILE.tmp" && mv "$FILE.tmp" "$FILE"
 printf "Blender\t%s\ttessera\t%s\n" "$expires" "$REASON" >> "$FILE"
 git add "$FILE"
 git commit -q -m "declare: Blender pass until $expires — $REASON" || { echo "nothing to commit" >&2; exit 3; }
