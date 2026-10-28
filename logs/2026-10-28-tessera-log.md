@@ -1,4 +1,4 @@
-# Tessera log — 2026-10-28
+# 2026-10-28 — Tessera log
 
 ## 10:22 PT — cycle fire: brief 10-28 applied (a lapsed log habit, now a printed line)
 
