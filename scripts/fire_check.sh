@@ -67,6 +67,12 @@ echo "  hook: $(git config core.hooksPath) exec=$(test -x scripts/hooks/pre-comm
 echo "  stray blender: $(pgrep -fl "[B]lender" | wc -l | tr -d " ")   supervisor: $(pgrep -fl "[r]ender_supervised" | wc -l | tr -d " ")"
 live=$(grep -v "^#" docs/cpu-declarations.tsv 2>/dev/null | awk -F"\t" -v now="$(TZ=America/Los_Angeles date +%Y-%m-%dT%H:%M)" '$2 > now {n++} END{print n+0}')
 echo "  live cpu declarations: $live"
+# Disk (brief 10-28, Piper Morgan CIO re-run: a duty kept as a log habit lapses
+# within days). On 10-21 I wrote "will log when df actually moves" after local
+# Time Machine snapshots pinned the 14 GB the frame-set delete freed; df moved
+# 96 -> 118 GB and the log never said so. A printed line each fire replaces the
+# habit: free space, the render tree, and the snapshot count that can pin it.
+echo "  disk: $(df -h / | awk 'NR==2{print $4}') free on /   render tree: $(du -sh ~/globe-render 2>/dev/null | cut -f1 || echo absent)   local TM snapshots: $(tmutil listlocalsnapshots / 2>/dev/null | grep -c . )"
 # Living-doc content pointers (brief 10-27, Piper Morgan CIO): a commit date
 # cannot see content staleness. Four states: present / gaps / error / nothing.
 scripts/check_handoff_pointers.sh; hrc=$?
