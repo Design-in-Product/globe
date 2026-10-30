@@ -14,8 +14,14 @@ set -uo pipefail
 cd "$(git rev-parse --show-toplevel)" || exit 2
 H="${1:-docs/handoff-tessera-2026-09-29.md}"
 [ -r "$H" ] || { echo "  handoff: UNREADABLE $H (exit 2)"; exit 2; }
-gaps=0; checked=0
+gaps=0; checked=0; skipped=0; skipnote=""
 gap() { gaps=$((gaps+1)); echo "    GAP: $*"; }
+# A pointer that could not be measured this run is SKIPPED, counted apart from
+# the consistent ones and named in the summary (brief 10-30, Klatch: a map
+# keyed on verdicts is blind to members still in a measurement state, and
+# reads as complete at the moment it is filed). Until 10-30 a skipped
+# pointer 1 was folded into "N pointers present and consistent".
+skip() { skipped=$((skipped+1)); skipnote="${skipnote:+$skipnote; }$*"; }
 # 3: nothing matched — no section headings at all means this is not a handoff
 nheads=$(grep -cE '^## ' "$H"); rc=$?
 [ "$rc" -le 1 ] || { echo "  handoff: grep failed (exit 2)"; exit 2; }
@@ -28,7 +34,8 @@ if git ls-files --error-unmatch -- "$H" >/dev/null 2>&1; then
 else last=""; fi   # an untracked copy (a test input) has no commit date; pointer 1 is skipped, not failed
 checked=$((checked+1))
 if [ -z "$hdr" ]; then gap "no '**Updated YYYY-MM-DD**' header"
-elif [ -n "$last" ] && [[ "$hdr" < "$last" ]] && ! git diff --quiet -- "$H"; then :  # being edited now; the commit will carry today's header
+elif [ -z "$last" ]; then skip "header-vs-commit (untracked copy, no commit date)"
+elif [[ "$hdr" < "$last" ]] && ! git diff --quiet -- "$H"; then skip "header-vs-commit (file is being edited; the commit will carry today's header)"
 elif [ -n "$last" ] && [[ "$hdr" < "$last" ]]; then gap "header says Updated $hdr but the file's last commit is $last (edited without re-dating: content may be stale)"; fi
 # Pointer 2: the header must not trail the newest log by more than 14 days —
 # the handoff is "current state"; two weeks of fires with no refresh is drift.
@@ -55,5 +62,6 @@ if [ -z "$xrow" ]; then gap "no xian row in 'Who owes what'"
 elif printf '%s' "$drain" | grep -qiE 'blocker: (his|xian)' && printf '%s' "$xrow" | grep -qiE '^\s*Nothing'; then
   gap "latest Drain line defers on xian but 'Who owes what' says xian owes Nothing"
 fi
-if [ "$gaps" = 0 ]; then echo "  handoff: $checked pointers present and consistent (header $hdr, last commit ${last:-uncommitted}, newest log $newest_log)"; exit 0
-else echo "  handoff: $gaps of $checked pointers GAP (NOT OK)"; exit 1; fi
+sk=""; [ "$skipped" -gt 0 ] && sk=", $skipped SKIPPED not measured: $skipnote"
+if [ "$gaps" = 0 ]; then echo "  handoff: $((checked-skipped)) of $checked pointers present and consistent$sk (header $hdr, last commit ${last:-uncommitted}, newest log $newest_log)"; exit 0
+else echo "  handoff: $gaps of $checked pointers GAP (NOT OK)$sk"; exit 1; fi

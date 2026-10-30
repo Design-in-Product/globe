@@ -30,14 +30,27 @@ def sh(*a):
 
 
 def api(path):
+    """One API read. None means the call itself failed (gh down, api.github.com
+    unreachable, auth) — a state the caller must name, never a value to .get()
+    on. 10-30: an outage made this return {} and main() read build_type off
+    it, silently falling to LEGACY mode and reporting a stale 2025 build as
+    the verdict for today's sha. An error is never a finding (brief 10-27)."""
+    r = subprocess.run(["gh", "api", path], capture_output=True, text=True)
+    if r.returncode != 0 or not r.stdout.strip():
+        api.last_error = (r.stderr.strip().splitlines() or ["no output"])[0]
+        return None
     try:
-        return json.loads(sh("gh", "api", path))
+        return json.loads(r.stdout)
     except json.JSONDecodeError:
-        return {}
+        api.last_error = "non-JSON reply"
+        return None
+api.last_error = ""
 
 
 def legacy(want):
     b = api(f"repos/{REPO}/pages/builds/latest")
+    if b is None:
+        return "wait", f"gh api unreachable ({api.last_error})"
     st, c = b.get("status"), b.get("commit", "")
     if c == want and st == "built":
         return "ok", "built (legacy)"
@@ -48,10 +61,14 @@ def legacy(want):
 
 def workflow(want):
     deps = api(f"repos/{REPO}/deployments?environment=github-pages&sha={want}&per_page=5")
+    if deps is None:
+        return "wait", f"gh api unreachable ({api.last_error})"
     if not isinstance(deps, list) or not deps:
         return "wait", "no github-pages deployment registered yet"
     d = deps[0]
     sts = api(f"repos/{REPO}/deployments/{d['id']}/statuses?per_page=1")
+    if sts is None:
+        return "wait", f"gh api unreachable ({api.last_error})"
     state = sts[0]["state"] if isinstance(sts, list) and sts else "pending"
     if state == "success":
         return "ok", "deployed (workflow)"
@@ -68,7 +85,13 @@ def main():
     a = ap.parse_args()
     # the deployments API matches the full sha only; expand a short one
     want = sh("git", "rev-parse", a.sha or "origin/main")
-    mode = api(f"repos/{REPO}/pages").get("build_type", "legacy")
+    pages = api(f"repos/{REPO}/pages")
+    if pages is None:
+        # Cannot even learn which API to ask: say so and exit 2 (UNMEASURABLE),
+        # distinct from 0 deployed and 1 failed. Never guess a mode.
+        print(f"pages: UNMEASURABLE — gh api unreachable ({api.last_error}); wanted {want[:7]}", file=sys.stderr)
+        return 2
+    mode = pages.get("build_type", "legacy")
     probe = workflow if mode == "workflow" else legacy
     t0 = time.time()
     while True:

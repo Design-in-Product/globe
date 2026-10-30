@@ -60,7 +60,8 @@ python3 scripts/check_explore_syntax.py $(git ls-files "*.html") | sed "s/^/  /"
 python3 scripts/check_explore_manifest.py scrubber_assets/keyframes.json scrubber_assets/future/keyframes-future.json
 dns=$(dig +short @8.8.8.8 globe.dinp.xyz CNAME 2>/dev/null | head -1); [ -n "$dns" ] && echo "  dns globe.dinp.xyz: CNAME $dns" || echo "  dns globe.dinp.xyz: NO RECORD at 8.8.8.8 (NXDOMAIN?) (NOT OK)"
 code=$(curl -s -o /dev/null -w "%{http_code}" https://globe.dinp.xyz/explore/); [ "$code" = 200 ] && echo "  live /explore/: 200" || echo "  live /explore/: $code (NOT OK)"
-python3 scripts/wait_pages.py --timeout 5 | sed "s/^/  /"
+python3 scripts/wait_pages.py --timeout 5 2>&1 | sed "s/^/  /"; pw=${PIPESTATUS[0]}
+[ "$pw" -ge 2 ] && echo "  pages: did not run (exit $pw) — not a pass"
 
 echo "--- repo + host ---"
 echo "  hook: $(git config core.hooksPath) exec=$(test -x scripts/hooks/pre-commit && echo yes || echo NO)"
