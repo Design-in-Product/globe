@@ -58,13 +58,32 @@ python3 scripts/check_explore_syntax.py $(git ls-files "*.html") | sed "s/^/  /"
 # absence named separately — DECLARED-ABSENT (page 404s) vs PRESENT-UNDECLARED
 # (dead weight shipped). One "missing" word would hide one behind the other.
 python3 scripts/check_explore_manifest.py scrubber_assets/keyframes.json scrubber_assets/future/keyframes-future.json
-dns=$(dig +short @8.8.8.8 globe.dinp.xyz CNAME 2>/dev/null | head -1); [ -n "$dns" ] && echo "  dns globe.dinp.xyz: CNAME $dns" || echo "  dns globe.dinp.xyz: NO RECORD at 8.8.8.8 (NXDOMAIN?) (NOT OK)"
-code=$(curl -s -o /dev/null -w "%{http_code}" https://globe.dinp.xyz/explore/); [ "$code" = 200 ] && echo "  live /explore/: 200" || echo "  live /explore/: $code (NOT OK)"
+# Brief 10-31 (Piper Morgan CIO, methodology-48): name the question, then run
+# the check against the case that should fail. Until 10-31 the dns line asked
+# "is there a CNAME" (any target passed), the live line asked "did something
+# return 200" (any page passed), the hook line printed a path and a mode bit
+# without saying whether they were the right path or a script that parses.
+# Each now compares against the thing the question is actually about.
+dns_want="design-in-product.github.io."
+dns=$(dig +short @8.8.8.8 globe.dinp.xyz CNAME 2>/dev/null | head -1)
+if [ -z "$dns" ]; then echo "  dns globe.dinp.xyz: NO RECORD at 8.8.8.8 (NXDOMAIN?) (NOT OK)"
+elif [ "$dns" = "$dns_want" ]; then echo "  dns globe.dinp.xyz: CNAME $dns"
+else echo "  dns globe.dinp.xyz: CNAME $dns — expected $dns_want (NOT OK)"; fi
+live_body=$(mktemp "${TMPDIR:-/tmp}/fire_live.XXXXXX")
+code=$(curl -s -o "$live_body" -w "%{http_code}" https://globe.dinp.xyz/explore/)
+marker=$(grep -c "scrubber_assets/" "$live_body" 2>/dev/null || true); rm -f "$live_body"
+if [ "$code" != 200 ]; then echo "  live /explore/: $code (NOT OK)"
+elif [ "${marker:-0}" -eq 0 ]; then echo "  live /explore/: 200 but the body has no scrubber_assets/ reference — some other page is answering (NOT OK)"
+else echo "  live /explore/: 200, atlas page ($marker scrubber_assets refs)"; fi
 python3 scripts/wait_pages.py --timeout 5 2>&1 | sed "s/^/  /"; pw=${PIPESTATUS[0]}
 [ "$pw" -ge 2 ] && echo "  pages: did not run (exit $pw) — not a pass"
 
 echo "--- repo + host ---"
-echo "  hook: $(git config core.hooksPath) exec=$(test -x scripts/hooks/pre-commit && echo yes || echo NO)"
+hp=$(git config core.hooksPath); hv=""
+[ "$hp" = "scripts/hooks" ] || hv="hooksPath is '${hp:-unset}', not scripts/hooks"
+[ -x scripts/hooks/pre-commit ] || hv="${hv:+$hv; }pre-commit not executable"
+bash -n scripts/hooks/pre-commit 2>/dev/null || hv="${hv:+$hv; }pre-commit does not parse"
+[ -z "$hv" ] && echo "  hook: scripts/hooks, pre-commit executable and parses" || echo "  hook: $hv (NOT OK — commits will not be gated)"
 echo "  stray blender: $(pgrep -fl "[B]lender" | wc -l | tr -d " ")   supervisor: $(pgrep -fl "[r]ender_supervised" | wc -l | tr -d " ")"
 live=$(grep -v "^#" docs/cpu-declarations.tsv 2>/dev/null | awk -F"\t" -v now="$(TZ=America/Los_Angeles date +%Y-%m-%dT%H:%M)" '$2 > now {n++} END{print n+0}')
 expired=$(grep -v "^#" docs/cpu-declarations.tsv 2>/dev/null | awk -F"\t" -v now="$(TZ=America/Los_Angeles date +%Y-%m-%dT%H:%M)" '$2 != "" && $2 <= now {n++} END{print n+0}')
