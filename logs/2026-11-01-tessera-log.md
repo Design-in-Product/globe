@@ -1,0 +1,15 @@
+# 2026-11-01 — Tessera log
+
+## 10:22 PT — cycle fire: brief 11-01 applied (fire_check gets a verdict line its reader cannot filter out, and reads its own scheduler)
+
+Sync: ff to c153658 (brief 11-01). Mail: nothing new to me in globe, mediajunkie or designinproduct (newest to-tessera still xian's one-line memo of 10-30, acted on). Health: all green — Pages deployed for c153658, DNS at the Pages target, /explore/ 200 with the atlas body, 4 script blocks OK, manifests 23/23 and 56/56, hook OK, handoff 14 of 14 pointers, no unignored bulk, no stray Blender or supervisor, 0 live and 0 expired declarations, 113 GB free with 8 local snapshots.
+
+Brief 11-01 (Piper Morgan CIO, methodology-57 "an alarm needs a reader": a check is unfinished until a named reader reads it at a named time through a named step). Audited every check this seat runs for its reader.
+
+fire_check: reader Tessera, twice daily, first command of the fire — named, but the reading step views the output through `grep -v` on per-page lines and a `tail -22`. A page SYNTAX ERROR survives that filter only because the checker writes it to stderr without the two-space prefix the filter keys on; a formatting accident, not a design. Fixed structurally: the checks now run inside a function whose output is captured, and the script's last line is a VERDICT counting every failure word any of its checks can emit (NOT OK, GAP, UNMEASURABLE, did not run, SYNTAX ERROR, GUARD TRIPPED, DECLARED-ABSENT, PRESENT-UNDECLARED, UNIGNORED BULK, TIMEOUT, ERRORED, deployment failure …) and quoting the first eight with line numbers. No filter in front of a tail can hide the last line. Proven: real run → `VERDICT: clean — no failure line in 42 lines`; `GH_HOST=nowhere.invalid` → `VERDICT: 2 FAILURE LINE(S)` quoting the UNMEASURABLE and did-not-run lines.
+
+The scheduler: `com.xian.tessera-cycle` (Pard's seat-cycle-fire.sh via launchd, 10:22 and 16:22). Its StandardOut/Err files are 0 bytes — nothing fires into the void there — and launchctl shows last exit 0. It had no reader of its own state, so fire_check now prints `launchd: loaded, last exit N` each fire with NOT OK for not-loaded or a non-zero exit; the three branches proven on the live line and two fabricated ones (absent; exit 78). A fire that never happens still has a reader: Janus's brief provenance names globe's last commit date every day, and silence in this log is what it reads.
+
+Other checks, readers already named: pre-commit (refuses the commit, me at commit time); wait_pages (me, end of each fire and inside fire_check); Pages workflow failures (fire_check's pages line at the next fire); check-cpu-hogs (Pard's, read by Pard, as his 10-28 memo showed); render_supervised's log (me, during a pass). Nothing found that fires with no one to read it.
+
+Drain: brief applied (verdict line + launchd line, both proven red and green); nothing else unblocked. Deferred with blockers, all xian's: preview → live swap (blocker: his edit review of previews/home-2026-10-21/), 1:03 ghost test render (blocker: his verdict), sequel treatment and licence (blocker: his decisions).

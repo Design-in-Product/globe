@@ -14,6 +14,14 @@ set -uo pipefail
 ts() { TZ=America/Los_Angeles date "+%F %T %Z"; }
 cd "$(git rev-parse --show-toplevel)"
 echo "fire check $(ts)"
+# Brief 11-01 (Piper Morgan CIO, methodology-57 "an alarm needs a reader"): a
+# check is unfinished until a named reader reads it at a named time through a
+# named step. This script's reader is Tessera, twice a day, through the fire's
+# first command — but that reader views the output through a grep -v and a
+# tail, and a failure line that happened to match the filter would never be
+# seen. So every check's output is captured and the LAST line is a verdict
+# that counts the failure words, whatever filter sits in front of it.
+run_checks() {
 
 echo "--- sync ---"
 git fetch -q origin && git merge --ff-only origin/main 2>&1 | tail -1
@@ -84,6 +92,13 @@ hp=$(git config core.hooksPath); hv=""
 [ -x scripts/hooks/pre-commit ] || hv="${hv:+$hv; }pre-commit not executable"
 bash -n scripts/hooks/pre-commit 2>/dev/null || hv="${hv:+$hv; }pre-commit does not parse"
 [ -z "$hv" ] && echo "  hook: scripts/hooks, pre-commit executable and parses" || echo "  hook: $hv (NOT OK — commits will not be gated)"
+# The scheduler that wakes this seat (brief 11-01: a check needs a reader; the
+# LaunchAgent's own launchd logs are empty by design, so its state is read here,
+# by me, each fire). Fields from `launchctl list`: PID (or -), last exit, label.
+la=$(launchctl list 2>/dev/null | awk '$3=="com.xian.tessera-cycle"{print $1" "$2}')
+if [ -z "$la" ]; then echo "  launchd: com.xian.tessera-cycle NOT LOADED — no fire will come (NOT OK)"
+elif [ "${la#* }" != 0 ]; then echo "  launchd: com.xian.tessera-cycle loaded, last exit ${la#* } (NOT OK)"
+else echo "  launchd: com.xian.tessera-cycle loaded, last exit 0 (10:22 + 16:22 PT)"; fi
 echo "  stray blender: $(pgrep -fl "[B]lender" | wc -l | tr -d " ")   supervisor: $(pgrep -fl "[r]ender_supervised" | wc -l | tr -d " ")"
 live=$(grep -v "^#" docs/cpu-declarations.tsv 2>/dev/null | awk -F"\t" -v now="$(TZ=America/Los_Angeles date +%Y-%m-%dT%H:%M)" '$2 > now {n++} END{print n+0}')
 expired=$(grep -v "^#" docs/cpu-declarations.tsv 2>/dev/null | awk -F"\t" -v now="$(TZ=America/Los_Angeles date +%Y-%m-%dT%H:%M)" '$2 != "" && $2 <= now {n++} END{print n+0}')
@@ -117,3 +132,10 @@ big += [f"{d}/ ({n} files)" for d,n in dirs.items() if n > 50]
 print("\n".join(big))')
 if [ -z "$bulk" ]; then echo "  unignored bulk: none (every untracked path is small; the ignore list covers the rest)"
 else echo "  UNIGNORED BULK (no .gitignore pattern covers these; add one before any git add .) (NOT OK):"; echo "$bulk" | sed 's/^/    /'; fi
+}
+out=$(mktemp "${TMPDIR:-/tmp}/fire_check.XXXXXX")
+run_checks 2>&1 | tee "$out"
+fails=$(grep -cE 'NOT OK|GAP:|UNMEASURABLE|did not run|not a pass|NO RECORD|SYNTAX ERROR|GUARD TRIPPED|EXTRACTION FAILED|DECLARED-ABSENT|PRESENT-UNDECLARED|DECLARED-TWICE|UNREADABLE|UNIGNORED BULK|TIMEOUT|ERRORED|deployment (failure|error|inactive)' "$out" || true)
+if [ "${fails:-0}" -eq 0 ]; then echo "VERDICT: clean — no failure line in $(wc -l < "$out" | tr -d ' ') lines"
+else echo "VERDICT: $fails FAILURE LINE(S) above — read them:"; grep -nE 'NOT OK|GAP:|UNMEASURABLE|did not run|not a pass|NO RECORD|SYNTAX ERROR|GUARD TRIPPED|EXTRACTION FAILED|DECLARED-ABSENT|PRESENT-UNDECLARED|DECLARED-TWICE|UNREADABLE|UNIGNORED BULK|TIMEOUT|ERRORED|deployment (failure|error|inactive)' "$out" | head -8 | sed 's/^/  /'; fi
+rm -f "$out"
