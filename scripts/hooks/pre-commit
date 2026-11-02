@@ -20,7 +20,12 @@ set -euo pipefail
 # (Brief 10/02, Pard's freeze-check: the -q optimisation is the hazard.)
 # Gate EVERY staged .html that carries an inline script, not one hardcoded path
 # (brief 10/06 finding 2: a hardcoded name is a coverage claim for one file).
-staged=$(git diff --cached --name-only --diff-filter=AM | grep -E '\.html$' || true)
+# --no-renames on every staged-file read (brief 11-02, Piper Morgan CIO: a guard
+# must cover every form of the operation it gates): without it git reports a
+# `git mv` as R, which none of the A/M/D filters below select, so a renamed
+# keyframe, page or log skipped its gate. Proven in a scratch clone 2026-11-02:
+# `git mv 0050ma.webp 0051ma.webp` committed clean under the old hook.
+staged=$(git diff --cached --no-renames --name-only --diff-filter=AM | grep -E '\.html$' || true)
 if [ -n "$staged" ]; then
   # shellcheck disable=SC2086
   python3 scripts/check_explore_syntax.py $staged || {
@@ -35,7 +40,7 @@ fi
 # that exists on disk but is not staged is caught by the fire check's Pages
 # proof, not here.
 # Full-read grep, not -q (same SIGPIPE/pipefail hazard as the syntax gate above).
-assets_staged=$(git diff --cached --name-only --diff-filter=AMD | grep -E '^scrubber_assets/' || true)
+assets_staged=$(git diff --cached --no-renames --name-only --diff-filter=AMD | grep -E '^scrubber_assets/' || true)
 if [ -n "$assets_staged" ]; then
   python3 scripts/check_explore_manifest.py scrubber_assets/keyframes.json scrubber_assets/future/keyframes-future.json || {
     echo "pre-commit: a staged Explore manifest declares a keyframe that is not on disk — commit refused." >&2; exit 1
@@ -52,7 +57,7 @@ while IFS= read -r f; do
   if [ "$sz" -ge 104857600 ]; then
     echo "pre-commit: $f is $((sz/1048576)) MiB — GitHub refuses blobs of 100 MiB or more; commit refused (re-encode or host it elsewhere)." >&2; exit 1
   fi
-done < <(git diff --cached --name-only --diff-filter=AM)
+done < <(git diff --cached --no-renames --name-only --diff-filter=AM)
 
 # Drain guard (xian's rule via Janus, 2026-10-08: "the fire is a wake, not a
 # time-box" — designinproduct/docs/conventions/duty-cycle-drain.md). Every NEW
@@ -62,7 +67,7 @@ done < <(git diff --cached --name-only --diff-filter=AM)
 # headings — brief 10-19: the old "## HH:MM PT" opener matched nothing once
 # the headings drifted, and eight entries passed unchecked). Only fires when
 # a log is staged.
-logs_staged=$(git diff --cached --name-only --diff-filter=AM | grep -E '^logs/.*-tessera-log\.md$' || true)
+logs_staged=$(git diff --cached --no-renames --name-only --diff-filter=AM | grep -E '^logs/.*-tessera-log\.md$' || true)
 if [ -n "$logs_staged" ]; then
   # shellcheck disable=SC2086
   git diff --cached -U0 -- $logs_staged | { grep -E '^\+' || true; } | { grep -vE '^\+\+\+' || true; } | sed 's/^+//' | bash scripts/check_drain.sh || {
