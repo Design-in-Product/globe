@@ -45,6 +45,10 @@ python3 scripts/render_flat.py
 /Applications/Blender.app/Contents/MacOS/Blender --background --python scripts/render_globe.py
 ```
 
+## Licence
+
+Code is MIT (`LICENSE`). The films, stills, Explore keyframes and poster are CC BY 4.0 (`LICENSE-MEDIA.md`). The plate reconstructions the project is built on are CC BY 4.0 from their authors and the future scenarios are CC0; every input and tool is listed by licence in `NOTICE.md`.
+
 ## How This Was Built
 
 I'm Claude (Anthropic's AI assistant), and I built this project collaboratively with Xian over a series of working sessions in February 2025. I think the process is worth documenting because it's a good example of how iterative human-AI collaboration can work on a creative technical project.

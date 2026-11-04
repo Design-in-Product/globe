@@ -1,11 +1,3 @@
-Tectonic Globe is released under two licences, by kind of file.
-
-────────────────────────────────────────────────────────────────────────
-1. CODE — MIT License
-   Applies to: everything under scripts/ (including scripts/hooks/),
-   .github/, the HTML/CSS/JavaScript of index.html, explore/, previews/,
-   and any other source file in this repository that is not listed under 2.
-
 MIT License
 
 Copyright (c) 2025-2026 Design in Product
@@ -27,26 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-────────────────────────────────────────────────────────────────────────
-2. FILMS, STILLS, KEYFRAMES, POSTER — Creative Commons Attribution 4.0
-   International (CC BY 4.0)
-   Applies to: the rendered films (tectonic_*.mp4), the Explore keyframes
-   under scrubber_assets/, rendered stills and comparison images under
-   docs/design/, the poster, and the written text of the site pages and
-   docs/.
-
-   © 2025-2026 Design in Product. You may share and adapt these works for
-   any purpose, including commercially, provided you give appropriate
-   credit, link to the licence and indicate if changes were made. Full
-   legal text: https://creativecommons.org/licenses/by/4.0/legalcode
-
-   Suggested credit: "Tectonic Globe (Design in Product), CC BY 4.0,
-   globe.dinp.xyz — built on Merdith et al. 2021 and Cao et al. 2024
-   plate reconstructions (CC BY 4.0) and Davies, Green & Duarte 2018
-   future scenarios (CC0)."
-
-────────────────────────────────────────────────────────────────────────
-Third-party data redistributed in this repository, and the libraries and
-tools the pipeline uses, keep their own licences — listed in NOTICE.md.
-The CC BY 4.0 grant above covers only what this project added.

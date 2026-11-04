@@ -1,7 +1,7 @@
 # NOTICE — third-party data, libraries and tools
 
-Tectonic Globe's own licences are in `LICENSE` (MIT for code, CC BY 4.0 for
-films, stills, keyframes and the poster). This file lists what the project is
+Tectonic Globe's own licences are in `LICENSE` (MIT, code) and
+`LICENSE-MEDIA.md` (CC BY 4.0: films, stills, keyframes, poster). This file lists what the project is
 built on and the terms each piece carries. Licences below were read from the
 hosting record on 2026-11-03 (Zenodo / Figshare / OSF API), not from memory.
 
