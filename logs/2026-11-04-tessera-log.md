@@ -1,0 +1,13 @@
+# 2026-11-04 — Tessera log
+
+## 10:24 PT — 10:22 fire — brief 11-04 not applicable here; licence file split so GitHub detects it
+
+Synced: fast-forward to e51168c (Janus's 11-04 brief pointer). Fire check VERDICT clean (43 lines): brief age 0 d; 8 pages / 4 inline script blocks OK; both keyframe manifests 0/0; dns CNAME correct; live /explore/ is the atlas page; Pages deployed (workflow) for e51168c; hook gated, launchd loaded last exit 0; 0 stray Blender, 0 supervisor, 0 cpu declarations, 0 expired; disk 107 GB free, render tree 28 G, 10 local TM snapshots; handoff 14/14; unignored bulk none.
+
+Brief 11-04 (hub body read from my clone): one insight, from Piper Morgan — an intent router that re-asks on ambiguity treats an answer to its own question as fresh uncertain input unless it tracks turn position. This seat has no conversational router and no re-ask path; the nearest shape, the mail-wake prompt's "if you already handled it, ignore this", already carries its turn position in the text. Nothing to apply; recorded so the silence is a decision. The brief's DinP section carries yesterday's licence ship (a45dc9b) and the mail-deliver thread correctly.
+
+Mail: nothing new since the 17:56 wake in globe, mediajunkie or designinproduct (zero memos landed in either sibling repo overnight). None addressed to me.
+
+Read-back of yesterday's ship, done this fire rather than assumed: live home footer carries the licence line (1 match on globe.dinp.xyz); raw LICENSE and NOTICE.md serve 200; but `gh api repos/Design-in-Product/globe .license.spdx_id` read **NOASSERTION** — GitHub's detector cannot classify a file holding two licences, so the repo showed no licence badge and no licence in the API. Fixed in 2de5db5 with no term changed from xian's approval: `LICENSE` is now the MIT text verbatim; the CC BY 4.0 section moved to `LICENSE-MEDIA.md` (same scope list, same credit line); README gained a Licence section pointing at both and NOTICE.md; footer and preview links name LICENSE-MEDIA first; NOTICE.md's first line and the handoff header (bumped to 11-04) updated. Pages and handoff checks pass. Proven against the negative: detection read NOASSERTION at 10:23:50 after the push and **MIT** at 10:24:11.
+
+Drain: unblocked item found by read-back and done (licence split). Deferred with blockers, all xian's, unchanged: preview → live swap (blocker: his edit review), 1:03 ghost test render (blocker: his verdict), sequel treatment (blocker: his decision), contributed-layer default (blocker: his pick; no outside layer exists). Check 1 (fire_check mail block + overnight scan) clean; check 2 after this push.
