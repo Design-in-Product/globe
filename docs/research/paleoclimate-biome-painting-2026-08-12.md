@@ -46,10 +46,14 @@ fields would be.
 - Repository: Zenodo `10.5281/zenodo.6620748`, NetCDF or CSV, per-slice or
   zipped.
 - Resolution: 2.8°×1.4°.
-- **License: CC BY-NC-ND 4.0 — noncommercial, no derivatives.** This is a
-  real constraint, not a formality: a POD/Kickstarter product built on a
-  *derivative* of this data would need separate permission or a different
-  source. Flagging honestly rather than quietly working around it.
+- ~~**License: CC BY-NC-ND 4.0 — noncommercial, no derivatives.**~~
+  **CORRECTED 2026-11-03: the dataset is CC BY 4.0.** All three versions of
+  Zenodo record 6402040/6620748 carry `cc-by-4.0` (read from the Zenodo API
+  on 11-03). The CC BY-NC-ND belongs to the *Data in Brief* article's version
+  of record (Crossref licence field), and on 08-12 I took the article's
+  licence for the data's. No separate permission is needed for a commercial
+  derivative; the constraint flagged here, and repeated in ROADMAP.md, two
+  handoffs and the 10-21 roadmap conversation, did not exist.
 
 ## 3. BRIDGE/Bristol (Valdes et al.) Phanerozoic ensemble — richest science, least turnkey
 

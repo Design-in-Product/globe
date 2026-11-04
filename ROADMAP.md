@@ -160,9 +160,11 @@ speculative, not scoped): real deep-time paleoclimate/vegetation datasets
 exist and are downloadable now. Best fit: **CESM1.2.2 540 Myr dataset**
 (55 snapshots, 10 Myr steps, temp/precip + vegetation via dynamic global
 vegetation model, CC BY 4.0, Scotese & Wright 2018 paleogeography). A more
-directly "paintable" Köppen–Geiger classification dataset also exists but
-is CC BY-NC-ND (noncommercial, no-derivatives — a real constraint given
-the Kickstarter/POD conversation in item 7). Both ride on Scotese
+directly "paintable" Köppen–Geiger classification dataset also exists and
+is **also CC BY 4.0** (corrected 2026-11-03 from the Zenodo record: the
+08-12 research had recorded the *Data in Brief* article's CC BY-NC-ND as
+the dataset's licence; the data carries no such constraint, so item 7 is
+not blocked by it). Both ride on Scotese
 paleogeography, not Merdith2021/cao2024 — same *kind* of registration
 problem the prequel's terminal-seam fix solved, but harder (raster grid
 onto plate boundaries, not plate-polygon onto plate-polygon).

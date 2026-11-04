@@ -13,6 +13,9 @@ Suggested: **CC BY 4.0 for films, stills and the poster; MIT for code**, in a
 LICENSE file plus one line on the site's data section. Note for item 8: the
 most "paintable" climate dataset is CC BY-NC-ND, which would rule out any
 merch built on it; the CESM dataset (CC BY 4.0) would not.
+*Correction 2026-11-03: the Köppen dataset is CC BY 4.0 on Zenodo; the NC-ND
+was the describing article's licence. Nothing surveyed rules out merch.*
+*Outcome 2026-11-03: xian approved via Janus; `LICENSE` and `NOTICE.md` shipped.*
 
 ## 2. The 1:03 crossfade ghost
 

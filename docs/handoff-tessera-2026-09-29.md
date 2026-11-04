@@ -1,6 +1,6 @@
 # Handoff: Tessera — current state (supersedes 2026-09-18)
 
-**Updated 2026-10-27** (content-pointer audit after brief 10-27: the header said 10-14 while the last commit was 10-20 and the body still had item 4 "waiting on xian's pick" beside "SHIPPED 2026-10-20" — commit-fresh, content-stale; `scripts/check_handoff_pointers.sh` now catches that each fire). Earlier: 10-14 (drift audit), 10-04 (sequel rendered; 🔒 rule adopted). Original rationale:
+**Updated 2026-11-03** (licence shipped — `LICENSE` MIT code / CC BY 4.0 media and `NOTICE.md` listing every input by licence, on xian's approval relayed by Janus; the Köppen dataset is CC BY 4.0, the NC-ND recorded since 08-12 was the article's licence, not the data's). Earlier: 10-27 (content-pointer audit after brief 10-27: the header said 10-14 while the last commit was 10-20 and the body still had item 4 "waiting on xian's pick" beside "SHIPPED 2026-10-20" — commit-fresh, content-stale; `scripts/check_handoff_pointers.sh` now catches that each fire). Earlier: 10-14 (drift audit), 10-04 (sequel rendered; 🔒 rule adopted). Original rationale:
 **Why now:** brief 9/29 (Klatch fork-identity finding) restated the first
 principle of multi-session work — *shared memory is exactly what's in git,
 nothing carried implicitly across session boundaries.* My last handoff is
@@ -163,7 +163,7 @@ living documents with closed items removed.
 
 | | they owe me | I owe them |
 |---|---|---|
-| **xian** | Four decisions (all 10-21, none urgent, his pace): edit review of `previews/home-2026-10-21/`; his eyeball verdict on the 1:03 ghost; the sequel treatment (extrapolate / letter to authors / mask-morph v4 / leave); the licence. | The preview → live swap the moment he says go, then tell Janus; the 1:03 hard-cut test render if his verdict is "not OK"; a LICENSE file once he picks |
+| **xian** | Three decisions (all 10-21, none urgent, his pace): edit review of `previews/home-2026-10-21/`; his eyeball verdict on the 1:03 ghost; the sequel treatment (extrapolate / letter to authors / mask-morph v4 / leave). The licence he approved 11-03 and it shipped (`LICENSE`, `NOTICE.md`); one follow-on only when a first outside layer appears: CC BY (recommended) or CC BY-SA as the default for contributed layers. | The preview → live swap the moment he says go, then tell Janus; the 1:03 hard-cut test render if his verdict is "not OK"; the copyright-holder line in `LICENSE` changed the hour he asks |
 | **Pard** | Closing the disk-space item (Time Machine local snapshots pin the freed 14 GB; thinning is xian's console step) | Nothing; the identity incident (09-18) and the autostash incident (10-08) are both reported and owned |
 | **Janus** | Relays xian's decisions (reliable) | Read/act on daily briefs |
 
@@ -183,7 +183,10 @@ living documents with closed items removed.
    the outputs before calling them a comparison.
 2. **Roadmap items 7 (physical/POD) and 8 (biome painting)** — xian-confirmed
    someday/maybe. If 8 ever moves: the CESM1.2.2 dataset is CC BY 4.0 and
-   fine commercially; the Köppen set is **CC BY-NC-ND — not for a POD product**.
+   fine commercially; the Köppen set is **also CC BY 4.0** (corrected 2026-11-03
+   from Zenodo; the NC-ND I recorded on 08-12 was the *Data in Brief* article's
+   licence). Every input in use or surveyed allows commercial use with credit —
+   see `NOTICE.md`.
 3. **Brightness/contrast in `/explore/`** (shader uniforms 0.10 / 1.18)
    was tuned to xian's "more brightness and higher contrast" by measuring
    (+21% mean luma), and he has the A/B. Don't re-tune unprompted.
