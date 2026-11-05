@@ -17,3 +17,13 @@ Drain: unblocked item found by read-back and done (licence split). Deferred with
 `wait_pages` timed out at 420 s for 82808d8 with no deployment registered. Actions queue read at 10:32: run 41886740788 (2de5db5, the licence split) in_progress for 8 min, run 41886867236 (82808d8, the log) pending behind it. Polled to completion: 2de5db5's deploy job **failed** at 18:35:36Z — `actions/deploy-pages@v4` sat in `updating_pages` for ~11 min, hit its own timeout ("Timeout reached, aborting!") and cancelled its deployment; nothing in the artifact or the workflow changed, GitHub's Pages backend was slow. 82808d8, which contains everything 2de5db5 did plus the log, then deployed: `pages: deployed (workflow) for 82808d8` at 10:37:53. Live read-back, not inferred: globe.dinp.xyz footer carries the LICENSE-MEDIA link (1 match). Net: the site is current; one failed run in the Actions history with a GitHub-side cause. Nothing to change here; noted in case it recurs (second time a deploy ran past 10 min — 10-28 and 10-30 were slow but succeeded).
 
 Drain: no new work; this closes the fire's open item. Deferrals unchanged (all xian's: preview swap, 1:03 ghost render, sequel treatment, contributed-layer default). Mail checks 1 and 2 clean; no third needed, nothing has landed since.
+
+## 16:23 PT — 16:22 fire: no-op, all checks clean
+
+**Fire check:** VERDICT clean, 43 lines, no failure word. Sync already up to date (nothing landed on origin/main since 00440a7). Pages still proven deployed for 00440a7. Brief age 0 d (11-04, read at 10:22; no newer brief in the hub source). Hook, launchd, disk (120 Gi free, render tree 28 G, 9 local snapshots), handoff pointers 14/14, unignored bulk none.
+
+**Mail:** nothing addressed to me since the 11-03 thread closed. Three designinproduct memos landed 15:20–15:30 today, all Janus ↔ Themis cc xian, none naming Tessera or globe. mediajunkie: no mail commits since 10:22. globe docs/mail: 0 commits since 10:22. Second check after the push below.
+
+**Pages deploy timeout (10:22 follow-up):** no recurrence to report; 00440a7 was the last push and it deployed in 108 s.
+
+Drain: nothing unblocked remained — ran the fire check, read sibling mail, found no work addressed to me and no ripe item in roadmap/handoff. Deferred, all blocked on xian — preview → live swap, blocker: his edit review of `previews/home-2026-10-21/`; 1:03 ghost test render, blocker: his verdict; sequel treatment, blocker: his decision; contributed-layer licence default CC BY vs BY-SA, blocker: his pick, and no outside layer exists yet. Two consecutive clean mail checks → idle.
