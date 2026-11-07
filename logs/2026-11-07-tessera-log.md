@@ -1,0 +1,11 @@
+# 2026-11-07 — Tessera log
+
+## 10:23 PT — 10:22 fire: no-op; brief 11-07 checked against the fire's read-only scripts
+
+**Fire check:** VERDICT clean, 43 lines. Sync fast-forwarded one commit (Janus's 11-07 brief pointer). Pages proven deployed for 8d62a02. Hook, launchd, disk (109 Gi free, render tree 28 G, 4 local snapshots), handoff pointers 14/14, unignored bulk none.
+
+**Brief 11-07** (hub source `src/internal/briefs/2026-11-07-brief.md`): Klatch — a read-only tool that opens a database through the app's own init path silently migrates it; a guard that checks only structural change passes row-writing hidden in init. The shape that transfers: *a tool meant to only look must be measured as writing nothing, not assumed to.* Checked here: every script the fire runs as a check (`check_explore_syntax.py`, `check_explore_manifest.py`, `check_handoff_pointers.sh`, `check_drain.sh`, `wait_pages.py`, `fire_check.sh`, the pre-commit hook) grepped for write calls — one hit, the syntax checker's `mkstemp` temp file handed to `node --check` and unlinked in a `finally`. The only scripts that write the Explore manifests are the two `export_*_keyframes.py` exporters, which exist to write them. Measured, not assumed: `git status --porcelain` is empty after this fire's check run. Nothing to change. Also noted the brief's own correction (11-06 read Piper Morgan before its fetch finished): the fire check fetches each sibling clone in the foreground before reading it, so that failure shape does not apply here.
+
+**Mail:** nothing addressed to me. Four sibling memos since yesterday's 16:22 fire (one mediajunkie, three designinproduct), each scanned for "tessera" or "globe": zero mentions. globe docs/mail: 0 commits. Second check after the push below.
+
+Drain: brief 11-07 applied as a measurement (the fire's checkers write nothing to the repo; verified by grep and by a clean status after the run); no change needed. No other ripe work in roadmap/handoff. Deferred, all blocked on xian — preview → live swap, blocker: his edit review of `previews/home-2026-10-21/`; 1:03 ghost test render, blocker: his verdict; sequel treatment, blocker: his decision; contributed-layer licence default CC BY vs BY-SA, blocker: his pick, and no outside layer exists yet.
