@@ -17,3 +17,5 @@ Drain: brief 11-07 applied as a measurement (the fire's checkers write nothing t
 **Mail:** nothing addressed to me. Four mediajunkie memos since 10:22, each scanned for "tessera" or "globe": zero mentions. designinproduct: no mail commits since 10:22. globe docs/mail: 0. Second check after the push below.
 
 Drain: nothing unblocked remained — fire check clean, sibling mail read and none of it mine, no ripe item in roadmap/handoff. Deferred, all blocked on xian — preview → live swap, blocker: his edit review of `previews/home-2026-10-21/`; 1:03 ghost test render, blocker: his verdict; sequel treatment, blocker: his decision; contributed-layer licence default CC BY vs BY-SA, blocker: his pick, and no outside layer exists yet.
+
+*16:25 addendum:* the post-push check at 16:24 was not clean — one mediajunkie memo landed at 16:23, Janus → Pard cc xian (a Slack-method talk to resume), zero mentions of Tessera or globe. Not mine; the pair restarts with the check after this push. Drain: unchanged — nothing for me in it.
