@@ -42,7 +42,14 @@ fi
 # Full-read grep, not -q (same SIGPIPE/pipefail hazard as the syntax gate above).
 assets_staged=$(git diff --cached --no-renames --name-only --diff-filter=AMD | grep -E '^scrubber_assets/' || true)
 if [ -n "$assets_staged" ]; then
-  python3 scripts/check_explore_manifest.py scrubber_assets/keyframes.json scrubber_assets/future/keyframes-future.json || {
+  # Manifests derived from the index-to-be (git ls-files reads the index, so a
+  # newly staged manifest is included), not a typed list — brief 11-09. An
+  # empty list refuses by name rather than skipping: assets are staged but
+  # nothing declares them.
+  manifests=$(git ls-files -- 'scrubber_assets/*.json' 'scrubber_assets/**/*.json' | sort -u)
+  [ -n "$manifests" ] || { echo "pre-commit: scrubber_assets/ is staged but no Explore manifest (scrubber_assets/*.json) is tracked — nothing declares these assets; commit refused." >&2; exit 1; }
+  # shellcheck disable=SC2086
+  python3 scripts/check_explore_manifest.py $manifests || {
     echo "pre-commit: a staged Explore manifest declares a keyframe that is not on disk — commit refused." >&2; exit 1
   }
 fi
