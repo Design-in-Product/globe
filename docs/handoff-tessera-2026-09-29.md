@@ -1,6 +1,6 @@
 # Handoff: Tessera — current state (supersedes 2026-09-18)
 
-**Updated 2026-11-04** (licence shipped 11-03 — `LICENSE` MIT code, `LICENSE-MEDIA.md` CC BY 4.0 media (split 11-04 so GitHub detects MIT) and `NOTICE.md` listing every input by licence, on xian's approval relayed by Janus; the Köppen dataset is CC BY 4.0, the NC-ND recorded since 08-12 was the article's licence, not the data's). Earlier: 10-27 (content-pointer audit after brief 10-27: the header said 10-14 while the last commit was 10-20 and the body still had item 4 "waiting on xian's pick" beside "SHIPPED 2026-10-20" — commit-fresh, content-stale; `scripts/check_handoff_pointers.sh` now catches that each fire). Earlier: 10-14 (drift audit), 10-04 (sequel rendered; 🔒 rule adopted). Original rationale:
+**Updated 2026-11-10** (Explore manifest list derived once in `scripts/explore_manifests.sh` for the hook, the fire check and the checker test, with `scripts/test_manifest_gate.sh` registering the empty-list and third-manifest cases — briefs 11-09/11-10). Earlier: 11-04 (licence shipped 11-03 — `LICENSE` MIT code, `LICENSE-MEDIA.md` CC BY 4.0 media (split 11-04 so GitHub detects MIT) and `NOTICE.md` listing every input by licence, on xian's approval relayed by Janus; the Köppen dataset is CC BY 4.0, the NC-ND recorded since 08-12 was the article's licence, not the data's). Earlier: 10-27 (content-pointer audit after brief 10-27: the header said 10-14 while the last commit was 10-20 and the body still had item 4 "waiting on xian's pick" beside "SHIPPED 2026-10-20" — commit-fresh, content-stale; `scripts/check_handoff_pointers.sh` now catches that each fire). Earlier: 10-14 (drift audit), 10-04 (sequel rendered; 🔒 rule adopted). Original rationale:
 **Why now:** brief 9/29 (Klatch fork-identity finding) restated the first
 principle of multi-session work — *shared memory is exactly what's in git,
 nothing carried implicitly across session boundaries.* My last handoff is
@@ -142,7 +142,7 @@ living documents with closed items removed.
 | Its keyframes + manifests | `scrubber_assets/` (23 past, `keyframes.json`) + `scrubber_assets/future/` (56, `keyframes-future.json`); WebP q90 at native res |
 | Keyframe export | `scripts/export_scrubber_keyframes.py` (manifest-driven) |
 | Syntax check for every tracked page | `scripts/check_explore_syntax.py` — exit 0/1/2/3, guarded against vacuous pass |
-| Manifest coverage (declared vs present, two absences named) | `scripts/check_explore_manifest.py` + `scripts/test_check_explore_manifest.sh` |
+| Manifest coverage (declared vs present, two absences named) | `scripts/check_explore_manifest.py` + `scripts/test_check_explore_manifest.sh`; the manifest list is derived once in `scripts/explore_manifests.sh` (empty list = UNMEASURABLE in the fire check, a named refusal in the hook), gate tested by `scripts/test_manifest_gate.sh` (7 cases incl. a third manifest and a cripple pass) |
 | Drain guard (log entries) | `scripts/check_drain.sh` + `scripts/test_check_drain.sh` (52 cases incl. a cripple pass) |
 | Handoff content pointers (this file) | `scripts/check_handoff_pointers.sh` — exit 0 present / 1 gaps / 2 pattern error / 3 nothing matched |
 | Below-the-fold preview awaiting xian's edit review | `previews/home-2026-10-21/` (+ `making-of/`); proposal `docs/design/home-page-below-the-fold-2026-10-21.md` |
@@ -156,7 +156,7 @@ living documents with closed items removed.
 | Shipped films (six, repo root) | `tectonic_globe_v8` / `tectonic_flat_v8`, `tectonic_prequel_globe_v3` / `tectonic_prequel_v3`, `tectonic_sequel_globe_v3` / `tectonic_sequel_flat_v3` (.mp4); candidates under `~/globe-render/palette_cobalt-brass/` |
 | Crash-resilient render driver | `scripts/render_supervised.sh` (proven on a stub: recover / budget / no-progress / complete) |
 | Deploy check | `scripts/wait_pages.py` |
-| Pre-commit gates (page syntax, drain line, manifest coverage, 100 MiB) | `scripts/hooks/pre-commit` via repo-local `core.hooksPath` — fine here only because `globe` is single-seat |
+| Pre-commit gates (page syntax, drain line, manifest coverage, 100 MiB) | `scripts/hooks/pre-commit` via repo-local `core.hooksPath` — fine here only because `globe` is single-seat; size gate tested by `scripts/test_size_gate.sh` |
 | Render workspace | `~/globe-render/` (frames, prequel frames, sequel frames/renders, camera paths, OSF grids) |
 
 ## Who owes what
