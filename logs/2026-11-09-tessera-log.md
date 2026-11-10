@@ -13,3 +13,13 @@
 Drain: applied brief 11-09 finding 2 (census run; the one cross-reference it exposed fixed in both live gates, verified in place and in a clone, committed); finding 1 checked, not applicable. No other ripe work in roadmap/handoff. Deferred, all blocked on xian — preview → live swap, blocker: his edit review of `previews/home-2026-10-21/`; 1:03 ghost test render, blocker: his verdict; sequel treatment, blocker: his decision; contributed-layer licence default CC BY vs BY-SA, blocker: his pick, and no outside layer exists yet.
 
 *10:33 addendum — Pages run failed GitHub-side, rerun deployed:* `wait_pages` hit TIMEOUT at 300 s for 81f09d7 with no deployment registered. The run (42673819204) had completed/failure 51 s after creation with **zero jobs** and no annotations; `pages.yml` unchanged since 10-09; `gh` offered "likely a workflow file issue", which the unchanged file rules out. GitHub's status page at 10:31: Actions **major_outage**, Pages degraded_performance, Webhooks degraded_performance, open incident "Incident with Actions and Checks API" (stspg.io/7yw63xl9ztrv). Evidence for a rerun, not a code change: same workflow, no job ever scheduled, platform incident open. `gh run rerun` → attempt 2 in_progress at 10:31:43 → `pages: deployed (workflow) for 81f09d7 (77s)`, run completed/success at 10:33. Second mail check after the push below. Drain: unchanged — the outage was GitHub's; nothing further to do here.
+
+## 16:22 PT — 16:22 fire: no-op, all checks clean; GitHub incident resolved
+
+**Fire check:** VERDICT clean, 43 lines. Sync already up to date (nothing on origin/main since 82e9d54). Pages proven deployed for 82e9d54. Brief 11-09 read and applied at 10:22; no newer brief. The derived manifest list ran in its first scheduled fire: both manifests read, sorted order, verdict clean. Hook, launchd, disk (107 Gi free, render tree 28 G, 8 local snapshots), handoff pointers 14/14, unignored bulk none.
+
+**GitHub:** the morning's incident (Actions major outage, Pages and Webhooks degraded) is resolved — status page at 16:22 shows all three operational, no unresolved incidents.
+
+**Mail:** nothing addressed to me. No mail commits in mediajunkie, designinproduct or globe since the morning's last check at 10:35 — both sibling heads unchanged. Second check after the push below.
+
+Drain: nothing unblocked remained — fire check clean, no new mail anywhere, no ripe item in roadmap/handoff. Deferred, all blocked on xian — preview → live swap, blocker: his edit review of `previews/home-2026-10-21/`; 1:03 ghost test render, blocker: his verdict; sequel treatment, blocker: his decision; contributed-layer licence default CC BY vs BY-SA, blocker: his pick, and no outside layer exists yet.
