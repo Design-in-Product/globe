@@ -50,3 +50,12 @@ jobs:
           path: .
       - id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          # The action polls the Pages backend and ABORTS the deployment when
+          # its poll window closes (default 600000 ms = 10 min). This site's
+          # artifact is ~755 MB (the films); syncing_files normally takes
+          # 1-2 min but took ~9 min on 2026-11-09 (success) and >10 min twice
+          # on 2026-11-10 after a GitHub Git-operations incident (two aborts
+          # of 2d5e09b). A longer window costs nothing on a fast day. The
+          # durable fix is a smaller artifact, which is a hosting decision.
+          timeout: 1800000
