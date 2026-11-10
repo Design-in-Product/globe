@@ -40,8 +40,17 @@ run 2 "UNREADABLE" "manifest without keyframes key refuses for the unreadable re
 # 7. duplicate declaration is named
 mk m.json '{"keyframes":[{"time_ma":1,"file":"a.webp"},{"time_ma":0,"file":"a.webp"}]}'
 run 0 "DECLARED-TWICE: a.webp" "duplicate declaration is reported"
-# 8. the live manifests pass (this is the fire's real check)
-out=$(python3 "$C" scrubber_assets/keyframes.json scrubber_assets/future/keyframes-future.json 2>&1); got=$?
-if [ "$got" = 0 ] && ! grep -qE 'ABSENT|UNDECLARED|TWICE' <<< "$out"; then pass=$((pass+1)); else fail=$((fail+1)); echo "FAIL: live manifests: $out"; fi
+# 8. the live manifests pass (this is the fire's real check). The list comes
+# from the same derivation the gates use (brief 11-10: a hand-typed copy of
+# the two names here would be the defect the gates were cured of); a derived
+# list that comes back empty is a failure of this test, never a vacuous pass.
+live=$(bash scripts/explore_manifests.sh)
+if [ -z "$live" ]; then fail=$((fail+1)); echo "FAIL: live manifests: derived list is empty (no scrubber_assets/*.json tracked)"
+else
+  # shellcheck disable=SC2086
+  out=$(python3 "$C" $live 2>&1); got=$?
+  n=$(printf '%s\n' "$live" | wc -l | tr -d ' ')
+  if [ "$got" = 0 ] && ! grep -qE 'ABSENT|UNDECLARED|TWICE' <<< "$out" && [ "$(grep -c '\[ok\]' <<< "$out")" = "$n" ]; then pass=$((pass+1)); else fail=$((fail+1)); echo "FAIL: live manifests ($n derived): $out"; fi
+fi
 echo "check_explore_manifest tests: $pass passed, $fail failed"
 [ "$fail" = 0 ]

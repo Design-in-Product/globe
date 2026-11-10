@@ -42,11 +42,12 @@ fi
 # Full-read grep, not -q (same SIGPIPE/pipefail hazard as the syntax gate above).
 assets_staged=$(git diff --cached --no-renames --name-only --diff-filter=AMD | grep -E '^scrubber_assets/' || true)
 if [ -n "$assets_staged" ]; then
-  # Manifests derived from the index-to-be (git ls-files reads the index, so a
-  # newly staged manifest is included), not a typed list — brief 11-09. An
-  # empty list refuses by name rather than skipping: assets are staged but
-  # nothing declares them.
-  manifests=$(git ls-files -- 'scrubber_assets/*.json' 'scrubber_assets/**/*.json' | sort -u)
+  # Manifests derived from the index-to-be, not a typed list — brief 11-09.
+  # The derivation lives in scripts/explore_manifests.sh, shared with the fire
+  # check (brief 11-10: the rule itself was a hand-typed copy in two places).
+  # An empty list refuses by name rather than skipping: assets are staged but
+  # nothing declares them. Tested by scripts/test_manifest_gate.sh.
+  manifests=$(bash scripts/explore_manifests.sh)
   [ -n "$manifests" ] || { echo "pre-commit: scrubber_assets/ is staged but no Explore manifest (scrubber_assets/*.json) is tracked — nothing declares these assets; commit refused." >&2; exit 1; }
   # shellcheck disable=SC2086
   python3 scripts/check_explore_manifest.py $manifests || {

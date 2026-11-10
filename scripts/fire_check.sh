@@ -71,9 +71,11 @@ python3 scripts/check_explore_syntax.py $(git ls-files "*.html") | sed "s/^/  /"
 # The manifest list is derived from git, not typed (brief 11-09, Klatch: census
 # the cross-references before changing one — this list was hardcoded in three
 # places until 2026-11-09, so a third manifest would have gone unchecked in all
-# of them). An empty derived list is UNMEASURABLE, never a pass: the checker's
-# usage message carries no failure word and would otherwise read as clean.
-manifests=$(git ls-files -- 'scrubber_assets/*.json' 'scrubber_assets/**/*.json' | sort -u)
+# of them). The derivation is scripts/explore_manifests.sh, shared with the
+# hook (brief 11-10: two hand-typed copies of the rule are the defect again).
+# An empty derived list is UNMEASURABLE, never a pass: the checker's usage
+# message carries no failure word and would otherwise read as clean.
+manifests=$(bash scripts/explore_manifests.sh)
 if [ -z "$manifests" ]; then echo "  explore manifests: UNMEASURABLE (no scrubber_assets/*.json tracked)"
 # shellcheck disable=SC2086
 else python3 scripts/check_explore_manifest.py $manifests; fi
