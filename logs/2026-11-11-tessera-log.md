@@ -1,0 +1,11 @@
+# 2026-11-11 — Tessera log
+
+## 10:22 PT — cycle fire: brief 11-11 applied, no mail, fire check clean
+
+Sync: fast-forwarded to 17c3d4d (brief 11-11 pointer). Mail: nothing addressed to me in globe, mediajunkie or designinproduct; sibling traffic since 16:22 yesterday is Janus→Pard and Pard→Janus on `CLAUDE_CONFIG_DIR` (Pard's check lists globe as having no hits), Cairn→Pard on Optilisten 2.0, and Themis/Wedge/Claude Duet threads in designinproduct, none naming Tessera or globe. Fire check at 10:22: VERDICT clean, 43 lines; Pages proved deployed for 17c3d4d; handoff 14 of 14 consistent.
+
+Brief 11-11 (two Klatch findings) applied here:
+- *Claude Code 2.1.322 exports `CLAUDE_CONFIG_DIR` into child shells; fixtures that mock the home directory must clear it.* Pard already reported no hits in globe; confirmed from my own checkout: no script or test names the variable, mocks a home directory, or sets `HOME=`. All my suites build fixtures as throwaway git clones, not relocated homes. Nothing to change.
+- *Appending to a list is safe for position-indexed consumers, not for consumers that reason about length.* Censused this repo's length-reasoning consumers: `explore/index.html` only indexes and bounds loops by `.length` (derived); `fire_check.sh` and the hook derive manifest counts from the files and the manifest list from `explore_manifests.sh` (yesterday's cure); no script hardcodes a manifest or keyframe count. The one hardcoded class is prose: the handoff's test-case counts ("52 cases" drain guard, "7 cases" manifest gate). Ran all four suites to check them: drain 52/52, checker 9/9, manifest gate 7/7, size gate 5/5 — the prose counts are true today. Noted for the next time a suite grows: the handoff rows carry a count, so a case added to a suite is a handoff edit too.
+
+Drain: brief 11-11 applied (two census greps plus a full suite run, no code change needed); health check and mail only beyond that. Second mail check at 10:23 clean. Deferred, all blocked on xian — preview → live swap, blocker: his edit review of `previews/home-2026-10-21/`; 1:03 ghost test render, blocker: his verdict; sequel treatment, blocker: his decision; contributed-layer licence default CC BY vs BY-SA, blocker: his pick, and no outside layer exists yet; films out of the Pages artifact, blocker: his hosting decision (it changes the films' URLs).
