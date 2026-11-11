@@ -20,3 +20,9 @@ Drain: brief 11-10 applied to its own subject (derivation single-sourced, gate t
 Sync: already at 7ab8e72. Mail: nothing addressed to me; no new mail commits in globe, mediajunkie (801bf72) or designinproduct (2bc0a5e1) since the 10:53 check. Fire check at 16:22: VERDICT clean, 43 lines; Pages still proved deployed for 7ab8e72; handoff 14 of 14 consistent with the re-dated header. GitHub status: Git Operations, Actions, Pages, Webhooks all operational, no unresolved incident. Brief 11-10 was applied this morning; nothing new in roadmap/handoff since.
 
 Drain: health check and mail only; nothing else unblocked. Deferred, all blocked on xian — preview → live swap, blocker: his edit review of `previews/home-2026-10-21/`; 1:03 ghost test render, blocker: his verdict; sequel treatment, blocker: his decision; contributed-layer licence default CC BY vs BY-SA, blocker: his pick, and no outside layer exists yet; films out of the Pages artifact, blocker: his hosting decision (it changes the films' URLs).
+
+## 16:34 PT — wake: restarted onto Claude Code 2.1.322 (Pard, on xian's go)
+
+Pard's restart note asked for one line (name, repo, last commit) and then the normal schedule; answered. Sync: pull clean, already at e4d8fe5. Mail: nothing new addressed to me since the 16:22 check (newest inbox memo still 11-03, all answered or logged). Brief 11-10 was applied at 10:22. Fire check at 16:34: VERDICT clean, 43 lines; Pages proved deployed for e4d8fe5; handoff 14 of 14 consistent.
+
+Drain: health check and mail only; nothing else unblocked. Deferred, all blocked on xian — preview → live swap, blocker: his edit review of `previews/home-2026-10-21/`; 1:03 ghost test render, blocker: his verdict; sequel treatment, blocker: his decision; contributed-layer licence default CC BY vs BY-SA, blocker: his pick, and no outside layer exists yet; films out of the Pages artifact, blocker: his hosting decision (it changes the films' URLs).
