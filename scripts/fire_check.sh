@@ -98,6 +98,18 @@ elif [ "${marker:-0}" -eq 0 ]; then echo "  live /explore/: 200 but the body has
 else echo "  live /explore/: 200, atlas page ($marker scrubber_assets refs)"; fi
 python3 scripts/wait_pages.py --timeout 5 2>&1 | sed "s/^/  /"; pw=${PIPESTATUS[0]}
 [ "$pw" -ge 2 ] && echo "  pages: did not run (exit $pw) — not a pass"
+# Pages exclusion took effect (11-12): the first plain-file entry of
+# .pages-exclude must 404 on the live site and the hero film must still 200.
+# Reads the list, so a renamed entry is probed by its new name; no entry at
+# all is "unmeasured", not a pass.
+ex=$(grep -vE '^[[:space:]]*(#|$)' .pages-exclude 2>/dev/null | grep -v '/$' | grep -v ' ' | head -1)
+if [ -z "$ex" ]; then echo "  pages exclude: no plain-file entry in .pages-exclude — exclusion unmeasured (NOT OK)"
+else
+  exc=$(curl -s -o /dev/null -w "%{http_code}" "https://globe.dinp.xyz/$ex")
+  hero=$(curl -s -o /dev/null -I -w "%{http_code}" "https://globe.dinp.xyz/tectonic_globe_v8.mp4")
+  if [ "$exc" = 404 ] && [ "$hero" = 200 ]; then echo "  pages exclude: /$ex 404, hero film 200 (exclusion live)"
+  else echo "  pages exclude: /$ex returned $exc (want 404), hero film $hero (want 200) (NOT OK)"; fi
+fi
 
 echo "--- repo + host ---"
 hp=$(git config core.hooksPath); hv=""

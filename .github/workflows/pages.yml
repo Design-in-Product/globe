@@ -7,8 +7,10 @@
 # so the pass bought nothing and cost the risk. xian approved the switch
 # 2026-10-09 ("Tessera's plan is good").
 #
-# What publishes: the whole checkout except .git and .github (the action's
-# own excludes), i.e. the same files the legacy build served. LFS pointers
+# What publishes (since 2026-11-12): every tracked file except the paths in
+# .pages-exclude, staged by scripts/stage_pages.sh and gated by
+# scripts/check_pages_refs.py (a page naming an excluded or missing file
+# refuses the deploy). Before 11-12 it was the whole checkout, ~809 MB. LFS pointers
 # are not resolved — none are tracked (git lfs ls-files = 0), and the legacy
 # build never resolved them either.
 #
@@ -45,9 +47,16 @@ jobs:
         with:
           lfs: false
       - uses: actions/configure-pages@v5
+      # 2026-11-12: stage the tracked files minus .pages-exclude (superseded
+      # root films and raw plate data no page links, ~295 MB), then gate the
+      # staged folder: every src/href/poster/url()/film literal/manifest
+      # keyframe a page names must be inside it, or the deploy is refused
+      # here rather than 404ing after a green run. No URL changes.
+      - name: Stage the site (tracked files minus .pages-exclude, gated)
+        run: bash scripts/stage_pages.sh _site
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: _site
       - id: deployment
         uses: actions/deploy-pages@v4
         with:

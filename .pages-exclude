@@ -1,0 +1,22 @@
+# Tracked paths NOT uploaded to GitHub Pages. Read by scripts/stage_pages.sh;
+# every entry must match a tracked file (a stale line refuses the stage), and
+# scripts/check_pages_refs.py refuses the stage if any page names one of these.
+# Why (2026-11-12, proposal from Claude Duet via xian): the artifact was the
+# whole checkout, ~809 MB; deploy-pages aborted twice on 11-10 when the sync
+# outran its window. These are the two classes no page links. Nothing is
+# deleted from the repo; history and the working tree keep them.
+#
+# Superseded root films (index.html plays v8 / v3 films; previews/index.html
+# plays its own copies of prequel v1 and the v7 / sequel-globe v2 drafts).
+tectonic_flat_v6.mp4
+tectonic_flat_v3.mp4
+tectonic_flat_v2.mp4
+tectonic_flat_v1.mp4
+tectonic_prequel_v1.mp4
+tectonic_prequel_globe_v1.mp4
+tectonic_sequel_flat_v2.mp4
+tectonic_globe_v1 copy.mp4
+tectonic_globe.mp4
+# Raw plate-model inputs (GPlates .gpml / rotations), read by the render
+# scripts only; Explore loads scrubber_assets/.
+data/plate-models/

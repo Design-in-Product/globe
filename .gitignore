@@ -28,3 +28,6 @@ data/plate-models/cao2024/
 
 # gplately writes this on every import (PyGMT import error only); never useful in history
 gplately.log
+
+# Pages staging folder (CI builds it in the checkout; local runs use tmp)
+_site/
