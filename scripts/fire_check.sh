@@ -42,6 +42,13 @@ for r in mediajunkie designinproduct; do
   # line ran until 2026-11-05 (brief 11-05, Mediajunkie: a subprocess per item
   # is a silent O(n) bottleneck). Same output byte for byte; 0.68 s -> 0.05 s.
   git -C "$c" log origin/main --name-only --format= --diff-filter=A -n 40 -- docs/mail | awk 'NF && !seen[$0]++' | head -3 | sed "s|^docs/mail/|    |"
+  # Memos in a SIBLING inbox that name me (to- or cc-) among the last 40 added,
+  # keyed on the FILENAME, not the commit subject: brief 11-12 (Klatch) — a key
+  # over optional metadata returns a plausible, too-small count; commit
+  # subjects name the recipient only when the sender's tool does, filenames
+  # always do (dispatch convention). My own outbound (tessera-to-) is excluded.
+  git -C "$c" log origin/main --name-only --format= --diff-filter=A -n 40 -- docs/mail | awk 'NF && !seen[$0]++' \
+    | grep -iE 'tessera' | grep -viE '^docs/mail/(memo-|reply-|question-)?tessera-to-' | head -3 | sed "s|^docs/mail/|    naming me: |"
 done
 echo "  addressed to tessera, newest 2:"; ls -t docs/mail | grep -iE "to-tessera|to-all" | head -2 | sed "s/^/    /"
 

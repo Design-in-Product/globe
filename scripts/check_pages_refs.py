@@ -10,7 +10,7 @@ green deploy. This gate runs on the STAGED folder before upload, so a page
 that names a file the staging dropped (or never had) refuses the deploy.
 
 What counts as a reference, read from every *.html under the root:
-  src= href= poster= data-src=  attributes      (relative or /root-absolute)
+  src= href= poster= data-src=  attributes, "…" '…' or unquoted (relative or /root)
   url(...)                       in inline CSS
   "quoted" or 'quoted' literals  ending in a hosted asset extension — this is
                                  how index.html names its films (FILMS table)
@@ -18,7 +18,8 @@ What counts as a reference, read from every *.html under the root:
   every string constant in the page that ends in "/" (explore's
   `const ASSETS = "../scrubber_assets/"`) — no evaluation, just the bases
   a resolved *.json with a "keyframes" list requires every declared file
-                                 (the Explore scrubber fetches them by name)
+                                 (the Explore scrubber fetches them by name);
+                                 a fetched *.json that does not parse is UNRESOLVED
 A reference with a scheme (https:, data:, mailto:), a fragment-only href, or
 a `${` template is not gated. A href ending in "/" must be a folder.
 
@@ -36,7 +37,12 @@ import re
 import sys
 
 EXT = r"(?:mp4|webm|json|webp|png|jpg|jpeg|gif|svg|ico|css)"
-ATTR = re.compile(r'\b(?:src|href|poster|data-src)\s*=\s*"([^"]*)"')
+# double-quoted, single-quoted or unquoted attribute values (brief 11-12: a
+# selector that sees one format silently skips the rest; this one saw "…" only)
+# …and read inside TAGS only: `video.src = FILMS[era][view]` in a script body
+# is an assignment, not an attribute (the unquoted form matched it on 11-12).
+TAG = re.compile(r'<[a-zA-Z][^>]*>')
+ATTR = re.compile(r'(?<![\w.-])(?:src|href|poster|data-src)\s*=\s*(?:"([^"]*)"|\'([^\']*)\'|([^\s"\'=<>`]+))')
 CSSURL = re.compile(r'url\(\s*["\']?([^"\')]+)["\']?\s*\)')
 LITERAL = re.compile(r'["\']([^"\'\s<>]+?\.' + EXT + r')["\']')
 BASES = re.compile(r'\b(?:const|let|var)\s+\w+\s*=\s*["\']([^"\']*/)["\']')
@@ -76,7 +82,8 @@ def check(root):
             return 2
         pdir = os.path.dirname(page)
         bases = [norm(root, pdir, b) for b in BASES.findall(text)]
-        strict = [(r, "attr") for r in ATTR.findall(text)] + [(r, "css") for r in CSSURL.findall(text)]
+        strict = [(a or b or c, "attr") for tag in TAG.findall(text) for a, b, c in ATTR.findall(tag)]
+        strict += [(r, "css") for r in CSSURL.findall(text)]
         loose = [(r, "literal") for r in LITERAL.findall(text)]
         n = 0
         for ref, kind in strict + loose:
@@ -110,9 +117,15 @@ def check(root):
 def manifest_refs(root, path, referenced, unresolved, rel_page):
     try:
         m = json.load(open(path))
-        keys = m["keyframes"]
-    except (OSError, ValueError, KeyError, TypeError):
-        return 0  # not a keyframe manifest; nothing more to require
+    except (OSError, ValueError) as e:
+        # a page fetches it and it does not parse: the live page breaks there.
+        # Named, not skipped (brief 11-12: a parser must fail on what it cannot
+        # read, or it returns a plausible pass).
+        unresolved.append((rel_page, os.path.relpath(path, root) + " does not parse as JSON (" + e.__class__.__name__ + ")", "manifest"))
+        return 0
+    keys = m.get("keyframes") if isinstance(m, dict) else None
+    if not isinstance(keys, list):
+        return 0  # valid JSON that is not a keyframe manifest: nothing more to require
     d = os.path.dirname(path)
     n = 0
     for k in keys:

@@ -27,7 +27,8 @@ build() {  # fresh constructed repo
 <!doctype html><a href="sub/">sub</a> <a href="#top">top</a> <a href="https://example.invalid/x.mp4">ext</a>
 <video src="a.mp4" poster="p.png"></video>
 <style>body{background:url("p.png")}</style>
-<script>const FILMS={main:'b.mp4'}; const ASSETS="assets/"; fetch(ASSETS+"keyframes.json");</script>
+<script>const FILMS={main:'b.mp4'}; const ASSETS="assets/"; fetch(ASSETS+"keyframes.json");
+v.src = FILMS[era][view]; v.poster = (era === 'main') ? 'p.png' : ''; if (a <b) {}</script>
 H
   printf '<!doctype html><img src="../p.png"><video src="/a.mp4"></video>' > "$R/sub/index.html"
   printf '{"keyframes":[{"time_ma":0,"file":"k1.webp"}]}' > "$R/assets/keyframes.json"
@@ -44,8 +45,10 @@ stage() {
   if [ "$want" != 0 ] && ! printf '%s' "$out" | grep -qF -- "$msg"; then bad "$name refused for another reason: $(printf '%s' "$out" | tail -3)"; return 1; fi
   ok; LAST="$dest"; LASTOUT=$out
 }
-# 1. baseline: stages; excluded absent; every referenced form present
-build; stage 0 - "1: baseline stages" "$T/site1" && {
+# 1. baseline: stages; excluded absent; every referenced form present (incl. a
+#    single-quoted and an unquoted attribute that DO resolve)
+build; printf "<img src='p.png'><a href=sub/>s</a>" >> "$R/index.html"; git -C "$R" -c user.name=t -c user.email=t@example.invalid commit -qam quoted
+stage 0 - "1: baseline stages" "$T/site1" && {
   for f in a.mp4 b.mp4 p.png sub/index.html assets/keyframes.json assets/k1.webp .pages-exclude; do [ -f "$T/site1/$f" ] || bad "1: $f missing from the stage"; done
   [ -e "$T/site1/c.mp4" ] && bad "1: excluded c.mp4 was staged"
   [ -e "$T/site1/data" ] && bad "1: excluded data/ was staged"
@@ -64,6 +67,15 @@ stage 1 "$MSG_STALE" "4: stale exclude entry" && { printf '%s' "$LASTOUT" | grep
 # 5. a manifest a page fetches declares a keyframe that is not there
 build; printf '{"keyframes":[{"time_ma":0,"file":"k1.webp"},{"time_ma":1,"file":"k9.webp"}]}' > "$R/assets/keyframes.json"
 stage 1 "$MSG_UNRES" "5: manifest declares a missing keyframe" && { printf '%s' "$LASTOUT" | grep -q "keyframes.json -> k9.webp' (manifest)" || bad "5: refusal does not name manifest+file"; }
+# 5b. a single-quoted and an unquoted attribute are gated too (brief 11-12: the
+#     regex saw "…" only, so src='ghost.mp4' passed silently)
+build; printf "<img src='ghost1.png'><a href=sub2/>x</a>" >> "$R/index.html"
+stage 1 "$MSG_UNRES" "5b: single-quoted and unquoted attributes are gated" && {
+  printf '%s' "$LASTOUT" | grep -q "'ghost1.png' (attr)" || bad "5b: single-quoted src not named"
+  printf '%s' "$LASTOUT" | grep -q "'sub2/' (attr)" || bad "5b: unquoted href not named"; }
+# 5c. a fetched manifest that does not parse is named, not skipped
+build; printf '{"keyframes": [' > "$R/assets/keyframes.json"
+stage 1 "$MSG_UNRES" "5c: unparseable fetched JSON is refused" && { printf '%s' "$LASTOUT" | grep -q "keyframes.json does not parse as JSON" || bad "5c: refusal does not name the manifest"; }
 # 6. no page at all: the gate refuses a vacuous pass (exit 2 from the gate -> stager exits 1)
 build; git -C "$R" rm -q index.html sub/index.html
 stage 1 "$MSG_NOPAGE" "6: no html page is not a pass"
