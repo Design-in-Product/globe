@@ -52,6 +52,23 @@ jobs:
       # staged folder: every src/href/poster/url()/film literal/manifest
       # keyframe a page names must be inside it, or the deploy is refused
       # here rather than 404ing after a green run. No URL changes.
+      # 2026-11-13 (brief 11-13, Piper Morgan: a guard on a hook covers only
+      # the paths that reach that hook). The pre-commit hook gates page script
+      # syntax and manifest coverage, but only for commits made through
+      # Tessera's checkout; a page edited on the web UI or from another seat
+      # never meets it. Every push meets THIS job, so the same two gates run
+      # here, on every tracked page and every tracked manifest (derived).
+      - name: Gate every tracked page's inline scripts and every manifest
+        run: |
+          set -euo pipefail
+          pages=$(git ls-files -- '*.html')
+          [ -n "$pages" ] || { echo "no tracked .html page — gate did not run"; exit 1; }
+          # shellcheck disable=SC2086
+          python3 scripts/check_explore_syntax.py $pages
+          manifests=$(bash scripts/explore_manifests.sh)
+          [ -n "$manifests" ] || { echo "no Explore manifest tracked — gate did not run"; exit 1; }
+          # shellcheck disable=SC2086
+          python3 scripts/check_explore_manifest.py $manifests
       - name: Stage the site (tracked files minus .pages-exclude, gated)
         run: bash scripts/stage_pages.sh _site
       - uses: actions/upload-pages-artifact@v3

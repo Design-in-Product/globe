@@ -131,6 +131,21 @@ la=$(launchctl list 2>/dev/null | awk '$3=="com.xian.tessera-cycle"{print $1" "$
 if [ -z "$la" ]; then echo "  launchd: com.xian.tessera-cycle NOT LOADED — no fire will come (NOT OK)"
 elif [ "${la#* }" != 0 ]; then echo "  launchd: com.xian.tessera-cycle loaded, last exit ${la#* } (NOT OK)"
 else echo "  launchd: com.xian.tessera-cycle loaded, last exit 0 (10:22 + 16:22 PT)"; fi
+# Login expiry for THIS seat's config dir (brief 11-13, Pard: credentials are
+# stored per config dir and expire independently; a renewal elsewhere shows no
+# warning here). Pard's cycle-check reads all three Amber entries; this line is
+# the seat's own reading of its own entry, four-state like the rest.
+cfg=${CLAUDE_CONFIG_DIR:-$HOME/.claude}
+if ! command -v claude >/dev/null 2>&1; then echo "  login ($cfg): claude not on PATH — UNMEASURABLE (NOT OK)"
+else
+  exp=$(CLAUDE_CONFIG_DIR="$cfg" perl -e 'alarm 20; exec @ARGV' claude auth status 2>/dev/null | python3 -c 'import json,sys; d=json.load(sys.stdin); print(d.get("loginExpiresAt","") if d.get("loggedIn") else "")' 2>/dev/null || true)
+  if [ -z "$exp" ]; then echo "  login ($cfg): not logged in or status unreadable — UNMEASURABLE (NOT OK)"
+  else
+    days=$(python3 -c 'import sys,datetime as d; e=d.datetime.fromisoformat(sys.argv[1].replace("Z","+00:00")); print((e-d.datetime.now(d.timezone.utc)).days)' "$exp")
+    if [ "$days" -lt 7 ]; then echo "  login ($cfg): expires $exp — $days days left, renew now (NOT OK)"
+    else echo "  login ($cfg): expires ${exp%T*}, $days days left"; fi
+  fi
+fi
 echo "  stray blender: $(pgrep -fl "[B]lender" | wc -l | tr -d " ")   supervisor: $(pgrep -fl "[r]ender_supervised" | wc -l | tr -d " ")"
 live=$(grep -v "^#" docs/cpu-declarations.tsv 2>/dev/null | awk -F"\t" -v now="$(TZ=America/Los_Angeles date +%Y-%m-%dT%H:%M)" '$2 > now {n++} END{print n+0}')
 expired=$(grep -v "^#" docs/cpu-declarations.tsv 2>/dev/null | awk -F"\t" -v now="$(TZ=America/Los_Angeles date +%Y-%m-%dT%H:%M)" '$2 != "" && $2 <= now {n++} END{print n+0}')
