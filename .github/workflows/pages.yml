@@ -26,6 +26,7 @@ on:
 
 permissions:
   contents: read
+  actions: read   # 2026-11-13: the artifact-listing gate reads this run's artifacts
   pages: write
   id-token: write
 
@@ -71,17 +72,48 @@ jobs:
           python3 scripts/check_explore_manifest.py $manifests
       - name: Stage the site (tracked files minus .pages-exclude, gated)
         run: bash scripts/stage_pages.sh _site
+      # 2026-11-13: the artifact is named per ATTEMPT. Re-running the failed
+      # job of run 43533876097 uploaded a second "github-pages" beside the
+      # first attempt's, and deploy-pages refused ("Multiple artifacts named
+      # github-pages were unexpectedly found … count is 2") — so a re-run of
+      # this one-job workflow could never recover. With the attempt number in
+      # the name, each attempt deploys its own upload.
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
+          name: github-pages-${{ github.run_attempt }}
+      # 2026-11-13: run 43533876097 finalized the upload at T and deploy-pages
+      # listed this run's artifacts at T+330 ms, found 0, and failed ("No
+      # artifacts named github-pages were found") — a read-after-write race
+      # in the artifacts API that every earlier run happened to win. Deploy
+      # only once the listing deploy-pages will make returns exactly the one
+      # artifact; refuse (rather than deploy into the race) if it never does.
+      - name: Wait until the artifacts API lists exactly this attempt's upload
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NAME: github-pages-${{ github.run_attempt }}
+        run: |
+          set -euo pipefail
+          url="repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts"
+          waited=0
+          while :; do
+            n=$(gh api "$url" --jq "[.artifacts[] | select(.name==\"$NAME\")] | length")
+            if [ "$n" -eq 1 ]; then echo "artifact $NAME listed after ${waited}s"; exit 0; fi
+            if [ "$n" -gt 1 ]; then echo "$n artifacts named $NAME in this run — deploy-pages would refuse; refusing here"; exit 1; fi
+            if [ "$waited" -ge 120 ]; then echo "artifact $NAME not listed after ${waited}s — refusing to deploy into the race"; exit 1; fi
+            sleep 5; waited=$((waited+5))
+          done
       - id: deployment
         uses: actions/deploy-pages@v4
         with:
+          artifact_name: github-pages-${{ github.run_attempt }}
           # The action polls the Pages backend and ABORTS the deployment when
-          # its poll window closes (default 600000 ms = 10 min). This site's
-          # artifact is ~755 MB (the films); syncing_files normally takes
-          # 1-2 min but took ~9 min on 2026-11-09 (success) and >10 min twice
-          # on 2026-11-10 after a GitHub Git-operations incident (two aborts
-          # of 2d5e09b). A longer window costs nothing on a fast day. The
-          # durable fix is a smaller artifact, which is a hosting decision.
-          timeout: 1800000
+          # its poll window closes. 600000 ms (10 min) is the action's MAXIMUM:
+          # the 1800000 set on 11-10 was clamped every run ("timeout value is
+          # greater than the allowed maximum - timeout set to the maximum of
+          # 600000", visible in each deploy log), so the longer window was
+          # never in force. syncing_files normally takes 1-2 min; it took ~9
+          # min on 2026-11-09 and >10 min twice on 2026-11-10 (two aborts of
+          # 2d5e09b, ~755 MB artifact, GitHub Git-operations incident). The
+          # artifact has been ~532 MB since 11-12 (.pages-exclude).
+          timeout: 600000
