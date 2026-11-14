@@ -26,7 +26,6 @@ on:
 
 permissions:
   contents: read
-  actions: read   # 2026-11-13: the artifact-listing gate reads this run's artifacts
   pages: write
   id-token: write
 
@@ -42,7 +41,7 @@ jobs:
     timeout-minutes: 30
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url || steps.deployment_retry.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -82,29 +81,23 @@ jobs:
         with:
           path: _site
           name: github-pages-${{ github.run_attempt }}
-      # 2026-11-13: run 43533876097 finalized the upload at T and deploy-pages
-      # listed this run's artifacts at T+330 ms, found 0, and failed ("No
-      # artifacts named github-pages were found") — a read-after-write race
-      # in the artifacts API that every earlier run happened to win. Deploy
-      # only once the listing deploy-pages will make returns exactly the one
-      # artifact; refuse (rather than deploy into the race) if it never does.
-      - name: Wait until the artifacts API lists exactly this attempt's upload
-        env:
-          GH_TOKEN: ${{ github.token }}
-          NAME: github-pages-${{ github.run_attempt }}
-        run: |
-          set -euo pipefail
-          url="repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts"
-          waited=0
-          while :; do
-            n=$(gh api "$url" --jq "[.artifacts[] | select(.name==\"$NAME\")] | length")
-            if [ "$n" -eq 1 ]; then echo "artifact $NAME listed after ${waited}s"; exit 0; fi
-            if [ "$n" -gt 1 ]; then echo "$n artifacts named $NAME in this run — deploy-pages would refuse; refusing here"; exit 1; fi
-            if [ "$waited" -ge 120 ]; then echo "artifact $NAME not listed after ${waited}s — refusing to deploy into the race"; exit 1; fi
-            sleep 5; waited=$((waited+5))
-          done
+      # 2026-11-13: runs 43533876097 and 43534509609 (first attempts) each
+      # finalized the upload and, 0.3-1 s later, deploy-pages listed this
+      # run's artifacts through the Actions results service, found 0, and
+      # failed before creating any deployment ("No artifacts named … were
+      # found"). The re-run of the second found its upload at once and
+      # deployed. A gate that polled the REST artifacts listing passed on
+      # both failing runs — that listing is not the store deploy-pages reads,
+      # so it proved nothing and was removed the same evening. What is left
+      # is the failure's own shape: fast, pre-deployment, transient — so the
+      # deploy step runs a second time after 30 s if the first fails. When
+      # deploy-pages fails after a deployment exists it has either cancelled
+      # it (timeout, too many status errors — deployment.js) or the Pages
+      # side has already marked it failed, so the retry never stacks two
+      # live deployments.
       - id: deployment
         uses: actions/deploy-pages@v4
+        continue-on-error: true
         with:
           artifact_name: github-pages-${{ github.run_attempt }}
           # The action polls the Pages backend and ABORTS the deployment when
@@ -116,4 +109,15 @@ jobs:
           # min on 2026-11-09 and >10 min twice on 2026-11-10 (two aborts of
           # 2d5e09b, ~755 MB artifact, GitHub Git-operations incident). The
           # artifact has been ~532 MB since 11-12 (.pages-exclude).
+          timeout: 600000
+      - name: Deploy failed on the first try — wait 30 s and deploy again
+        if: steps.deployment.outcome == 'failure'
+        run: |
+          echo "first deploy-pages attempt failed (outcome=${{ steps.deployment.outcome }}); retrying in 30 s"
+          sleep 30
+      - id: deployment_retry
+        if: steps.deployment.outcome == 'failure'
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages-${{ github.run_attempt }}
           timeout: 600000
