@@ -33,6 +33,8 @@ echo "--- mail (newest 3 per repo, read from origin/main) ---"
 # there can autostash their edits into a commit under my name (Pard's rule,
 # 2026-10-08). Until 2026-10-26 this block pulled them every fire.
 echo "  globe:"; ls -t docs/mail 2>/dev/null | head -3 | sed "s/^/    /"
+# The one key both the live line and its positive control use (single-sourced).
+naming_me_key() { grep -iE 'tessera' | grep -viE '^docs/mail/(memo-|reply-|question-)?tessera-to-'; }
 for r in mediajunkie designinproduct; do
   c="$HOME/globe-mail/$r"
   [ -d "$c/.git" ] || { echo "  $r: UNMEASURABLE (no clone at $c)"; continue; }
@@ -48,7 +50,16 @@ for r in mediajunkie designinproduct; do
   # subjects name the recipient only when the sender's tool does, filenames
   # always do (dispatch convention). My own outbound (tessera-to-) is excluded.
   git -C "$c" log origin/main --name-only --format= --diff-filter=A -n 40 -- docs/mail | awk 'NF && !seen[$0]++' \
-    | grep -iE 'tessera' | grep -viE '^docs/mail/(memo-|reply-|question-)?tessera-to-' | head -3 | sed "s|^docs/mail/|    naming me: |"
+    | naming_me_key | head -3 | sed "s|^docs/mail/|    naming me: |"
+  # Positive control (brief 11-15, Klatch via Pard: a matcher that reported 0 of
+  # 105 fires published as ok for 13 days because nothing read the match count).
+  # The line above is silent when nothing names me — and equally silent when the
+  # key is broken. So the SAME key runs over the whole inbox, which is known to
+  # hold memos naming me (4 in mediajunkie, 1 in designinproduct on 2026-11-15);
+  # 0 there means the key is blind, not the inbox quiet.
+  known=$(git -C "$c" ls-tree -r --name-only origin/main -- docs/mail | naming_me_key | wc -l | tr -d ' ')
+  if [ "${known:-0}" -eq 0 ]; then echo "    naming-me key: NOT OK — matched 0 over the whole inbox, which is known to name me; the line above is blind"
+  else echo "    naming-me key control: $known known memo(s) over the whole inbox match"; fi
 done
 echo "  addressed to tessera, newest 2:"; ls -t docs/mail | grep -iE "to-tessera|to-all" | head -2 | sed "s/^/    /"
 
