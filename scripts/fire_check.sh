@@ -55,7 +55,8 @@ for r in mediajunkie designinproduct; do
   # 105 fires published as ok for 13 days because nothing read the match count).
   # The line above is silent when nothing names me — and equally silent when the
   # key is broken. So the SAME key runs over the whole inbox, which is known to
-  # hold memos naming me (4 in mediajunkie, 1 in designinproduct on 2026-11-15);
+  # hold memos whose FILENAME mentions me (4 in mediajunkie, 1 in designinproduct
+  # on 2026-11-15 — all to Pard or Janus; nothing addressed to me lands here);
   # 0 there means the key is blind, not the inbox quiet.
   known=$(git -C "$c" ls-tree -r --name-only origin/main -- docs/mail | naming_me_key | wc -l | tr -d ' ')
   if [ "${known:-0}" -eq 0 ]; then echo "    naming-me key: NOT OK — matched 0 over the whole inbox, which is known to name me; the line above is blind"
@@ -108,8 +109,16 @@ dns=$(dig +short @8.8.8.8 globe.dinp.xyz CNAME 2>/dev/null | head -1)
 if [ -z "$dns" ]; then echo "  dns globe.dinp.xyz: NO RECORD at 8.8.8.8 (NXDOMAIN?) (NOT OK)"
 elif [ "$dns" = "$dns_want" ]; then echo "  dns globe.dinp.xyz: CNAME $dns"
 else echo "  dns globe.dinp.xyz: CNAME $dns — expected $dns_want (NOT OK)"; fi
+# One HTTP status read, retried up to 3x (3 s apart) while the edge answers
+# 5xx or nothing (2026-11-16: a single 503 from the Pages edge read as "the
+# exclusion is not live" — a transport failure is UNMEASURABLE, not a
+# wrong answer). Args: URL, body file (/dev/null to discard), extra curl flags.
+http_code() { local url=$1 out=$2; shift 2; local c try=0
+  while :; do c=$(curl -s -o "$out" -w "%{http_code}" "$@" "$url"); try=$((try+1))
+    case "$c" in 5*|000) [ "$try" -ge 3 ] && break; sleep 3;; *) break;; esac; done
+  echo "$c"; }
 live_body=$(mktemp "${TMPDIR:-/tmp}/fire_live.XXXXXX")
-code=$(curl -s -o "$live_body" -w "%{http_code}" https://globe.dinp.xyz/explore/)
+code=$(http_code https://globe.dinp.xyz/explore/ "$live_body")
 marker=$(grep -c "scrubber_assets/" "$live_body" 2>/dev/null || true); rm -f "$live_body"
 if [ "$code" != 200 ]; then echo "  live /explore/: $code (NOT OK)"
 elif [ "${marker:-0}" -eq 0 ]; then echo "  live /explore/: 200 but the body has no scrubber_assets/ reference — some other page is answering (NOT OK)"
@@ -123,9 +132,10 @@ python3 scripts/wait_pages.py --timeout 5 2>&1 | sed "s/^/  /"; pw=${PIPESTATUS[
 ex=$(grep -vE '^[[:space:]]*(#|$)' .pages-exclude 2>/dev/null | grep -v '/$' | grep -v ' ' | head -1)
 if [ -z "$ex" ]; then echo "  pages exclude: no plain-file entry in .pages-exclude — exclusion unmeasured (NOT OK)"
 else
-  exc=$(curl -s -o /dev/null -w "%{http_code}" "https://globe.dinp.xyz/$ex")
-  hero=$(curl -s -o /dev/null -I -w "%{http_code}" "https://globe.dinp.xyz/tectonic_globe_v8.mp4")
+  exc=$(http_code "https://globe.dinp.xyz/$ex" /dev/null)
+  hero=$(http_code "https://globe.dinp.xyz/tectonic_globe_v8.mp4" /dev/null -I)
   if [ "$exc" = 404 ] && [ "$hero" = 200 ]; then echo "  pages exclude: /$ex 404, hero film 200 (exclusion live)"
+  elif case "$exc$hero" in *5[0-9][0-9]*|*000*) true;; *) false;; esac; then echo "  pages exclude: edge answered /$ex $exc, hero film $hero after 3 tries — UNMEASURABLE this fire (NOT OK)"
   else echo "  pages exclude: /$ex returned $exc (want 404), hero film $hero (want 200) (NOT OK)"; fi
 fi
 
