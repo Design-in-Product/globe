@@ -82,3 +82,16 @@ if [ -n "$logs_staged" ]; then
     echo "pre-commit: drain guard refused the staged log entry (see above)." >&2; exit 1
   }
 fi
+
+# Handoff pointers at write time (brief 11-17, Klatch: a measurement typed into
+# a slot is indistinguishable from one read from the output — check at the
+# moment of writing). When the living handoff or any test script is staged,
+# the pointer check runs, including pointer 6, which runs every test script
+# the handoff puts a case count on and compares the typed count with the
+# script's own summary line. Only fires when one of those files is staged.
+ho_staged=$(git diff --cached --no-renames --name-only --diff-filter=AM | grep -E '^(docs/handoff-tessera-2026-09-29\.md|scripts/test_[a-z_]+\.sh)$' || true)
+if [ -n "$ho_staged" ]; then
+  bash scripts/check_handoff_pointers.sh || {
+    echo "pre-commit: the handoff's pointers disagree with the repo (see GAP lines above) — commit refused." >&2; exit 1
+  }
+fi

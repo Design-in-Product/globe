@@ -62,6 +62,24 @@ if [ -z "$xrow" ]; then gap "no xian row in 'Who owes what'"
 elif printf '%s' "$drain" | grep -qiE 'blocker: (his|xian)' && printf '%s' "$xrow" | grep -qiE '^\s*Nothing'; then
   gap "latest Drain line defers on xian but 'Who owes what' says xian owes Nothing"
 fi
+# Pointer 6: typed test-case counts vs the scripts' own summary lines (brief
+# 11-17, Klatch: a figure typed into a record is indistinguishable from one
+# read from the output, and is exactly right until the standing value goes
+# stale — the check belongs at write time, against the output itself). Every
+# "`scripts/test_X.sh` (N cases" phrase runs that script and reads "P passed,
+# F failed" from it: N must equal P+F and F must be 0. ~50 s for the five.
+# A phrase whose script is missing or prints no summary is a GAP, not a skip.
+while IFS=$'\t' read -r t n; do
+  [ -n "$t" ] || continue
+  checked=$((checked+1))
+  if [ ! -f "$t" ]; then gap "handoff names $t ($n cases) but no such script"; continue; fi
+  summ=$(bash "$t" 2>&1 | grep -oE '[0-9]+ passed, [0-9]+ failed' | tail -1)
+  if [ -z "$summ" ]; then gap "$t printed no 'P passed, F failed' summary — its $n-case claim is unmeasured"; continue; fi
+  pz=${summ%% passed*}; fz=${summ##*passed, }; fz=${fz%% failed}
+  if [ "$fz" -ne 0 ]; then gap "$t: $summ — the handoff presents it as a passing $n-case suite"
+  elif [ $((pz+fz)) -ne "$n" ]; then gap "handoff says $t has $n cases; it ran $((pz+fz)) ($summ) — typed figure is stale"
+  else echo "    $t: $summ (handoff says $n cases)"; fi
+done < <(grep -oE '`scripts/test_[a-z_]+\.sh`[^|(]{0,40}\(([0-9]+) cases' "$H" | sed -E 's/^`([^`]+)`[^(]*\(([0-9]+) cases/\1\t\2/' | sort -u)
 sk=""; [ "$skipped" -gt 0 ] && sk=", $skipped SKIPPED not measured: $skipnote"
 if [ "$gaps" = 0 ]; then echo "  handoff: $((checked-skipped)) of $checked pointers present and consistent$sk (header $hdr, last commit ${last:-uncommitted}, newest log $newest_log)"; exit 0
 else echo "  handoff: $gaps of $checked pointers GAP (NOT OK)$sk"; exit 1; fi
