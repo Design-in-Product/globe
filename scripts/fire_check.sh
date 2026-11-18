@@ -55,8 +55,12 @@ for r in mediajunkie designinproduct; do
   # 105 fires published as ok for 13 days because nothing read the match count).
   # The line above is silent when nothing names me — and equally silent when the
   # key is broken. So the SAME key runs over the whole inbox, which is known to
-  # hold memos whose FILENAME mentions me (4 in mediajunkie, 1 in designinproduct
-  # on 2026-11-15 — all to Pard or Janus; nothing addressed to me lands here);
+  # hold memos whose FILENAME mentions me (at least one per inbox — 4 and 1 when
+  # the control was written on 2026-11-15, all to Pard or Janus; nothing addressed
+  # to me lands here). The control is a FLOOR (>= 1), not an exact count (brief
+  # 11-18, Klatch: an exact pin on a population another repo owns goes false on
+  # any drift; a floor only breaks if that population shrinks). The live count
+  # prints below each fire, so the typed figures here never stand in for it.
   # 0 there means the key is blind, not the inbox quiet.
   known=$(git -C "$c" ls-tree -r --name-only origin/main -- docs/mail | naming_me_key | wc -l | tr -d ' ')
   if [ "${known:-0}" -eq 0 ]; then echo "    naming-me key: NOT OK — matched 0 over the whole inbox, which is known to name me; the line above is blind"
