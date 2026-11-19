@@ -46,7 +46,10 @@ if [ -n "$hdr" ] && [ -n "$newest_log" ]; then
   [ "$d" -le 14 ] || gap "header Updated $hdr is $d d behind the newest log ($newest_log); refresh the state sections"
 fi
 # Pointer 3: the ship set. Every film index.html's FILMS table serves must be named here.
-films=$(grep -oE "'tectonic_[a-z_0-9]+\.mp4'" index.html | tr -d "'" | sed 's/\.mp4$//' | sort -u)
+# Key anchored on the FILMS object itself, any quote style (brief 11-19, Klatch: a
+# key that a no-op rewrite can flip measures coincidence — the old single-quote
+# key read nothing (exit 3) on a copy of index.html with the quotes swapped).
+films=$(sed -n '/const FILMS = {/,/^ *};/p' index.html | grep -oE "tectonic_[a-z_0-9]+\.mp4" | sed 's/\.mp4$//' | sort -u)
 [ -n "$films" ] || { echo "  handoff: NOTHING MATCHED — no FILMS in index.html (exit 3)"; exit 3; }
 for f in $films; do checked=$((checked+1)); grep -qF "$f" "$H" || gap "live film $f is not named in the handoff (ship set drift)"; done
 # Pointer 4: required sections.
@@ -65,13 +68,22 @@ fi
 # Pointer 6: typed test-case counts vs the scripts' own summary lines (brief
 # 11-17, Klatch: a figure typed into a record is indistinguishable from one
 # read from the output, and is exactly right until the standing value goes
-# stale — the check belongs at write time, against the output itself). Every
-# "`scripts/test_X.sh` (N cases" phrase runs that script and reads "P passed,
-# F failed" from it: N must equal P+F and F must be 0. ~50 s for the five.
-# A phrase whose script is missing or prints no summary is a GAP, not a skip.
-while IFS=$'\t' read -r t n; do
+# stale — the check belongs at write time, against the output itself). Each
+# test script this file NAMES is run and its "P passed, F failed" read: the
+# typed N must equal P+F and F must be 0. ~55 s for the six.
+# Key (brief 11-19, Klatch: a key a no-op reword can flip, or silently drop a
+# member from, measures textual coincidence): the census is every
+# `scripts/test_*.sh` the handoff names anywhere; the count is then looked for
+# inside that name's own table cell, before any other backticked path. Until
+# 2026-11-19 the key was "name within 40 chars of '(N cases'": moving the count
+# a few words away dropped the script from the census with the verdict still
+# green (16 of 16). Now a named script with no count is SKIPPED by name; one
+# whose script is missing or prints no summary is a GAP, not a skip.
+while IFS= read -r t; do
   [ -n "$t" ] || continue
   checked=$((checked+1))
+  n=$(grep -F "\`$t\`" "$H" | grep -oE "\`$t\`[^|\`]*" | grep -oE '\(([0-9]+) cases' | head -1 | grep -oE '[0-9]+')
+  if [ -z "$n" ]; then skip "$t is named without a case count to verify"; continue; fi
   if [ ! -f "$t" ]; then gap "handoff names $t ($n cases) but no such script"; continue; fi
   summ=$(bash "$t" 2>&1 | grep -oE '[0-9]+ passed, [0-9]+ failed' | tail -1)
   if [ -z "$summ" ]; then gap "$t printed no 'P passed, F failed' summary — its $n-case claim is unmeasured"; continue; fi
@@ -79,7 +91,7 @@ while IFS=$'\t' read -r t n; do
   if [ "$fz" -ne 0 ]; then gap "$t: $summ — the handoff presents it as a passing $n-case suite"
   elif [ $((pz+fz)) -ne "$n" ]; then gap "handoff says $t has $n cases; it ran $((pz+fz)) ($summ) — typed figure is stale"
   else echo "    $t: $summ (handoff says $n cases)"; fi
-done < <(grep -oE '`scripts/test_[a-z_]+\.sh`[^|(]{0,40}\(([0-9]+) cases' "$H" | sed -E 's/^`([^`]+)`[^(]*\(([0-9]+) cases/\1\t\2/' | sort -u)
+done < <(grep -oE '\`scripts/test_[a-z_]+\.sh\`' "$H" | tr -d '\`' | sort -u)
 sk=""; [ "$skipped" -gt 0 ] && sk=", $skipped SKIPPED not measured: $skipnote"
 if [ "$gaps" = 0 ]; then echo "  handoff: $((checked-skipped)) of $checked pointers present and consistent$sk (header $hdr, last commit ${last:-uncommitted}, newest log $newest_log)"; exit 0
 else echo "  handoff: $gaps of $checked pointers GAP (NOT OK)$sk"; exit 1; fi

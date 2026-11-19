@@ -31,7 +31,11 @@ while IFS= read -r line; do
   elif [ "$in_block" = 1 ] && [ -n "${line// /}" ]; then
     body=$((body+1))
   fi
-  if printf '%s' "$line" | grep -qiE '^\**Drain:'; then
+  # Key widened 2026-11-19 (brief 11-19, Klatch): "**Drain**:" and a Drain line
+  # indented up to three spaces render exactly as "Drain:" and flipped this gate
+  # in a no-op cripple — a key a meaning-preserving rewrite can flip measures
+  # textual coincidence. Four spaces is a Markdown code block, so not covered.
+  if printf '%s' "$line" | grep -qiE '^ {0,3}\**Drain\**:'; then
     seen_drain=1
     if printf '%s' "$line" | grep -qiE '\b(defer|deferred|deferring|later|next (fire|cycle|time|session)|tomorrow|postponed?|on hold|parked?|punt(ed)?|when (I|time) (get|allow)s?|by [0-9]{1,2}:[0-9]{2})\b' && \
        ! printf '%s' "$line" | grep -qiE '(blocked on|blocker:|waits? on|waiting on|needs .* from|owed by|awaits)' && \

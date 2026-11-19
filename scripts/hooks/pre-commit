@@ -83,6 +83,22 @@ if [ -n "$logs_staged" ]; then
   }
 fi
 
+# Log time gate (brief 11-19, Piper Morgan: "timestamps from the clock, not
+# estimated" was a stated rule, broken by the agents who had filed it; as a
+# commit-time refusal it had zero false refusals in its first 60 commits). The
+# same rule has stood here since 10-21 as a remembered obligation. Per staged
+# log, its added lines are read with the log's filename date: an estimated time
+# ("~16:40", "13:0x"), a heading after the Pacific clock, or a filename dated
+# after today is refused. Tested by scripts/test_check_log_times.sh.
+if [ -n "$logs_staged" ]; then
+  for lf in $logs_staged; do
+    ld=$(basename "$lf" | grep -oE '^[0-9]{4}-[0-9]{2}-[0-9]{2}') || { echo "pre-commit: $lf carries no YYYY-MM-DD date in its name — the time gate cannot run; commit refused." >&2; exit 1; }
+    git diff --cached -U0 -- "$lf" | { grep -E '^\+' || true; } | { grep -vE '^\+\+\+' || true; } | sed 's/^+//' | bash scripts/check_log_times.sh "$ld" || {
+      echo "pre-commit: log time gate refused $lf (see above)." >&2; exit 1
+    }
+  done
+fi
+
 # Handoff pointers at write time (brief 11-17, Klatch: a measurement typed into
 # a slot is indistinguishable from one read from the output — check at the
 # moment of writing). When the living handoff or any test script is staged,

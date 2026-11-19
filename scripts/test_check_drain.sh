@@ -41,6 +41,13 @@ Sync: fine.
 Drain: health check only; nothing else unblocked."
   expect 0 "bold Drain under: $h" <<< "$h
 **Drain:** done."
+  # Brief 11-19 (Klatch): a no-op transform that flips a gate exposes a key on
+  # textual coincidence. Both forms below render identically to "Drain:" and
+  # both refused on 2026-11-19 before the key was widened.
+  expect 0 "bold closed before the colon under: $h" <<< "$h
+**Drain**: done."
+  expect 0 "Drain line indented three spaces under: $h" <<< "$h
+   Drain: done."
 done
 # Deferral grammar
 expect 1 "deferral without blocker" <<< '## 16:22 fire
