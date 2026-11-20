@@ -13,6 +13,30 @@
 set -uo pipefail
 ts() { TZ=America/Los_Angeles date "+%F %T %Z"; }
 cd "$(git rev-parse --show-toplevel)"
+# The failure labels the VERDICT counts, one per line (brief 11-20, Klatch
+# unit-486: a label that is a substring of another — GUARDED inside UNGUARDED —
+# lets a stable reader pick up the wrong row). Kept as a list so the pairwise
+# self-check below can read it and so both greps share one key.
+FAIL_LABELS='NOT OK
+GAP:
+UNMEASURABLE
+did not run
+not a pass
+NO RECORD
+SYNTAX ERROR
+GUARD TRIPPED
+EXTRACTION FAILED
+DECLARED-ABSENT
+PRESENT-UNDECLARED
+DECLARED-TWICE
+UNREADABLE
+UNIGNORED BULK
+TIMEOUT
+ERRORED
+deployment failure
+deployment error
+deployment inactive'
+FAILKEY=$(printf '%s\n' "$FAIL_LABELS" | paste -sd'|' -)
 echo "fire check $(ts)"
 # Brief 11-01 (Piper Morgan CIO, methodology-57 "an alarm needs a reader"): a
 # check is unfinished until a named reader reads it at a named time through a
@@ -204,10 +228,48 @@ big += [f"{d}/ ({n} files)" for d,n in dirs.items() if n > 50]
 print("\n".join(big))')
 if [ -z "$bulk" ]; then echo "  unignored bulk: none (every untracked path is small; the ignore list covers the rest)"
 else echo "  UNIGNORED BULK (no .gitignore pattern covers these; add one before any git add .) (NOT OK):"; echo "$bulk" | sed 's/^/    /'; fi
+# Verdict-key self-check (brief 11-20, Klatch unit-486). Every label in
+# FAIL_LABELS is compared with every other: one inside another would let a new
+# label double-count or shadow a line. The control constructs the collision
+# directly (GUARDED/UNGUARDED -> 1 pair) each run, so a broken comparer shows.
+FAIL_LABELS="$FAIL_LABELS" python3 -c '
+import os
+def pairs(ls): return [(a,b) for a in ls for b in ls if a!=b and a in b]
+ls=[l for l in os.environ["FAIL_LABELS"].split("\n") if l]
+got=pairs(ls); ctl=pairs(["GUARDED","UNGUARDED"])
+if len(ctl)!=1: print(f"  verdict key: comparer control returned {len(ctl)} pair(s) for GUARDED/UNGUARDED, expected 1 — self-check did not run (NOT OK)")
+elif got: print(f"  verdict key: {len(ls)} labels, {len(got)} substring pair(s) {got} — a label inside another (NOT OK)")
+else: print(f"  verdict key: {len(ls)} labels, 0 substring pairs (control GUARDED/UNGUARDED: 1 pair)")
+' || echo "  verdict key: self-check did not run (NOT OK)"
+# Ignore-pattern census (brief 11-20, Klatch unit-487): a count of markers is
+# an upper bound on markers doing work. The bulk sweep above trusts the ignore
+# list by name; this line says which .gitignore patterns match a path on disk
+# this fire and names the dormant ones (prophylactic names such as test_spin_*/
+# that nothing on disk exercises today). Dormant is not stale — the names
+# anticipate render output — but a dormant pattern is unproven, so it is named
+# rather than folded into "covers the rest". Matching is whole-line (a pattern
+# is not "used" because its text sits inside another pattern's text). A
+# tracked file that an ignore pattern would match means the pattern is not
+# load-bearing for it (added before the pattern, or forced): named as a smell.
+pats=$(grep -vE '^[[:space:]]*(#|$)' .gitignore 2>/dev/null || true)
+npats=$(printf '%s\n' "$pats" | grep -c . || true)
+if [ "${npats:-0}" -eq 0 ]; then echo "  ignore patterns: .gitignore missing or empty — UNMEASURABLE (NOT OK)"
+else
+  used=$(git ls-files -o -i --exclude-standard --directory -z | xargs -0 git check-ignore -v --no-index -- 2>/dev/null | grep '^\.gitignore:' | cut -f1 | cut -d: -f3- | sort -u)
+  nused=$(printf '%s\n' "$used" | grep -c . || true)
+  dormant=""
+  while IFS= read -r p; do
+    [ -n "$p" ] || continue
+    case $'\n'"$used"$'\n' in *$'\n'"$p"$'\n'*) ;; *) dormant="$dormant$p " ;; esac
+  done <<< "$pats"
+  shadow=$(git ls-files -z | xargs -0 git check-ignore -v --no-index -- 2>/dev/null | grep -c '^\.gitignore:' || true)
+  echo "  ignore patterns: $npats in .gitignore, $nused matching a path on disk now, $((npats-nused)) dormant: ${dormant:-none}"
+  [ "${shadow:-0}" -eq 0 ] || echo "  ignore patterns: $shadow tracked file(s) match an ignore pattern — not load-bearing for them (inspect)"
+fi
 }
 out=$(mktemp "${TMPDIR:-/tmp}/fire_check.XXXXXX")
 run_checks 2>&1 | tee "$out"
-fails=$(grep -cE 'NOT OK|GAP:|UNMEASURABLE|did not run|not a pass|NO RECORD|SYNTAX ERROR|GUARD TRIPPED|EXTRACTION FAILED|DECLARED-ABSENT|PRESENT-UNDECLARED|DECLARED-TWICE|UNREADABLE|UNIGNORED BULK|TIMEOUT|ERRORED|deployment (failure|error|inactive)' "$out" || true)
+fails=$(grep -cE "$FAILKEY" "$out" || true)
 if [ "${fails:-0}" -eq 0 ]; then echo "VERDICT: clean — no failure line in $(wc -l < "$out" | tr -d ' ') lines"
-else echo "VERDICT: $fails FAILURE LINE(S) above — read them:"; grep -nE 'NOT OK|GAP:|UNMEASURABLE|did not run|not a pass|NO RECORD|SYNTAX ERROR|GUARD TRIPPED|EXTRACTION FAILED|DECLARED-ABSENT|PRESENT-UNDECLARED|DECLARED-TWICE|UNREADABLE|UNIGNORED BULK|TIMEOUT|ERRORED|deployment (failure|error|inactive)' "$out" | head -8 | sed 's/^/  /'; fi
+else echo "VERDICT: $fails FAILURE LINE(S) above — read them:"; grep -nE "$FAILKEY" "$out" | head -8 | sed 's/^/  /'; fi
 rm -f "$out"
