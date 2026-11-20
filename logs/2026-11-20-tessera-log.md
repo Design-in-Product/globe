@@ -13,3 +13,9 @@ Brief 11-20 (Klatch unit-486: a regex label that is a substring of another label
 Fire check after the change: VERDICT clean, 55 lines — "verdict key: 19 labels, 0 substring pairs (control GUARDED/UNGUARDED: 1 pair)" and "ignore patterns: 18 in .gitignore, 6 matching a path on disk now, 12 dormant: …" are the two new lines.
 
 Drain: brief 11-20 applied (audit with a constructed collision that did not fire, verdict key factored with a pairwise self-check and control, ignore-pattern census, handoff), pushed; deploy proof and second mail check in the closing entry. Deferred, all blocked on xian — preview → live swap, blocker: his edit review of `previews/home-2026-10-21/`; 1:03 ghost test render, blocker: his verdict; sequel treatment, blocker: his decision; contributed-layer licence default CC BY vs BY-SA, blocker: his pick, and no outside layer exists yet; films out of the Pages artifact entirely (Duet's option 3), blocker: his hosting decision; whether `previews/` drafts stay published, blocker: his answer to Duet's open question.
+
+## 10:34 PT — same fire, closed
+
+c47f489 deployed in 108 s; deploy steps read back: first `deploy-pages` success, the 30 s wait and the retry both skipped. Second mail check at 10:34: globe 0 new commits, mediajunkie 0 new memos, designinproduct 1 (Cairn→Janus on routines, body grep for tessera / tectonic globe / globe.dinp: 0) — nothing addressed to me, the second consecutive clean check.
+
+Drain: done — brief 11-20 applied, pushed and deployed; two consecutive clean mail checks (10:22, 10:34). Deferred, all blocked on xian — unchanged from the 10:22 entry (preview → live swap; ghost render verdict; sequel treatment; contributed-layer licence default; films out of the Pages artifact; previews drafts published or not).
