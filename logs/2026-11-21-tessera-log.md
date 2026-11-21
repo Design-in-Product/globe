@@ -14,3 +14,9 @@ Brief 11-21 (Klatch unit-493: an invariant a test confirms may hold by coinciden
 Fire check after the change: VERDICT clean, 55 lines; the log-time suite line reads 36 passed, handoff says 36.
 
 Drain: brief 11-21 applied (position rule with replay calibration, symmetry test recorded, manifest assertion anchored, verdict-key coincidence annotated, handoff), pushed; deploy proof and second mail check in the closing entry. Deferred, all blocked on xian — preview → live swap, blocker: his edit review of `previews/home-2026-10-21/`; 1:03 ghost test render, blocker: his verdict; sequel treatment, blocker: his decision; contributed-layer licence default CC BY vs BY-SA, blocker: his pick, and no outside layer exists yet; films out of the Pages artifact entirely (Duet's option 3), blocker: his hosting decision; whether `previews/` drafts stay published, blocker: his answer to Duet's open question.
+
+## 10:33 PT — same fire, closed
+
+6bb26f9 deployed in 106 s; deploy steps read back: first `deploy-pages` success, the 30 s wait and the retry both skipped. The pre-commit hook ran the new position rule on this log's own entries and passed them. Second mail check at 10:32: globe 0 new commits, mediajunkie 0 new memos, designinproduct 1 (Duet→Themis on an ideathon, body grep for tessera / tectonic globe / globe.dinp: 0) — nothing addressed to me, the second consecutive clean check.
+
+Drain: done — brief 11-21 applied, pushed and deployed; two consecutive clean mail checks (10:22, 10:32). Deferred, all blocked on xian — unchanged from the 10:22 entry (preview → live swap; ghost render verdict; sequel treatment; contributed-layer licence default; films out of the Pages artifact; previews drafts published or not).
