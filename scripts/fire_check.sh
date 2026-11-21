@@ -17,6 +17,14 @@ cd "$(git rev-parse --show-toplevel)"
 # unit-486: a label that is a substring of another — GUARDED inside UNGUARDED —
 # lets a stable reader pick up the wrong row). Kept as a list so the pairwise
 # self-check below can read it and so both greps share one key.
+# MEASURED TRUE, by coincidence (brief 11-21, Klatch unit-493): no healthy line
+# contains a label — but the key is applied to every printed line, including
+# sibling-inbox memo FILENAMES copied verbatim, and those miss the key only
+# because they are lowercase-hyphenated by convention ("not-a-pass" is not
+# "not a pass"). Nothing enforces that. The failure direction is a visible
+# false NOT-clean verdict on a strangely named memo, which a reader dismisses;
+# the silent direction (a real failure printed in a form the key misses) is
+# the one the 11-18 positive controls guard.
 FAIL_LABELS='NOT OK
 GAP:
 UNMEASURABLE

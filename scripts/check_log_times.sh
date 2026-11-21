@@ -33,6 +33,15 @@
 # Exit 0 = pass, 1 = refuse, 2 = usage/clock error (a gate that cannot read
 # the clock must not pass). Called from scripts/hooks/pre-commit; tested by
 # scripts/test_check_log_times.sh.
+#
+# Heading-time position (brief 11-21, Klatch unit-493, calibration 2026-11-21,
+# copied from the replay of all 76 logs): the rule "a heading's own time opens
+# the heading" was measured true on 184 of 186 timed headings and enforced by
+# nothing; the two exceptions (07-13 "## xian's calls (18:00)", 07-14 "## Session
+# start (05:51)") are the only lines the position rule refuses on replay — 2
+# refused, 0 false. The alternative (read the first time found anywhere in the
+# heading) was tested against its own hazard before this one was chosen: it
+# takes a quoted time as the entry's own and checks the wrong row silently.
 set -uo pipefail
 export TZ=America/Los_Angeles
 d=${1:-}
@@ -47,13 +56,28 @@ if [[ "$d" > "$today" ]]; then
   echo "check_log_times: log is dated $d but today is $today — a future-dated log is refused" >&2; bad=1
 fi
 EST_X='\b[0-9]{1,2}:([0-9]x|x[0-9]|xx)\b'
+HAS_T='[0-9]{1,2}:[0-9]{2}'   # any clock time at all (the position rule below)
 while IFS= read -r line; do
   if printf '%s' "$line" | grep -qiE "$EST_X"; then
     echo "check_log_times: a minute is written with an x — an estimate, not a reading of the clock — refused:" >&2
     echo "    ${line:0:160}" >&2; bad=1
     continue
   fi
-  hd=$(printf '%s' "$line" | grep -oE '^## *(~|≈|about |approx\.? |approximately )?[0-9]{1,2}:[0-9]{2}')
+  # Brief 11-21 (Klatch unit-493): "a heading's own time opens the heading" was
+  # measured true on 184 of 186 timed headings in the 74-log replay and enforced
+  # by nothing — the two exceptions ("## xian's calls (18:00)", "## Session start
+  # (05:51)") carry their time where the key below cannot see it, so neither the
+  # estimate nor the future check ever ran on them. Reading the first time found
+  # anywhere instead would take a quoted time ("## Mail wake — Pard reboots at
+  # 15:00") as the entry's own and check the wrong row; refusing is the visible
+  # failure. ## and ### alike; a heading with no time at all stays allowed.
+  if printf '%s' "$line" | grep -qE '^#{2,3} ' && printf '%s' "$line" | grep -qE "$HAS_T" \
+     && ! printf '%s' "$line" | grep -qE '^#{2,3} *(~|≈|about |approx\.? |approximately )?[0-9]{1,2}:[0-9]{2}'; then
+    echo "check_log_times: the heading carries a time that does not open it — the clock gate reads a heading's own time only at its start; open the heading with the clock time, or leave it untimed — refused:" >&2
+    echo "    ${line:0:160}" >&2; bad=1
+    continue
+  fi
+  hd=$(printf '%s' "$line" | grep -oE '^#{2,3} *(~|≈|about |approx\.? |approximately )?[0-9]{1,2}:[0-9]{2}')
   [ -n "$hd" ] || continue
   if printf '%s' "$hd" | grep -qiE '(~|≈|about|approx)'; then
     echo "check_log_times: the heading's time is written as an estimate, not read from the clock — refused:" >&2

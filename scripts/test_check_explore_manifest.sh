@@ -17,7 +17,12 @@ mk() { printf '%s' "$2" > "$T/$1"; }   # mk <name> <content>
 # 1. all declared present -> ok
 mk a.webp x; mk b.webp x
 mk m.json '{"keyframes":[{"time_ma":1,"file":"a.webp"},{"time_ma":0,"file":"b.webp"}]}'
-run 0 "2 declared, 2 present" "complete manifest passes"
+# Anchored to the whole figure row (brief 11-21, Klatch unit-493): the bare
+# "2 declared, 2 present" was MEASURED safe against a 12-file manifest on 11-20
+# only by coincidence of the format (both figures carry the same prefix and the
+# exit code pairs with them); the colon, the commas and the verdict make the
+# assertion enforce the figures itself.
+run 0 ": 2 declared, 2 present, 0 declared-absent, 0 present-undeclared [ok]" "complete manifest passes with the exact figure row"
 # 2. declared but absent -> refuse, named
 rm "$T/b.webp"
 run 1 "DECLARED-ABSENT: 'b.webp'" "declared-absent refuses with its name"

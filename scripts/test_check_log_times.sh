@@ -10,6 +10,7 @@ MSG_EST='written as an estimate'
 MSG_X='written with an x'
 MSG_FUT='after the clock'
 MSG_FILE='future-dated log is refused'
+MSG_POS='does not open it'
 expect() {  # expect <exit> <date> <name> <<< input
   local want=$1 d=$2 name=$3 got
   bash "$G" "$d" >/dev/null 2>&1; got=$?
@@ -67,6 +68,15 @@ expect 0 "$yesterday" "a planned time quoted from a notice passes" <<< '## 14:02
 Drain: done.'
 expect 0 "$yesterday" "about-HH:MM in the body passes: only a heading's own time is checked" <<< '## 10:22 PT — fire
 the render should finish at about 16:40.'
+# --- heading-time position (brief 11-21): the own time opens the heading or the heading is untimed ---
+expect 0 "$behind_d" "### heading opening with its time passes" <<< "### $behind_hm — COMPLETE, delivered"
+expect_msg "$MSG_FUT" "$ahead_d" "### heading two hours ahead refused (### is future-checked too)" <<< "### $ahead_hm — assembled"
+expect_msg "$MSG_POS" "$yesterday" "own time in a trailing parenthetical refused" <<< '## Session start (05:51)'
+expect_msg "$MSG_POS" "$yesterday" "own time after a label refused" <<< "## xian's calls (18:00)"
+expect_msg "$MSG_POS" "$yesterday" "quoted time with no own time refused (would otherwise be read as the own time)" <<< '## Mail wake — Pard reboots Amber at 15:00
+Drain: done.'
+expect_msg "$MSG_POS" "$yesterday" "### heading with a mid-line time refused" <<< '### Notes — assembled at 20:33'
+expect 0 "$behind_d" "heading time at start followed by a quoted time passes" <<< "## $behind_hm PT — mail wake: Pard reboots Amber at 23:59"
 # --- refusals: future ---
 expect_msg "$MSG_FUT" "$ahead_d" "heading two hours ahead refused" <<< "## $ahead_hm PT — fire
 Drain: done."
@@ -87,6 +97,7 @@ cripple() {  # cripple <name> <sed-expr> <date> <input>
 cripple "x-minute branch disarmed"   's/^EST_X=.*/EST_X="NEVERMATCHES"/' "$yesterday" '## 13:0x PT — fire'
 cripple "heading-estimate branch disarmed" 's/grep -qiE .(~|≈|about|approx)./grep -qiE "NEVERMATCHES"/' "$yesterday" '## ~16:40 PT — xian answered'
 cripple "future branch disarmed"   's/-gt \$((now + 60))/-gt 9999999999/' "$ahead_d" "## $ahead_hm PT — fire"
+cripple "heading-position branch disarmed" 's/^HAS_T=.*/HAS_T="NEVERMATCHES"/' "$yesterday" '## Session start (05:51)'
 cripple "file-date branch disarmed" 's/"\$d" > "\$today"/"x" > "y"/' "$tomorrow" '## Work log'
 rm -f "$SCRATCH"
 echo "check_log_times tests: $pass passed, $fail failed"
