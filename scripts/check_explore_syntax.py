@@ -25,6 +25,9 @@ Python, no shell quoting, explicit exit codes.
 
 Usage:  python3 scripts/check_explore_syntax.py [page.html ...]   (default: explore/index.html)
 Exits:  0 ok · 1 syntax error · 2 extraction failed · 3 guard tripped
+Standing positive controls: scripts/test_check_explore_syntax.sh (brief 11-22) — the
+three arms above, run every fire and in CI, so the checker's "OK" is distinguishable
+from a parser that cannot fire.
 """
 import os
 import re
@@ -77,7 +80,14 @@ def check_page(page):
         try:
             with os.fdopen(fd, "w") as f:
                 f.write(src)
-            r = subprocess.run(["node", "--check", tmp], capture_output=True, text=True)
+            try:
+                r = subprocess.run(["node", "--check", tmp], capture_output=True, text=True)
+            except FileNotFoundError:
+                # brief 11-22 (Klatch unit-496): a detector that cannot run must
+                # not look like a detector that found nothing. Without node the
+                # block was never parsed; say so in the fire check's own vocabulary.
+                print(f"EXTRACTION FAILED: node is not on PATH — {page} script #{i} was never parsed", file=sys.stderr)
+                return 2, len(bs)
             if r.returncode != 0:
                 print(f"{page} script #{i} ({kind}): SYNTAX ERROR", file=sys.stderr)
                 print(r.stderr.rstrip(), file=sys.stderr)

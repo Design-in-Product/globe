@@ -203,10 +203,20 @@ else
     else echo "  login ($cfg): expires ${exp%T*}, $days days left"; fi
   fi
 fi
-echo "  stray blender: $(pgrep -fl "[B]lender" | wc -l | tr -d " ")   supervisor: $(pgrep -fl "[r]ender_supervised" | wc -l | tr -d " ")"
+# Brief 11-22 (Klatch unit-496): a 0 from a form-keyed detector cannot tell
+# "none running" from "pgrep cannot see processes". The control counts this
+# very script by the same pipeline (a floor: >= 1; a parent shell can add one).
+seen=$(pgrep -fl "[f]ire_check" | wc -l | tr -d " ")
+if [ "${seen:-0}" -ge 1 ]; then ctl="control: this script seen by pgrep, $seen"
+else ctl="control: pgrep did not see this script — the 0s are blind (NOT OK)"; fi
+echo "  stray blender: $(pgrep -fl "[B]lender" | wc -l | tr -d " ")   supervisor: $(pgrep -fl "[r]ender_supervised" | wc -l | tr -d " ")   ($ctl)"
 live=$(grep -v "^#" docs/cpu-declarations.tsv 2>/dev/null | awk -F"\t" -v now="$(TZ=America/Los_Angeles date +%Y-%m-%dT%H:%M)" '$2 > now {n++} END{print n+0}')
 expired=$(grep -v "^#" docs/cpu-declarations.tsv 2>/dev/null | awk -F"\t" -v now="$(TZ=America/Los_Angeles date +%Y-%m-%dT%H:%M)" '$2 != "" && $2 <= now {n++} END{print n+0}')
-echo "  live cpu declarations: $live   expired rows still in file: $expired$( [ "$expired" -gt 0 ] && echo "  <-- remove (Pard 10-28: noise that hides a real stale case)")"
+# Same brief: the two counts above read a TSV through awk; a planted row dated
+# 2000 must count as expired, or the 0s are the reader failing, not the file.
+pl=$(printf 'planted\t2000-01-01T00:00\n' | awk -F"\t" -v now="$(TZ=America/Los_Angeles date +%Y-%m-%dT%H:%M)" '$2 != "" && $2 <= now {n++} END{print n+0}')
+[ "${pl:-0}" = 1 ] && pctl="control: planted expired row counted, 1" || pctl="control: planted expired row counted ${pl:-0}, expected 1 — the reader is blind (NOT OK)"
+echo "  live cpu declarations: $live   expired rows still in file: $expired$( [ "$expired" -gt 0 ] && echo "  <-- remove (Pard 10-28: noise that hides a real stale case)")   ($pctl)"
 # Disk (brief 10-28, Piper Morgan CIO re-run: a duty kept as a log habit lapses
 # within days). On 10-21 I wrote "will log when df actually moves" after local
 # Time Machine snapshots pinned the 14 GB the frame-set delete freed; df moved
@@ -272,7 +282,14 @@ else
   done <<< "$pats"
   shadow=$(git ls-files -z | xargs -0 git check-ignore -v --no-index -- 2>/dev/null | grep -c '^\.gitignore:' || true)
   echo "  ignore patterns: $npats in .gitignore, $nused matching a path on disk now, $((npats-nused)) dormant: ${dormant:-none}"
-  [ "${shadow:-0}" -eq 0 ] || echo "  ignore patterns: $shadow tracked file(s) match an ignore pattern — not load-bearing for them (inspect)"
+  # Brief 11-22: the shadow count's 0 needs a control that proves the pipeline
+  # (check-ignore + the .gitignore filter) can fire — a planted name that a
+  # dormant pattern matches must count 1.
+  sctl=$(printf 'render_v7.log\n' | git check-ignore -v --no-index --stdin 2>/dev/null | grep -c '^\.gitignore:' || true)
+  if [ "${sctl:-0}" = 1 ]; then
+    [ "${shadow:-0}" -eq 0 ] && echo "  ignore patterns: 0 tracked files shadowed (control: planted render_v7.log counted, 1)" \
+      || echo "  ignore patterns: $shadow tracked file(s) match an ignore pattern — not load-bearing for them (inspect) (control: planted render_v7.log counted, 1)"
+  else echo "  ignore patterns: shadow control counted ${sctl:-0} for planted render_v7.log, expected 1 — the shadow count is blind (NOT OK)"; fi
 fi
 }
 out=$(mktemp "${TMPDIR:-/tmp}/fire_check.XXXXXX")

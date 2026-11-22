@@ -58,6 +58,19 @@ jobs:
       # Tessera's checkout; a page edited on the web UI or from another seat
       # never meets it. Every push meets THIS job, so the same two gates run
       # here, on every tracked page and every tracked manifest (derived).
+      # 2026-11-22 (brief 11-22, Klatch units 496/499): the gates below run on the
+      # real tree, where every case is expected to pass — the same population the
+      # local hook measures. Agreement between the two is vacuous unless one run
+      # holds a case that must FAIL. These suites plant one for each gate (a
+      # syntax error, a declared-absent keyframe, a page naming a missing film)
+      # on the runner itself, so "gate passed" here is distinguishable from
+      # "gate cannot fire here".
+      - name: Prove the gates can fail here (planted cases for each gate)
+        run: |
+          set -euo pipefail
+          bash scripts/test_check_explore_syntax.sh
+          bash scripts/test_check_explore_manifest.sh
+          bash scripts/test_pages_stage.sh
       - name: Gate every tracked page's inline scripts and every manifest
         run: |
           set -euo pipefail
