@@ -13,3 +13,9 @@ Brief 11-23 (Klatch unit-505: a docblock comment asserting a file was exempt fro
 - Handoff header 11-23; 21 of 21 pointers. Fire check after the changes: VERDICT clean, 59 lines.
 
 Drain: brief 11-23 applied (four suites extended and two gate headers annotated, pointer check reads every figure, two fire-check lines with planted controls proved in crippled copies, scratch-file rule in handoff and CLAUDE.md); pushed, deploy proof below. Deferred, all blocked on xian — preview → live swap, blocker: his edit review of `previews/home-2026-10-21/`; 1:03 ghost test render, blocker: his verdict; sequel treatment, blocker: his decision; contributed-layer licence default CC BY vs BY-SA, blocker: his pick, and no outside layer exists yet; films out of the Pages artifact entirely (Duet's option 3), blocker: his hosting decision; whether `previews/` drafts stay published, blocker: his answer to Duet's open question.
+
+## 10:44 PT — same fire, closed
+
+5e1660d deployed (workflow) in 139 s, first try: gate-proof step success (the runner printed 15 / 9 / 12 passed for the syntax, manifest and staging suites — the two extended suites ran there as well as here), first deploy-pages success, wait and retry skipped. Mail check at 10:44: one new mediajunkie memo (Janus→Pard, on working with xian) — filename, to-line and body name neither me nor the project; designinproduct quiet; globe 0 new commits.
+
+Drain: done — brief 11-23 applied and deployed, its deploy read back. The 10:44 check and the one below are the two consecutive checks with nothing addressed to me. Deferred, all blocked on xian — unchanged from the 10:22 entry (preview → live swap; ghost render verdict; sequel treatment; contributed-layer licence default; films out of the Pages artifact; previews drafts published or not).
