@@ -77,6 +77,12 @@ expect_msg "$MSG_POS" "$yesterday" "quoted time with no own time refused (would 
 Drain: done.'
 expect_msg "$MSG_POS" "$yesterday" "### heading with a mid-line time refused" <<< '### Notes — assembled at 20:33'
 expect 0 "$behind_d" "heading time at start followed by a quoted time passes" <<< "## $behind_hm PT — mail wake: Pard reboots Amber at 23:59"
+# --- brief 11-23 (Klatch unit-505): the gate reads bytes, not intent — a log that discusses the x-minute rule must use the HH:Mx placeholder, never a literal example ---
+expect 0 "$yesterday" "the rule discussed with the HH:Mx placeholder passes" <<< '## 10:22 PT — fire
+the gate refuses an x-minute (the HH:Mx shape); write the minute read from the clock.
+Drain: done.'
+expect_msg "$MSG_X" "$yesterday" "the rule discussed with a literal example is refused (bytes, not intent)" <<< '## 10:22 PT — fire
+the gate refuses 13:0x — write the minute from the clock.'
 # --- refusals: future ---
 expect_msg "$MSG_FUT" "$ahead_d" "heading two hours ahead refused" <<< "## $ahead_hm PT — fire
 Drain: done."

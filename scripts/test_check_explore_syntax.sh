@@ -56,6 +56,13 @@ run 0 "3 script block(s) across 2 page(s)" "J: denominator across two pages" "$T
 out=$(PATH=/nonexistent "$PY" "$C" "$T/imports.html" 2>&1); got=$?
 if [ "$got" = 2 ] && printf '%s' "$out" | grep -qF "EXTRACTION FAILED: node is not on PATH"; then pass=$((pass+1))
 else fail=$((fail+1)); echo "FAIL: K: node off PATH (want exit 2 with the node reason, got $got: ${out:0:160})"; fi
+# Brief 11-23 (Klatch unit-505): the extractor reads bytes, not intent — a
+# <script> inside an HTML comment ("retired, kept for reference") is parsed like
+# any other, so a commented-out block with an error still refuses the page.
+page "<!-- retired, kept for reference: <script>$long
+const broken = ;</script> -->" commented.html
+run 1 "SYNTAX ERROR" "L: a commented-out script block is still parsed (bytes, not intent)" "$T/commented.html"
+
 # --- cripple pass: disarm one branch in a scratch copy; the case that proved it must now pass ---
 cripple() {  # cripple <name> <sed-expr> <page>
   local name=$1 expr=$2 pg=$3 got S="$T/crippled.py"

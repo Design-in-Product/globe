@@ -92,6 +92,14 @@ expect_msg "$MSG_NODRAIN" "missing Drain refuses for the missing-Drain reason" <
 Sync: fine.'
 expect_msg "$MSG_DEFER" "bare deferral refuses for the deferral reason" <<< '## 16:22 fire
 Drain: postponed the ship.'
+# Brief 11-23 (Klatch unit-505): the gate reads bytes, not intent. A mid-line
+# mention of the token is not the Drain line (refused); a body line that OPENS
+# with the token satisfies the gate even when it is only a note about the
+# convention — so a note must never open with it. Both directions pinned.
+expect_msg "$MSG_NODRAIN" "a mid-line mention of the token is not the Drain line (brief 11-23)" <<< '## 10:22 PT — fire
+the Drain: convention is enforced by pre-commit.'
+expect 0 "a body line that opens with the token satisfies the gate — bytes, not intent (brief 11-23)" <<< '## 10:22 PT — fire
+Drain: lines are enforced by the hook (a note about the convention, not a drain line).'
 # Cripple pass: delete one guard at a time in a scratch copy and prove the
 # cases above go green against the crippled guard — i.e. they were testing THAT
 # guard, not a backstop. If a crippled copy still refuses, the test is not binding.

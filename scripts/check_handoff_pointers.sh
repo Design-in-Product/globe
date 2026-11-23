@@ -82,8 +82,16 @@ fi
 while IFS= read -r t; do
   [ -n "$t" ] || continue
   checked=$((checked+1))
-  n=$(grep -F "\`$t\`" "$H" | grep -oE "\`$t\`[^|\`]*" | grep -oE '\(([0-9]+) cases' | head -1 | grep -oE '[0-9]+')
-  if [ -z "$n" ]; then skip "$t is named without a case count to verify"; continue; fi
+  # Brief 11-23 (Klatch unit-505): the instrument reads bytes, not intent. Until
+  # 2026-11-23 this took the FIRST "(N cases" after the name anywhere in the file
+  # — which on 11-22 was the header's history clause, agreeing with the table row
+  # by coincidence; the next day the row said 15 and the clause 14, and the
+  # check reported the clause. Now every count the file attaches to the name is
+  # read, and two different figures are themselves a GAP.
+  ns=$(grep -F "\`$t\`" "$H" | grep -oE "\`$t\`[^|\`]*" | grep -oE '\(([0-9]+) cases' | grep -oE '[0-9]+' | sort -un)
+  if [ -z "$ns" ]; then skip "$t is named without a case count to verify"; continue; fi
+  if [ "$(printf '%s\n' "$ns" | wc -l | tr -d ' ')" -ne 1 ]; then gap "handoff states different case counts for $t ($(printf '%s' "$ns" | paste -sd, -)) — one is stale"; continue; fi
+  n=$ns
   if [ ! -f "$t" ]; then gap "handoff names $t ($n cases) but no such script"; continue; fi
   summ=$(bash "$t" 2>&1 | grep -oE '[0-9]+ passed, [0-9]+ failed' | tail -1)
   if [ -z "$summ" ]; then gap "$t printed no 'P passed, F failed' summary — its $n-case claim is unmeasured"; continue; fi

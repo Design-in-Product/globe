@@ -7,6 +7,11 @@
 # (designinproduct/docs/conventions/duty-cycle-drain.md). Called from
 # scripts/hooks/pre-commit; tested by scripts/test_check_drain.sh.
 #
+# Brief 11-23 (Klatch unit-505): this gate reads bytes, not intent. A body line
+# that OPENS with "Drain:" counts as the Drain line whatever it goes on to say,
+# and a mid-line "Drain:" counts as nothing — so a note about the convention
+# must never open with the token. Pinned both ways in the tests.
+#
 # Deferral vocabulary widened 2026-10-23 after One Job's hook caught "postponed/on hold"
 # variants the narrower list let through (brief 10-23).
 # Block opener: ANY "## " heading. Brief 10-19 (One Job, DinP): a guard that

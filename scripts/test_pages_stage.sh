@@ -58,6 +58,12 @@ stage 0 - "1: baseline stages" "$T/site1" && {
 # 2. a page names an EXCLUDED file: refused, by reason, naming the page and file
 build; printf '<video src="c.mp4"></video>' >> "$R/index.html"
 stage 1 "$MSG_UNRES" "2: page links an excluded file" && { printf '%s' "$LASTOUT" | grep -q "index.html names 'c.mp4'" || bad "2: refusal does not name page+file"; }
+# Brief 11-23 (Klatch unit-505): a docblock comment asserting a file was exempt
+# from a gate carried the gate's token, and the gate counted it — an instrument
+# reads bytes, not intent. This gate reads HTML comments too: a disclaimer that
+# names the excluded film is a reference to it, so the deploy is refused.
+build; printf '<!-- "c.mp4" is excluded from the upload on purpose; nothing links it -->' >> "$R/index.html"
+stage 1 "$MSG_UNRES" "2b: a comment naming the excluded film is still a reference (bytes, not intent)" && { printf '%s' "$LASTOUT" | grep -q "'c.mp4' (literal)" || bad "2b: refusal does not name the commented literal"; }
 # 3. a page names a file that never existed (JS literal form)
 build; printf "<script>const X='ghost.mp4'</script>" >> "$R/index.html"
 stage 1 "$MSG_UNRES" "3: page names a missing film literal" && { printf '%s' "$LASTOUT" | grep -q "'ghost.mp4' (literal)" || bad "3: refusal does not name the literal"; }

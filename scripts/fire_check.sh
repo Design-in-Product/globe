@@ -188,6 +188,34 @@ la=$(launchctl list 2>/dev/null | awk '$3=="com.xian.tessera-cycle"{print $1" "$
 if [ -z "$la" ]; then echo "  launchd: com.xian.tessera-cycle NOT LOADED — no fire will come (NOT OK)"
 elif [ "${la#* }" != 0 ]; then echo "  launchd: com.xian.tessera-cycle loaded, last exit ${la#* } (NOT OK)"
 else echo "  launchd: com.xian.tessera-cycle loaded, last exit 0 (10:22 + 16:22 PT)"; fi
+# Brief 11-23 (Piper Morgan via Pard): a fire that stops at a permission prompt
+# nobody is there to answer writes nothing — and launchd still reads "last exit
+# 0" above, because the injector exited, not the fire. The only trace a blocked
+# fire leaves is a MISSING log entry. So every scheduled fire of the last 24 h
+# that is more than an hour old must have a "## HH:MM" heading in its day's log
+# within three hours of the fire (a fire folded into running work lands late,
+# never early). Control: the same reader against a date with no log must
+# report the fire missing (1) — a reader that cannot see a gap is not a reader.
+fire_logged() {  # fire_logged <YYYY-MM-DD> <HH:MM> -> 0 heading in [fire, fire+3h] / 1 none / 2 unparsable
+  local d=$1 hm=$2 f="logs/$1-tessera-log.md" fe he
+  fe=$(date -j -f '%Y-%m-%d %H:%M' "$d $hm" +%s 2>/dev/null) || return 2
+  [ -f "$f" ] || return 1
+  while read -r h; do
+    he=$(date -j -f '%Y-%m-%d %H:%M' "$d $h" +%s 2>/dev/null) || continue
+    [ "$he" -ge "$fe" ] && [ "$he" -le $((fe + 10800)) ] && return 0
+  done < <(grep -oE '^## *[0-9]{1,2}:[0-9]{2}' "$f" | grep -oE '[0-9]{1,2}:[0-9]{2}$')
+  return 1
+}
+now_e=$(date +%s); due=0; missing=""
+for d in "$(date -v-1d +%F)" "$(date +%F)"; do for hm in 10:22 16:22; do
+  fe=$(date -j -f '%Y-%m-%d %H:%M' "$d $hm" +%s 2>/dev/null) || continue
+  [ "$fe" -le $((now_e - 3600)) ] && [ "$fe" -ge $((now_e - 86400)) ] || continue
+  due=$((due+1)); fire_logged "$d" "$hm" || missing="$missing $d $hm;"
+done; done
+fire_logged 2000-01-01 10:22; fctl=$?
+if [ "$fctl" != 1 ]; then echo "  scheduled fires: reader control returned $fctl for a date with no log, expected 1 — the missing-entry check is blind (NOT OK)"
+elif [ -n "$missing" ]; then echo "  scheduled fires: $due due in the last 24 h, no log entry within 3 h of:$missing — a fire that writes nothing may be stopped at a prompt (NOT OK)"
+else echo "  scheduled fires: $due due in the last 24 h, each has a log entry within 3 h (control: date with no log reads missing, 1)"; fi
 # Login expiry for THIS seat's config dir (brief 11-13, Pard: credentials are
 # stored per config dir and expire independently; a renewal elsewhere shows no
 # warning here). Pard's cycle-check reads all three Amber entries; this line is
@@ -259,6 +287,15 @@ if len(ctl)!=1: print(f"  verdict key: comparer control returned {len(ctl)} pair
 elif got: print(f"  verdict key: {len(ls)} labels, {len(got)} substring pair(s) {got} — a label inside another (NOT OK)")
 else: print(f"  verdict key: {len(ls)} labels, 0 substring pairs (control GUARDED/UNGUARDED: 1 pair)")
 ' || echo "  verdict key: self-check did not run (NOT OK)"
+# Brief 11-23 (Klatch unit-505): a gate reads bytes, not intent. What keeps a
+# sibling memo filename carrying "timeout" or "errored" from reading as a
+# failure line above is that the key is case-sensitive and filenames are
+# lowercase by convention (annotated 11-21, never driven). Driven here: a
+# planted lowercase filename must miss the key and the uppercase label must hit.
+lo=$(printf '    memo-x-to-pard-timeout-errored-unreadable-2026-11-23.md\n' | grep -cE "$FAILKEY" || true)
+hi=$(printf '  something TIMEOUT here\n' | grep -cE "$FAILKEY" || true)
+if [ "${lo:-9}" -eq 0 ] && [ "${hi:-0}" -eq 1 ]; then echo "  verdict key: case-sensitive — planted lowercase memo filename misses (0), uppercase label hits (1)"
+else echo "  verdict key: planted lowercase filename matched $lo time(s), uppercase label $hi — the mail block could forge or hide a verdict (NOT OK)"; fi
 # Ignore-pattern census (brief 11-20, Klatch unit-487): a count of markers is
 # an upper bound on markers doing work. The bulk sweep above trusts the ignore
 # list by name; this line says which .gitignore patterns match a path on disk

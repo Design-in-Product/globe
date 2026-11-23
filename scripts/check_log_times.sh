@@ -34,6 +34,11 @@
 # the clock must not pass). Called from scripts/hooks/pre-commit; tested by
 # scripts/test_check_log_times.sh.
 #
+# Brief 11-23 (Klatch unit-505): the gate reads bytes, not intent — a log line
+# that DISCUSSES the x-minute rule with a literal example is refused like any
+# other. Write the shape as "HH:Mx" (no digit before the x), which the key
+# cannot match. Pinned both ways in the tests.
+#
 # Heading-time position (brief 11-21, Klatch unit-493, calibration 2026-11-21,
 # copied from the replay of all 76 logs): the rule "a heading's own time opens
 # the heading" was measured true on 184 of 186 timed headings and enforced by
