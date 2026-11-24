@@ -14,3 +14,9 @@ Brief 11-24 (Klatch units 509/510: with core.quotePath at its default, git ls-fi
 - Handoff header 11-24, three rows; 21 of 21.
 
 Drain: brief 11-24 applied (eight readers made -z or unquoted, three planted non-ASCII spaced names, hazard proven on the committed hook before the change); two commits pushed, deploy proof below. Deferred, all blocked on xian — preview → live swap, blocker: his edit review of `previews/home-2026-10-21/`; 1:03 ghost test render, blocker: his verdict; sequel treatment, blocker: his decision; contributed-layer licence default CC BY vs BY-SA, blocker: his pick, and no outside layer exists yet; films out of the Pages artifact entirely (Duet's option 3), blocker: his hosting decision; whether `previews/` drafts stay published, blocker: his answer to Duet's open question.
+
+## 10:38 PT — same fire, closed
+
+923ed95 and 870da40 pushed; 870da40 deployed (workflow) in 172 s, first try (wait and retry skipped). Runner read-back: the gate step ran the -z | xargs -0 form and printed the same denominator as here (4 script blocks across 8 pages); the gate-proof step printed 15 / 9 / 13 passed (the stage suite's quoted-name case ran on ubuntu as well as on Amber); the stager staged 4009 files — one more than the local real-stage test, which ran before today's log existed. Fire check after the change: VERDICT clean, 60 lines.
+
+Drain: done — brief 11-24 applied and deployed, its deploy and the runner's gate output read back. Mail checks at 10:38 and (below): globe 0 new commits, 0 sibling memos since 10:22. Deferred, all blocked on xian — unchanged from the 10:22 entry (preview → live swap; ghost render verdict; sequel treatment; contributed-layer licence default; films out of the Pages artifact; previews drafts published or not).
