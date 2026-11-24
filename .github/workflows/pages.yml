@@ -74,14 +74,14 @@ jobs:
       - name: Gate every tracked page's inline scripts and every manifest
         run: |
           set -euo pipefail
-          pages=$(git ls-files -- '*.html')
-          [ -n "$pages" ] || { echo "no tracked .html page — gate did not run"; exit 1; }
-          # shellcheck disable=SC2086
-          python3 scripts/check_explore_syntax.py $pages
+          # brief 11-24 (Klatch units 509/510): -z, never quoted, names handed
+          # over as separate arguments — a non-ASCII byte or a space in a page
+          # or manifest name no longer drops it from the gate at exit 0.
+          [ "$(git ls-files -- '*.html' | wc -l)" -gt 0 ] || { echo "no tracked .html page — gate did not run"; exit 1; }
+          git ls-files -z -- '*.html' | xargs -0 python3 scripts/check_explore_syntax.py
           manifests=$(bash scripts/explore_manifests.sh)
           [ -n "$manifests" ] || { echo "no Explore manifest tracked — gate did not run"; exit 1; }
-          # shellcheck disable=SC2086
-          python3 scripts/check_explore_manifest.py $manifests
+          printf '%s\n' "$manifests" | tr '\n' '\0' | xargs -0 python3 scripts/check_explore_manifest.py
       - name: Stage the site (tracked files minus .pages-exclude, gated)
         run: bash scripts/stage_pages.sh _site
       # 2026-11-13: the artifact is named per ATTEMPT. Re-running the failed

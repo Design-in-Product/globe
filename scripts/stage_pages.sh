@@ -23,11 +23,14 @@ cd "$(dirname "$0")/.."
 excl=.pages-exclude
 rules=$(grep -vE '^[[:space:]]*(#|$)' "$excl" 2>/dev/null || true)
 nrules=$(printf '%s\n' "$rules" | grep -c . || true)
-tracked=$(git ls-files)
-[ -n "$tracked" ] || { echo "stage_pages: git ls-files printed nothing — not a checkout? (NOT OK)" >&2; exit 2; }
+# Brief 11-24 (Klatch units 509/510): git ls-files quotes a non-ASCII path
+# ("caf\303\251 plate.png", literal quotes) unless read with -z; a newline
+# reader would then cp a name that exists nowhere. Read NUL-separated.
+ntracked=$(git ls-files | wc -l | tr -d ' ')
+[ "$ntracked" -gt 0 ] || { echo "stage_pages: git ls-files printed nothing — not a checkout? (NOT OK)" >&2; exit 2; }
 mkdir -p "$dest"
 kept=0; dropped=0; used=$'\n'
-while IFS= read -r f; do
+while IFS= read -r -d '' f; do
   skip=
   while IFS= read -r r; do
     [ -n "$r" ] || continue
@@ -37,7 +40,7 @@ while IFS= read -r f; do
   mkdir -p "$dest/$(dirname "$f")"
   cp -p "$f" "$dest/$f"
   kept=$((kept+1))
-done <<< "$tracked"
+done < <(git ls-files -z)
 stale=0
 while IFS= read -r r; do
   [ -n "$r" ] || continue

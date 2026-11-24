@@ -55,6 +55,16 @@ stage 0 - "1: baseline stages" "$T/site1" && {
   printf '%s' "$LASTOUT" | grep -q "1 files staged" && bad "1: count line unexpectedly says 1"
   printf '%s' "$LASTOUT" | grep -qE "^stage_pages: 10 files staged, 2 excluded by 2 rule" || bad "1: count line wrong: $(printf '%s' "$LASTOUT" | head -1)"
 }
+# 1b (brief 11-24, Klatch units 509/510): git ls-files quotes a non-ASCII path,
+# so a newline reader would cp "caf\303\251 plate.png" — a name that exists
+# nowhere. The stager reads -z: a tracked file with a non-ASCII byte AND a space
+# in its name must land in the stage under its real name and be counted.
+build; printf 'x' > "$R/assets/café plate.png"
+git -C "$R" -c user.name=t -c user.email=t@example.invalid add -A && git -C "$R" -c user.name=t -c user.email=t@example.invalid commit -q -m quoted
+stage 0 - "1b: a non-ASCII name with a space is staged, not dropped" "$T/site1b" && {
+  [ -f "$T/site1b/assets/café plate.png" ] || bad "1b: the quoted-name file is not in the stage"
+  printf '%s' "$LASTOUT" | grep -qE "^stage_pages: 11 files staged" || bad "1b: count line wrong: $(printf '%s' "$LASTOUT" | head -1)"
+}
 # 2. a page names an EXCLUDED file: refused, by reason, naming the page and file
 build; printf '<video src="c.mp4"></video>' >> "$R/index.html"
 stage 1 "$MSG_UNRES" "2: page links an excluded file" && { printf '%s' "$LASTOUT" | grep -q "index.html names 'c.mp4'" || bad "2: refusal does not name page+file"; }

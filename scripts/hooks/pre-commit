@@ -25,10 +25,20 @@ set -euo pipefail
 # `git mv` as R, which none of the A/M/D filters below select, so a renamed
 # keyframe, page or log skipped its gate. Proven in a scratch clone 2026-11-02:
 # `git mv 0050ma.webp 0051ma.webp` committed clean under the old hook.
-staged=$(git diff --cached --no-renames --name-only --diff-filter=AM | grep -E '\.html$' || true)
+# Brief 11-24 (Klatch units 509/510): git quotes any path with a non-ASCII byte
+# in --name-only output — "caf\303\251 plate.mp4", literal double quotes — so a
+# newline reader holds a name that exists nowhere. The html and log filters
+# below would not match it and the size gate's `[ -f ]` would skip it: three
+# gates passing a file they never read, at exit 0. Proven on this hook as
+# committed, 2026-11-24: a 100 MiB "café plate.mp4" committed clean. Every
+# staged-file read is now -z (never quoted), NUL turned to newline for the grep
+# filters, and names reach the checkers as separate arguments via xargs -0, so
+# a space in a name does not split it either. Tested by test_size_gate.sh (E)
+# and test_manifest_gate.sh (C2).
+names() { git diff --cached --no-renames --name-only -z --diff-filter="$1" | tr '\0' '\n'; }
+staged=$(names AM | grep -E '\.html$' || true)
 if [ -n "$staged" ]; then
-  # shellcheck disable=SC2086
-  python3 scripts/check_explore_syntax.py $staged || {
+  printf '%s\n' "$staged" | tr '\n' '\0' | xargs -0 python3 scripts/check_explore_syntax.py || {
     echo "pre-commit: a staged HTML page failed its script syntax gate — commit refused." >&2
     exit 1
   }
@@ -40,7 +50,7 @@ fi
 # that exists on disk but is not staged is caught by the fire check's Pages
 # proof, not here.
 # Full-read grep, not -q (same SIGPIPE/pipefail hazard as the syntax gate above).
-assets_staged=$(git diff --cached --no-renames --name-only --diff-filter=AMD | grep -E '^scrubber_assets/' || true)
+assets_staged=$(names AMD | grep -E '^scrubber_assets/' || true)
 if [ -n "$assets_staged" ]; then
   # Manifests derived from the index-to-be, not a typed list — brief 11-09.
   # The derivation lives in scripts/explore_manifests.sh, shared with the fire
@@ -49,8 +59,7 @@ if [ -n "$assets_staged" ]; then
   # nothing declares them. Tested by scripts/test_manifest_gate.sh.
   manifests=$(bash scripts/explore_manifests.sh)
   [ -n "$manifests" ] || { echo "pre-commit: scrubber_assets/ is staged but no Explore manifest (scrubber_assets/*.json) is tracked — nothing declares these assets; commit refused." >&2; exit 1; }
-  # shellcheck disable=SC2086
-  python3 scripts/check_explore_manifest.py $manifests || {
+  printf '%s\n' "$manifests" | tr '\n' '\0' | xargs -0 python3 scripts/check_explore_manifest.py || {
     echo "pre-commit: a staged Explore manifest declares a keyframe that is not on disk — commit refused." >&2; exit 1
   }
 fi
@@ -65,7 +74,7 @@ while IFS= read -r f; do
   if [ "$sz" -ge 104857600 ]; then
     echo "pre-commit: $f is $((sz/1048576)) MiB — GitHub refuses blobs of 100 MiB or more; commit refused (re-encode or host it elsewhere)." >&2; exit 1
   fi
-done < <(git diff --cached --no-renames --name-only --diff-filter=AM)
+done < <(names AM)
 
 # Drain guard (xian's rule via Janus, 2026-10-08: "the fire is a wake, not a
 # time-box" — designinproduct/docs/conventions/duty-cycle-drain.md). Every NEW
@@ -75,10 +84,9 @@ done < <(git diff --cached --no-renames --name-only --diff-filter=AM)
 # headings — brief 10-19: the old "## HH:MM PT" opener matched nothing once
 # the headings drifted, and eight entries passed unchecked). Only fires when
 # a log is staged.
-logs_staged=$(git diff --cached --no-renames --name-only --diff-filter=AM | grep -E '^logs/.*-tessera-log\.md$' || true)
+logs_staged=$(names AM | grep -E '^logs/.*-tessera-log\.md$' || true)
 if [ -n "$logs_staged" ]; then
-  # shellcheck disable=SC2086
-  git diff --cached -U0 -- $logs_staged | { grep -E '^\+' || true; } | { grep -vE '^\+\+\+' || true; } | sed 's/^+//' | bash scripts/check_drain.sh || {
+  printf '%s\n' "$logs_staged" | tr '\n' '\0' | xargs -0 git diff --cached -U0 -- | { grep -E '^\+' || true; } | { grep -vE '^\+\+\+' || true; } | sed 's/^+//' | bash scripts/check_drain.sh || {
     echo "pre-commit: drain guard refused the staged log entry (see above)." >&2; exit 1
   }
 fi
@@ -91,12 +99,13 @@ fi
 # ("~16:40", "13:0x"), a heading after the Pacific clock, or a filename dated
 # after today is refused. Tested by scripts/test_check_log_times.sh.
 if [ -n "$logs_staged" ]; then
-  for lf in $logs_staged; do
+  while IFS= read -r lf; do
+    [ -n "$lf" ] || continue
     ld=$(basename "$lf" | grep -oE '^[0-9]{4}-[0-9]{2}-[0-9]{2}') || { echo "pre-commit: $lf carries no YYYY-MM-DD date in its name — the time gate cannot run; commit refused." >&2; exit 1; }
     git diff --cached -U0 -- "$lf" | { grep -E '^\+' || true; } | { grep -vE '^\+\+\+' || true; } | sed 's/^+//' | bash scripts/check_log_times.sh "$ld" || {
       echo "pre-commit: log time gate refused $lf (see above)." >&2; exit 1
     }
-  done
+  done <<< "$logs_staged"
 fi
 
 # Handoff pointers at write time (brief 11-17, Klatch: a measurement typed into
@@ -105,7 +114,7 @@ fi
 # the pointer check runs, including pointer 6, which runs every test script
 # the handoff puts a case count on and compares the typed count with the
 # script's own summary line. Only fires when one of those files is staged.
-ho_staged=$(git diff --cached --no-renames --name-only --diff-filter=AM | grep -E '^(docs/handoff-tessera-2026-09-29\.md|scripts/test_[a-z_]+\.sh)$' || true)
+ho_staged=$(names AM | grep -E '^(docs/handoff-tessera-2026-09-29\.md|scripts/test_[a-z_]+\.sh)$' || true)
 if [ -n "$ho_staged" ]; then
   bash scripts/check_handoff_pointers.sh || {
     echo "pre-commit: the handoff's pointers disagree with the repo (see GAP lines above) — commit refused." >&2; exit 1

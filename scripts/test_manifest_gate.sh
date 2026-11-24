@@ -57,8 +57,11 @@ G reset -q HEAD -- scrubber_assets/keyframes.json scrubber_assets/future/keyfram
 G rm -q --cached scrubber_assets/zz2.webp
 # Cripple pass: hand-type the two 11-08 names back into a scratch copy of the
 # hook; case C must now COMMIT — the third manifest goes unchecked, which is
-# exactly what the derivation exists to prevent.
-sed -e 's|manifests=$(bash scripts/explore_manifests.sh)|manifests="scrubber_assets/keyframes.json scrubber_assets/future/keyframes-future.json"|' scripts/hooks/pre-commit > "$C/scripts/hooks/pre-commit"
+# exactly what the derivation exists to prevent. One name per line: since
+# brief 11-24 the hook hands each LINE to the checker as one argument, so a
+# space-separated pair would reach it as a single nonexistent path and the
+# cripple would refuse for the wrong reason.
+sed -e 's|manifests=$(bash scripts/explore_manifests.sh)|manifests=$(printf "%s\\n" scrubber_assets/keyframes.json scrubber_assets/future/keyframes-future.json)|' scripts/hooks/pre-commit > "$C/scripts/hooks/pre-commit"
 cmp -s scripts/hooks/pre-commit "$C/scripts/hooks/pre-commit" && { fail=$((fail+1)); echo "FAIL: cripple changed nothing (sed matched no line)"; }
 G add scrubber_assets/third.json
 err=$(G commit -q -m "cripple" 2>&1 >/dev/null); got=$?

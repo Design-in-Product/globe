@@ -8,4 +8,8 @@
 # radius of the defect it fixes).
 # Usage: manifests=$(bash scripts/explore_manifests.sh)
 cd "$(dirname "$0")/.."
-git ls-files -- 'scrubber_assets/*.json' 'scrubber_assets/**/*.json' | sort -u
+# Brief 11-24 (Klatch units 509/510): without quotePath=false, git would print a
+# non-ASCII manifest name wrapped in literal quotes and the consumers would hand
+# the checker a path that exists nowhere. Lines are raw names; the consumers
+# (hook, fire check, pages.yml) turn them into NUL-separated arguments.
+git -c core.quotePath=false ls-files -- 'scrubber_assets/*.json' 'scrubber_assets/**/*.json' | sort -u

@@ -119,7 +119,7 @@ fi
 
 echo "--- site ---"
 # every tracked page, derived from git — not a hardcoded list (brief 10/06 finding 2)
-python3 scripts/check_explore_syntax.py $(git ls-files "*.html") | sed "s/^/  /"
+git ls-files -z -- '*.html' | xargs -0 python3 scripts/check_explore_syntax.py | sed "s/^/  /"
 # Explore manifest coverage (brief 10-26, Klatch round 457): the two kinds of
 # absence named separately — DECLARED-ABSENT (page 404s) vs PRESENT-UNDECLARED
 # (dead weight shipped). One "missing" word would hide one behind the other.
@@ -133,7 +133,7 @@ python3 scripts/check_explore_syntax.py $(git ls-files "*.html") | sed "s/^/  /"
 manifests=$(bash scripts/explore_manifests.sh)
 if [ -z "$manifests" ]; then echo "  explore manifests: UNMEASURABLE (no scrubber_assets/*.json tracked)"
 # shellcheck disable=SC2086
-else python3 scripts/check_explore_manifest.py $manifests; fi
+else printf '%s\n' "$manifests" | tr '\n' '\0' | xargs -0 python3 scripts/check_explore_manifest.py; fi
 # Brief 10-31 (Piper Morgan CIO, methodology-48): name the question, then run
 # the check against the case that should fail. Until 10-31 the dns line asked
 # "is there a CNAME" (any target passed), the live line asked "did something
@@ -280,11 +280,11 @@ scripts/check_handoff_pointers.sh; hrc=$?
 # the publishing trap (memory: globe-repo-publishing-trap). So each fire lists
 # every untracked, non-ignored path and flags any that is big: a file over
 # 5 MB or a directory holding over 50 files. "none" is the only clean verdict.
-bulk=$(git status --porcelain -uall | grep '^??' | cut -c4- | python3 -c '
+bulk=$(git status --porcelain -z -uall | tr '\0' '\n' | grep '^??' | cut -c4- | python3 -c '
 import os,sys
 big=[]; dirs={}
 for l in sys.stdin:
-    f=l.rstrip("\n").strip("\"")
+    f=l.rstrip("\n")
     if not os.path.isfile(f): continue
     if os.path.getsize(f) > 5*1024*1024: big.append(f"{f} ({os.path.getsize(f)//1048576} MB)")
     top=f.split("/")[0]
