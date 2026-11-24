@@ -174,6 +174,25 @@ else
   elif case "$exc$hero" in *5[0-9][0-9]*|*000*) true;; *) false;; esac; then echo "  pages exclude: edge answered /$ex $exc, hero film $hero after 3 tries — UNMEASURABLE this fire (NOT OK)"
   else echo "  pages exclude: /$ex returned $exc (want 404), hero film $hero (want 200) (NOT OK)"; fi
 fi
+# 2026-11-23: the deploy retry (added 11-13) recovers an artifact race silently —
+# wait_pages above reads "deployed" either way, and whether the retry fired was
+# read by hand from the run's steps each fire (runs 45055648358 on 11-22 and
+# 45296844062 on 11-23 both raced: upload finalized, deploy-pages looked <1 s
+# later and found 0). Read here instead: for the last 10 completed runs on main,
+# the "wait 30 s" step's conclusion is "skipped" (first try) or "success" (the
+# retry fired). Informational, not a failure — the retry working is the design;
+# a rising count is the thing to notice. Control: run 45296844062, a known race,
+# must read as a retry; a reader that cannot see it is named UNMEASURABLE.
+if command -v gh >/dev/null 2>&1; then
+  retry_of() { gh run view "$1" --json jobs -q '.jobs[] | .steps[] | select(.name | test("wait 30")) | .conclusion' 2>/dev/null | head -1; }
+  rids=$(gh run list --workflow pages.yml --branch main --status completed --limit 10 --json databaseId -q '.[].databaseId' 2>/dev/null)
+  rn=0; rr=0; rl=""
+  for id in $rids; do c=$(retry_of "$id"); [ -n "$c" ] || continue; rn=$((rn+1)); [ "$c" = success ] && { rr=$((rr+1)); rl="$rl $id"; }; done
+  rctl=$(retry_of 45296844062)
+  if [ "$rctl" != success ]; then echo "  pages retry: control run 45296844062 (a known race) read '${rctl:-nothing}', expected success — the retry reader is blind (UNMEASURABLE) (NOT OK)"
+  elif [ "$rn" -eq 0 ]; then echo "  pages retry: no completed run readable — UNMEASURABLE (NOT OK)"
+  else echo "  pages retry: fired on $rr of the last $rn runs${rl:+ (runs$rl)} (control: known race reads as a retry, 1)"; fi
+else echo "  pages retry: gh not on PATH — UNMEASURABLE (NOT OK)"; fi
 
 echo "--- repo + host ---"
 hp=$(git config core.hooksPath); hv=""
