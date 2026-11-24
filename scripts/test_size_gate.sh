@@ -38,6 +38,12 @@ mk b.mp4 $LIMIT; G add -f b.mp4; expect 1 "C: tracked file modified to 100 MiB";
 # D: a rename of the just-committed 100 MiB-1 file passes (R is read as A+D
 # under --no-renames; the A side is one byte under and must still pass).
 G mv b.mp4 c.mp4; expect 0 "D: renamed file still under the limit"
+# E (brief 11-24, Klatch units 509/510): git quotes a non-ASCII path in
+# --name-only output; the hook's size loop read that quoted name, found no such
+# file and skipped it — a 100 MiB "café plate.mp4" committed clean under the
+# hook as committed on 2026-11-23 (proven in a scratch clone 11-24). The read
+# is -z now; the same file, with a space in the name too, must be refused.
+mk "café plate.mp4" $LIMIT; G add -f "café plate.mp4"; expect 1 "E: 100 MiB file with a non-ASCII, spaced name is still refused"; G reset -q HEAD -- "café plate.mp4"; rm -f "$C/café plate.mp4"
 # Cripple pass: disarm the size comparison in a scratch copy of the hook and
 # prove case A now commits — i.e. the refusal above came from THIS gate.
 sed -e "s/-ge $LIMIT/-ge 999999999999/" scripts/hooks/pre-commit > "$C/scripts/hooks/pre-commit"

@@ -47,6 +47,12 @@ G restore -q --staged --worktree scrubber_assets/keyframes.json
 printf '{"keyframes":[{"time_ma":1,"file":"nope.webp"}]}' > "$C/scrubber_assets/third.json"
 G add scrubber_assets/third.json; expect 1 "$MSG_ABSENT" "C: a third manifest is gated through the derived list"
 G rm -q --cached scrubber_assets/third.json
+# C2 (brief 11-24, Klatch units 509/510): a manifest whose name git would quote
+# (non-ASCII) and that carries a space is still derived unquoted and reaches the
+# checker as one argument — so its absent keyframe is caught, not skipped.
+printf '{"keyframes":[{"time_ma":1,"file":"nope.webp"}]}' > "$C/scrubber_assets/thírd one.json"
+G add "scrubber_assets/thírd one.json"; expect 1 "$MSG_ABSENT" "C2: a quoted-name manifest with a space is gated through the derived list"
+G rm -q --cached "scrubber_assets/thírd one.json"
 # B. no manifest tracked + an asset staged: refused by name, and the derivation prints nothing
 G rm -q --cached scrubber_assets/keyframes.json scrubber_assets/future/keyframes-future.json
 printf x > "$C/scrubber_assets/zz2.webp"; G add -f scrubber_assets/zz2.webp
