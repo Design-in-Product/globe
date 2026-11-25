@@ -10,6 +10,17 @@
 #
 # Every check prints a verdict. A check that cannot be measured says so rather
 # than printing a pass (UNMEASURABLE is a state, silence is not).
+#
+# Brief 11-25 (Klatch unit-513): a fallible read whose consumers IGNORE the
+# result fails as a silent survival, not a break — so the detector must plant
+# the null and read the downstream state, not wait for an error. Every read
+# in this script that can come back empty was classified 2026-11-25 by what
+# its consumer does; nine continued into a clean-looking line (planted and
+# read: the sync printed nothing, two inboxes read stale, the deploy-retry
+# census shrank, 0 fires due read as all logged, login days went blank, a
+# missing TSV read 0/0, the bulk sweep read "none", and the VERDICT read an
+# empty capture — and a part-run abort — as clean). Each is named now, and
+# run_checks ends with a sentinel the verdict requires.
 set -uo pipefail
 ts() { TZ=America/Los_Angeles date "+%F %T %Z"; }
 cd "$(git rev-parse --show-toplevel)"
@@ -41,6 +52,7 @@ UNREADABLE
 UNIGNORED BULK
 TIMEOUT
 ERRORED
+STALE:
 deployment failure
 deployment error
 deployment inactive'
@@ -56,7 +68,10 @@ echo "fire check $(ts)"
 run_checks() {
 
 echo "--- sync ---"
-git fetch -q origin && git merge --ff-only origin/main 2>&1 | tail -1
+# A fetch failure printed NOTHING here (planted 11-25: && skipped the merge
+# line, and the mail and brief blocks below read a stale origin/main as now).
+if git fetch -q origin 2>/dev/null; then git merge --ff-only origin/main 2>&1 | tail -1
+else echo "  sync: git fetch origin failed — the mail and brief blocks below read a stale origin/main (NOT OK)"; fi
 
 echo "--- mail (newest 3 per repo, read from origin/main) ---"
 # Sibling repos are read from Tessera's OWN clones in ~/globe-mail (fetch +
@@ -70,7 +85,7 @@ naming_me_key() { grep -iE 'tessera' | grep -viE '^docs/mail/(memo-|reply-|quest
 for r in mediajunkie designinproduct; do
   c="$HOME/globe-mail/$r"
   [ -d "$c/.git" ] || { echo "  $r: UNMEASURABLE (no clone at $c)"; continue; }
-  git -C "$c" fetch -q origin 2>/dev/null || echo "  $r: fetch failed (showing last known origin/main)"
+  git -C "$c" fetch -q origin 2>/dev/null || echo "  $r: fetch failed — this fire's read of the inbox is stale (NOT OK)"
   echo "  $r (origin/main $(git -C "$c" log origin/main -1 --format=%h -- docs/mail)):"
   # One git log with --name-only replaces the 40 `git show` spawns per repo this
   # line ran until 2026-11-05 (brief 11-05, Mediajunkie: a subprocess per item
@@ -107,14 +122,22 @@ if [ -z "$dated" ]; then
 else
   newest=$(echo "$dated" | tail -1 | cut -c1-10)
   today=$(TZ=America/Los_Angeles date +%F)
-  age=$(( ( $(date -j -f %F "$today" +%s) - $(date -j -f %F "$newest" +%s) ) / 86400 ))
+  # Brief 11-25: an unparsable filename date here raised a bash arithmetic
+  # error that ABORTED run_checks — 28 lines printed, VERDICT clean (planted
+  # 11-25 with a brief named 2026-13-45.md). Parse first and name the failure.
+  te=$(date -j -f %F "$today" +%s 2>/dev/null) || te=""
+  ne=$(date -j -f %F "$newest" +%s 2>/dev/null) || ne=""
   # largest gap between consecutive dated briefs in the last 30 on record = the tolerated lateness
   maxgap=$(echo "$dated" | tail -30 | cut -c1-10 | python3 -c "
 import sys,datetime as d
 ds=[d.date.fromisoformat(l.strip()) for l in sys.stdin if l.strip()]
-print(max((b-a).days for a,b in zip(ds,ds[1:])) if len(ds)>1 else 1)")
-  if [ "$age" -gt "$maxgap" ]; then echo "  STALE: newest brief $newest is $age d old; largest gap in record is $maxgap d"
-  else echo "  ok: newest brief $newest, age $age d (record tolerates $maxgap d)"; fi
+print(max((b-a).days for a,b in zip(ds,ds[1:])) if len(ds)>1 else 1)" 2>/dev/null) || maxgap=""
+  if [ -z "$te" ] || [ -z "$ne" ] || [ -z "$maxgap" ]; then echo "  brief age: a brief filename date does not parse (newest '$newest', record gap '${maxgap:-unparsed}') — UNMEASURABLE (NOT OK)"
+  else
+    age=$(( (te - ne) / 86400 ))
+    if [ "$age" -gt "$maxgap" ]; then echo "  STALE: newest brief $newest is $age d old; largest gap in record is $maxgap d"
+    else echo "  ok: newest brief $newest, age $age d (record tolerates $maxgap d)"; fi
+  fi
 fi
 
 echo "--- site ---"
@@ -186,11 +209,15 @@ fi
 if command -v gh >/dev/null 2>&1; then
   retry_of() { gh run view "$1" --json jobs -q '.jobs[] | .steps[] | select(.name | test("wait 30")) | .conclusion' 2>/dev/null | head -1; }
   rids=$(gh run list --workflow pages.yml --branch main --status completed --limit 10 --json databaseId -q '.[].databaseId' 2>/dev/null)
-  rn=0; rr=0; rl=""
-  for id in $rids; do c=$(retry_of "$id"); [ -n "$c" ] || continue; rn=$((rn+1)); [ "$c" = success ] && { rr=$((rr+1)); rl="$rl $id"; }; done
+  rn=0; rr=0; ru=0; rl=""
+  # Brief 11-25: a run whose read failed was dropped from both counts and the
+  # census quietly shrank (planted: 9 unreadable runs read "fired on 1 of the
+  # last 1 runs", no failure word). An unreadable run is counted and named.
+  for id in $rids; do c=$(retry_of "$id"); [ -n "$c" ] || { ru=$((ru+1)); continue; }; rn=$((rn+1)); [ "$c" = success ] && { rr=$((rr+1)); rl="$rl $id"; }; done
   rctl=$(retry_of 45296844062)
   if [ "$rctl" != success ]; then echo "  pages retry: control run 45296844062 (a known race) read '${rctl:-nothing}', expected success — the retry reader is blind (UNMEASURABLE) (NOT OK)"
   elif [ "$rn" -eq 0 ]; then echo "  pages retry: no completed run readable — UNMEASURABLE (NOT OK)"
+  elif [ "$ru" -gt 0 ]; then echo "  pages retry: fired on $rr of $rn readable runs, but $ru of the last $((rn+ru)) could not be read — census incomplete (UNMEASURABLE) (NOT OK)"
   else echo "  pages retry: fired on $rr of the last $rn runs${rl:+ (runs$rl)} (control: known race reads as a retry, 1)"; fi
 else echo "  pages retry: gh not on PATH — UNMEASURABLE (NOT OK)"; fi
 
@@ -233,6 +260,7 @@ for d in "$(date -v-1d +%F)" "$(date +%F)"; do for hm in 10:22 16:22; do
 done; done
 fire_logged 2000-01-01 10:22; fctl=$?
 if [ "$fctl" != 1 ]; then echo "  scheduled fires: reader control returned $fctl for a date with no log, expected 1 — the missing-entry check is blind (NOT OK)"
+elif [ "$due" -eq 0 ]; then echo "  scheduled fires: 0 due in the last 24 h — with two fires a day at least one is always due, so the schedule reader is blind (NOT OK)"
 elif [ -n "$missing" ]; then echo "  scheduled fires: $due due in the last 24 h, no log entry within 3 h of:$missing — a fire that writes nothing may be stopped at a prompt (NOT OK)"
 else echo "  scheduled fires: $due due in the last 24 h, each has a log entry within 3 h (control: date with no log reads missing, 1)"; fi
 # Login expiry for THIS seat's config dir (brief 11-13, Pard: credentials are
@@ -245,8 +273,9 @@ else
   exp=$(CLAUDE_CONFIG_DIR="$cfg" perl -e 'alarm 20; exec @ARGV' claude auth status 2>/dev/null | python3 -c 'import json,sys; d=json.load(sys.stdin); print(d.get("loginExpiresAt","") if d.get("loggedIn") else "")' 2>/dev/null || true)
   if [ -z "$exp" ]; then echo "  login ($cfg): not logged in or status unreadable — UNMEASURABLE (NOT OK)"
   else
-    days=$(python3 -c 'import sys,datetime as d; e=d.datetime.fromisoformat(sys.argv[1].replace("Z","+00:00")); print((e-d.datetime.now(d.timezone.utc)).days)' "$exp")
-    if [ "$days" -lt 7 ]; then echo "  login ($cfg): expires $exp — $days days left, renew now (NOT OK)"
+    days=$(python3 -c 'import sys,datetime as d; e=d.datetime.fromisoformat(sys.argv[1].replace("Z","+00:00")); print((e-d.datetime.now(d.timezone.utc)).days)' "$exp" 2>/dev/null) || days=""
+    if [ -z "$days" ]; then echo "  login ($cfg): expiry '$exp' did not parse — UNMEASURABLE (NOT OK)"
+    elif [ "$days" -lt 7 ]; then echo "  login ($cfg): expires $exp — $days days left, renew now (NOT OK)"
     else echo "  login ($cfg): expires ${exp%T*}, $days days left"; fi
   fi
 fi
@@ -257,13 +286,19 @@ seen=$(pgrep -fl "[f]ire_check" | wc -l | tr -d " ")
 if [ "${seen:-0}" -ge 1 ]; then ctl="control: this script seen by pgrep, $seen"
 else ctl="control: pgrep did not see this script — the 0s are blind (NOT OK)"; fi
 echo "  stray blender: $(pgrep -fl "[B]lender" | wc -l | tr -d " ")   supervisor: $(pgrep -fl "[r]ender_supervised" | wc -l | tr -d " ")   ($ctl)"
-live=$(grep -v "^#" docs/cpu-declarations.tsv 2>/dev/null | awk -F"\t" -v now="$(TZ=America/Los_Angeles date +%Y-%m-%dT%H:%M)" '$2 > now {n++} END{print n+0}')
-expired=$(grep -v "^#" docs/cpu-declarations.tsv 2>/dev/null | awk -F"\t" -v now="$(TZ=America/Los_Angeles date +%Y-%m-%dT%H:%M)" '$2 != "" && $2 <= now {n++} END{print n+0}')
+# Brief 11-25: with the file absent both counts read 0 and the line looked
+# clean (planted); the planted-row control below proves awk, not the read.
+tsv=docs/cpu-declarations.tsv
+if [ ! -f "$tsv" ]; then echo "  cpu declarations: $tsv is missing — both counts would read 0 (UNMEASURABLE) (NOT OK)"
+else
+live=$(grep -v "^#" "$tsv" 2>/dev/null | awk -F"\t" -v now="$(TZ=America/Los_Angeles date +%Y-%m-%dT%H:%M)" '$2 > now {n++} END{print n+0}')
+expired=$(grep -v "^#" "$tsv" 2>/dev/null | awk -F"\t" -v now="$(TZ=America/Los_Angeles date +%Y-%m-%dT%H:%M)" '$2 != "" && $2 <= now {n++} END{print n+0}')
 # Same brief: the two counts above read a TSV through awk; a planted row dated
 # 2000 must count as expired, or the 0s are the reader failing, not the file.
 pl=$(printf 'planted\t2000-01-01T00:00\n' | awk -F"\t" -v now="$(TZ=America/Los_Angeles date +%Y-%m-%dT%H:%M)" '$2 != "" && $2 <= now {n++} END{print n+0}')
 [ "${pl:-0}" = 1 ] && pctl="control: planted expired row counted, 1" || pctl="control: planted expired row counted ${pl:-0}, expected 1 — the reader is blind (NOT OK)"
 echo "  live cpu declarations: $live   expired rows still in file: $expired$( [ "$expired" -gt 0 ] && echo "  <-- remove (Pard 10-28: noise that hides a real stale case)")   ($pctl)"
+fi
 # Disk (brief 10-28, Piper Morgan CIO re-run: a duty kept as a log habit lapses
 # within days). On 10-21 I wrote "will log when df actually moves" after local
 # Time Machine snapshots pinned the 14 GB the frame-set delete freed; df moved
@@ -280,7 +315,13 @@ scripts/check_handoff_pointers.sh; hrc=$?
 # the publishing trap (memory: globe-repo-publishing-trap). So each fire lists
 # every untracked, non-ignored path and flags any that is big: a file over
 # 5 MB or a directory holding over 50 files. "none" is the only clean verdict.
-bulk=$(git status --porcelain -z -uall | tr '\0' '\n' | grep '^??' | cut -c4- | python3 -c '
+# Brief 11-25: a failed git status fed the sweep nothing and it printed "none"
+# (planted) — no paths seen is not the same as no bulk. Status goes to a file
+# first so its exit can be read (a NUL-separated list cannot sit in a variable).
+st=$(mktemp "${TMPDIR:-/tmp}/fire_status.XXXXXX")
+if ! git status --porcelain -z -uall > "$st" 2>/dev/null; then bulk="UNMEASURABLE: git status failed — the sweep saw no paths, which is not none"
+else
+bulk=$(tr '\0' '\n' < "$st" | grep '^??' | cut -c4- | python3 -c '
 import os,sys
 big=[]; dirs={}
 for l in sys.stdin:
@@ -291,7 +332,9 @@ for l in sys.stdin:
     if "/" in f: dirs[top]=dirs.get(top,0)+1
 big += [f"{d}/ ({n} files)" for d,n in dirs.items() if n > 50]
 print("\n".join(big))')
+fi; rm -f "$st"
 if [ -z "$bulk" ]; then echo "  unignored bulk: none (every untracked path is small; the ignore list covers the rest)"
+elif [ "${bulk#UNMEASURABLE}" != "$bulk" ]; then echo "  unignored bulk: $bulk (NOT OK)"
 else echo "  UNIGNORED BULK (no .gitignore pattern covers these; add one before any git add .) (NOT OK):"; echo "$bulk" | sed 's/^/    /'; fi
 # Verdict-key self-check (brief 11-20, Klatch unit-486). Every label in
 # FAIL_LABELS is compared with every other: one inside another would let a new
@@ -347,10 +390,20 @@ else
       || echo "  ignore patterns: $shadow tracked file(s) match an ignore pattern — not load-bearing for them (inspect) (control: planted render_v7.log counted, 1)"
   else echo "  ignore patterns: shadow control counted ${sctl:-0} for planted render_v7.log, expected 1 — the shadow count is blind (NOT OK)"; fi
 fi
+# Completion sentinel: the verdict below requires this as the capture's last
+# line, so a check that aborts the function part-way cannot read as clean.
+echo "--- end of checks ---"
 }
 out=$(mktemp "${TMPDIR:-/tmp}/fire_check.XXXXXX")
 run_checks 2>&1 | tee "$out"
+# Brief 11-25 (Klatch unit-513): the verdict is the consumer every other line
+# depends on, and it read an EMPTY capture as "clean — no failure line in 0
+# lines" and a run that aborted after 28 lines as clean (both planted 11-25).
+# Clean now needs a non-empty capture ending in run_checks' sentinel.
+nl=$(wc -l < "$out" | tr -d ' ')
 fails=$(grep -cE "$FAILKEY" "$out" || true)
-if [ "${fails:-0}" -eq 0 ]; then echo "VERDICT: clean — no failure line in $(wc -l < "$out" | tr -d ' ') lines"
+if [ ! -s "$out" ]; then echo "VERDICT: the checks' output is empty — nothing ran or the capture failed (did not run — not a pass)"
+elif [ "$(tail -1 "$out")" != "--- end of checks ---" ]; then echo "VERDICT: checks did not run to completion — output ends at line $nl: '$(tail -1 "$out" | cut -c1-120)' (not a pass)"; [ "${fails:-0}" -gt 0 ] && grep -nE "$FAILKEY" "$out" | head -8 | sed 's/^/  /'
+elif [ "${fails:-0}" -eq 0 ]; then echo "VERDICT: clean — no failure line in $nl lines"
 else echo "VERDICT: $fails FAILURE LINE(S) above — read them:"; grep -nE "$FAILKEY" "$out" | head -8 | sed 's/^/  /'; fi
 rm -f "$out"
