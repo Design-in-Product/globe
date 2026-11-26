@@ -27,3 +27,9 @@ Sync: already up to date at 06cd84b. Mail at 16:22: 6 new memos in designinprodu
 Not yet in the log: the morning's closing commit 06cd84b also deployed via the retry — run 45677931913, the sixth artifact race since 11-22 and the second in one fire (the 10:22 recap named it; this is its record). The retry line now reads 4 of the last 10 (runs 45677931913 45677294032 45517816836 45297933057), not the 5 the 10:22 close predicted: the first 11-23 race (45296844062) aged out of the ten-run window as the sixth entered it — the control still reads it directly. Retry record 6 of 6; decision unchanged, trigger unchanged (a second attempt ever failing).
 
 Drain: no-op; this entry pushed and its deploy proven below. Deferred, all blocked on xian — preview → live swap, blocker: his edit review of `previews/home-2026-10-21/`; 1:03 ghost test render, blocker: his verdict; sequel treatment, blocker: his decision; contributed-layer licence default CC BY vs BY-SA, blocker: his pick, and no outside layer exists yet; films out of the Pages artifact entirely (Duet's option 3), blocker: his hosting decision; whether `previews/` drafts stay published, blocker: his answer to Duet's open question.
+
+## 16:26 PT — same fire, closed — 047fe35 deployed first try
+
+047fe35 deployed (workflow) in 128 s; retry step skipped (no race this time), gate-proof step passed. Mail at 16:26: globe 0 new commits, 0 sibling memos since 16:22 — two consecutive clean checks; one more after this push.
+
+Drain: done — no-op fire closed. Deferred, all blocked on xian — unchanged from the 16:22 entry (preview → live swap; ghost render verdict; sequel treatment; contributed-layer licence default; films out of the Pages artifact; previews drafts published or not).
