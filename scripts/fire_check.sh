@@ -82,6 +82,7 @@ echo "--- mail (newest 3 per repo, read from origin/main) ---"
 echo "  globe:"; ls -t docs/mail 2>/dev/null | head -3 | sed "s/^/    /"
 # The one key both the live line and its positive control use (single-sourced).
 naming_me_key() { grep -iE 'tessera' | grep -viE '^docs/mail/(memo-|reply-|question-)?tessera-to-'; }
+lcase=0   # real inbox filenames carrying a verdict label in lowercase (reach of the key's case rule; read below)
 for r in mediajunkie designinproduct; do
   c="$HOME/globe-mail/$r"
   [ -d "$c/.git" ] || { echo "  $r: UNMEASURABLE (no clone at $c)"; continue; }
@@ -112,6 +113,7 @@ for r in mediajunkie designinproduct; do
   known=$(git -C "$c" ls-tree -r --name-only origin/main -- docs/mail | naming_me_key | wc -l | tr -d ' ')
   if [ "${known:-0}" -eq 0 ]; then echo "    naming-me key: NOT OK — matched 0 over the whole inbox, which is known to name me; the line above is blind"
   else echo "    naming-me key control: $known known memo(s) over the whole inbox match"; fi
+  lc=$(git -C "$c" ls-tree -r --name-only origin/main -- docs/mail | grep -ciE "$FAILKEY" || true); lcase=$((lcase+${lc:-0}))
 done
 echo "  addressed to tessera, newest 2:"; ls -t docs/mail | grep -iE "to-tessera|to-all" | head -2 | sed "s/^/    /"
 
@@ -356,7 +358,19 @@ else: print(f"  verdict key: {len(ls)} labels, 0 substring pairs (control GUARDE
 # planted lowercase filename must miss the key and the uppercase label must hit.
 lo=$(printf '    memo-x-to-pard-timeout-errored-unreadable-2026-11-23.md\n' | grep -cE "$FAILKEY" || true)
 hi=$(printf '  something TIMEOUT here\n' | grep -cE "$FAILKEY" || true)
-if [ "${lo:-9}" -eq 0 ] && [ "${hi:-0}" -eq 1 ]; then echo "  verdict key: case-sensitive — planted lowercase memo filename misses (0), uppercase label hits (1)"
+# Brief 11-26 (Klatch unit-520): a declared blindspot whose only instances are
+# the ones the declaring instrument planted is unfalsifiable, and its reach in
+# production is a separate measurement. Both directions of this one are
+# measured here, not just driven. Visible direction: real sibling-inbox
+# filenames that carry a label word in lowercase (4 over both inboxes on
+# 11-26) — the case rule is load-bearing for them, so it is not an idle guard.
+# Silent direction: this script's own emitters (non-comment echo lines, the key
+# definition excluded) that carry a label word in a case the key misses — on
+# 11-26 exactly one, the healthy "unignored bulk: none" line; a failure emitter
+# in that set would be a real failure the verdict cannot see, hence NOT OK.
+miss=$(grep -nE '^[^#]*echo' "$0" | grep -vE 'FAIL_LABELS|FAILKEY|unignored bulk: none' | grep -iE "$FAILKEY" | grep -vE "$FAILKEY" | cut -d: -f1 | paste -sd, -)
+if [ "${lo:-9}" -eq 0 ] && [ "${hi:-0}" -eq 1 ] && [ -z "$miss" ]; then echo "  verdict key: case-sensitive — planted lowercase memo filename misses (0), uppercase label hits (1); reach: $lcase real inbox filename(s) carry a label word in lowercase, 0 own emitters a failure could hide in (1 healthy emitter excluded by name)"
+elif [ "${lo:-9}" -eq 0 ] && [ "${hi:-0}" -eq 1 ]; then echo "  verdict key: case-sensitive (planted: 0/1 as expected) but own emitter line(s) $miss carry a label word in a case the key misses — a failure printed there is invisible to the verdict (NOT OK)"
 else echo "  verdict key: planted lowercase filename matched $lo time(s), uppercase label $hi — the mail block could forge or hide a verdict (NOT OK)"; fi
 # Ignore-pattern census (brief 11-20, Klatch unit-487): a count of markers is
 # an upper bound on markers doing work. The bulk sweep above trusts the ignore
@@ -390,6 +404,27 @@ else
       || echo "  ignore patterns: $shadow tracked file(s) match an ignore pattern — not load-bearing for them (inspect) (control: planted render_v7.log counted, 1)"
   else echo "  ignore patterns: shadow control counted ${sctl:-0} for planted render_v7.log, expected 1 — the shadow count is blind (NOT OK)"; fi
 fi
+# Brief 11-26 (Klatch unit-520), second reach measurement: the 11-24 readers
+# (-z / unquoted ls-files, names as separate arguments) guard against git's
+# quoting of non-ASCII, control, '"' and '\' bytes in paths — and every proof
+# of them so far used planted names in scratch clones. The production reach is
+# the tracked tree itself: how many tracked names git would quote, and how many
+# carry a space (git does not quote a space; a word-splitting reader would
+# still break it). On 11-26: 0 quotable, 1 spaced (tectonic_globe_v1 copy.mp4,
+# tracked since 02-28, in .pages-exclude). A 0 here says the floors were
+# counts; the control classifies a planted non-ASCII, spaced name as both.
+census=$(git ls-files -z | python3 -I -c '
+import sys
+ns=[n for n in sys.stdin.buffer.read().split(b"\0") if n]
+q=[n for n in ns if any(c>127 or c<32 or c in b"\"\\" for c in n)]
+sp=[n for n in ns if b" " in n]
+ctl=b"caf\xc3\xa9 plate.mp4"
+cq=int(any(c>127 or c<32 or c in b"\"\\" for c in ctl)); cs=int(b" " in ctl)
+print(len(ns),len(q),len(sp),cq+cs," ".join(x.decode("utf-8","replace") for x in sp[:3]))' 2>/dev/null)
+read -r tn tq tsp tctl tnames <<< "${census:-}"
+if [ -z "$census" ]; then echo "  tracked names: census did not run — UNMEASURABLE (NOT OK)"
+elif [ "${tctl:-0}" != 2 ]; then echo "  tracked names: classifier control read $tctl for a planted non-ASCII spaced name, expected 2 — the census is blind (NOT OK)"
+else echo "  tracked names: $tn tracked, $tq git would quote, $tsp with a space${tnames:+ ($tnames)} — the -z readers' live population (control: planted non-ASCII spaced name classified both, 2)"; fi
 # Completion sentinel: the verdict below requires this as the capture's last
 # line, so a check that aborts the function part-way cannot read as clean.
 echo "--- end of checks ---"
