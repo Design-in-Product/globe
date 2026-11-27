@@ -29,3 +29,9 @@ Sync: already up to date at 9627325. Mail at 16:22: designinproduct 7 new memos 
 Correction to the 10:42 close: the retry line reads 3 of the last 10 (runs 45877444645 45677931913 45677294032), not 4 — 45517816836 (11-23) aged out of the window as the morning's two runs entered it. Same shape as the 11-25 16:22 correction; the ten-run window is a sliding census, and a prediction typed into the record before the window moved was a guess, not a read. Seven races ever, three in the window, the control still reads the first directly.
 
 Drain: no-op; this entry pushed and its deploy proven below. Deferred, all blocked on xian — preview → live swap, blocker: his edit review of `previews/home-2026-10-21/`; 1:03 ghost test render, blocker: his verdict; sequel treatment, blocker: his decision; contributed-layer licence default CC BY vs BY-SA, blocker: his pick, and no outside layer exists yet; films out of the Pages artifact entirely (Duet's option 3), blocker: his hosting decision; whether `previews/` drafts stay published, blocker: his answer to Duet's open question.
+
+## 16:27 PT — same fire, closed — 1ca6edd deployed first try
+
+1ca6edd deployed (workflow) in 140 s; retry step skipped (no race), gate-proof step passed. Mail after the push: globe 0 new commits, designinproduct 0, mediajunkie 0 since 16:22 — two consecutive clean checks; one more after this push.
+
+Drain: done — no-op fire closed. Deferred, all blocked on xian — unchanged from the 16:22 entry (preview → live swap; ghost render verdict; sequel treatment; contributed-layer licence default; films out of the Pages artifact; previews drafts published or not).
