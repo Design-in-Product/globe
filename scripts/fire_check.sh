@@ -158,7 +158,13 @@ git ls-files -z -- '*.html' | xargs -0 python3 scripts/check_explore_syntax.py |
 manifests=$(bash scripts/explore_manifests.sh)
 if [ -z "$manifests" ]; then echo "  explore manifests: UNMEASURABLE (no scrubber_assets/*.json tracked)"
 # shellcheck disable=SC2086
-else printf '%s\n' "$manifests" | tr '\n' '\0' | xargs -0 python3 scripts/check_explore_manifest.py; fi
+else
+  mo=$(printf '%s\n' "$manifests" | tr '\n' '\0' | xargs -0 python3 scripts/check_explore_manifest.py 2>&1); printf '%s\n' "$mo"
+  # Brief 11-27: until 11-27 a malformed keyframes value crashed the checker with
+  # a traceback — exit 1 like a named refusal, and no word the verdict counts.
+  # The checker names those cases now; this catches any crash it still has.
+  grep -q '^Traceback' <<< "$mo" && echo "  explore manifests: the checker crashed (traceback above) — no verdict for that manifest (NOT OK)"
+fi
 # Brief 10-31 (Piper Morgan CIO, methodology-48): name the question, then run
 # the check against the case that should fail. Until 10-31 the dns line asked
 # "is there a CNAME" (any target passed), the live line asked "did something

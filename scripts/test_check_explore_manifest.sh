@@ -45,6 +45,18 @@ run 2 "UNREADABLE" "manifest without keyframes key refuses for the unreadable re
 # 7. duplicate declaration is named
 mk m.json '{"keyframes":[{"time_ma":1,"file":"a.webp"},{"time_ma":0,"file":"a.webp"}]}'
 run 0 "DECLARED-TWICE: a.webp" "duplicate declaration is reported"
+# 9. brief 11-27 (Klatch unit-521): an EMPTY keyframes list declared nothing, so
+#    nothing was absent and the checker said [ok] with exit 0 — the empty
+#    collection satisfying "no declared file is absent". Refused by name.
+mk m.json '{"keyframes":[]}'
+run 1 "EMPTY MANIFEST" "a manifest with no keyframes is refused, not [ok]"
+# 10. keyframes that is not a list crashed with a TypeError traceback (exit 1,
+#     no label the verdict counts); unreadable by name now.
+mk m.json '{"keyframes":5}'
+run 2 "UNREADABLE" "keyframes that is not a list refuses for the unreadable reason"
+# 11. a keyframe that is not an object crashed with an AttributeError traceback.
+mk m.json '{"keyframes":["a.webp"]}'
+run 2 "UNREADABLE" "a non-object keyframe refuses for the unreadable reason"
 # 8. the live manifests pass (this is the fire's real check). The list comes
 # from the same derivation the gates use (brief 11-10: a hand-typed copy of
 # the two names here would be the defect the gates were cured of); a derived

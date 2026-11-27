@@ -90,7 +90,11 @@ while IFS= read -r t; do
   # read, and two different figures are themselves a GAP.
   ns=$(grep -F "\`$t\`" "$H" | grep -oE "\`$t\`[^|\`]*" | grep -oE '\(([0-9]+) cases' | grep -oE '[0-9]+' | sort -un)
   if [ -z "$ns" ]; then skip "$t is named without a case count to verify"; continue; fi
-  if [ "$(printf '%s\n' "$ns" | wc -l | tr -d ' ')" -ne 1 ]; then gap "handoff states different case counts for $t ($(printf '%s' "$ns" | paste -sd, -)) — one is stale"; continue; fi
+  # grep -c ., not wc -l: printf '%s\n' of an EMPTY string is one line to wc, so
+  # the "exactly one figure" test passed vacuously on empty input and held only
+  # because the -z skip above runs first (brief 11-27, Klatch unit-521: the two
+  # size predicates fail in opposite directions on empty; this one now fails closed).
+  if [ "$(printf '%s\n' "$ns" | grep -c .)" -ne 1 ]; then gap "handoff states different case counts for $t ($(printf '%s' "$ns" | paste -sd, -)) — one is stale"; continue; fi
   n=$ns
   if [ ! -f "$t" ]; then gap "handoff names $t ($n cases) but no such script"; continue; fi
   summ=$(bash "$t" 2>&1 | grep -oE '[0-9]+ passed, [0-9]+ failed' | tail -1)

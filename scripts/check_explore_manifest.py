@@ -16,8 +16,18 @@ things:
                    (reported, exit 0: nothing on the page breaks)
 
 Usage: check_explore_manifest.py <manifest.json> [...]   (asset dir = manifest's dir)
-Exit 0 = every declared file present; 1 = at least one declared file absent;
-2 = a manifest could not be read. Each verdict names its kind. ~0.05 s, no network.
+Exit 0 = every declared file present; 1 = at least one declared file absent, or
+NO keyframe declared at all; 2 = a manifest could not be read (unparseable, no
+"keyframes" key, or keyframes not a list of objects). Each verdict names its kind.
+~0.05 s, no network.
+
+Brief 11-27 (Klatch unit-521): a size predicate reads an empty collection in
+one of two directions, and "no declared file is absent" is the false-green one
+— an empty keyframes list declared nothing, so nothing was absent, and the
+checker printed "0 declared, 0 present ... [ok]" (driven 11-27). A manifest
+with no keyframes is refused by name. Before 11-27 a non-list or a non-object
+keyframe also crashed the checker with a traceback (exit 1, no label the
+fire check's verdict counts); both are UNREADABLE now.
 """
 import json
 import os
@@ -34,10 +44,17 @@ def check(path):
     except (OSError, ValueError, KeyError, TypeError) as e:
         print(f"  {path}: UNREADABLE ({e.__class__.__name__}: {e}) (NOT OK)")
         return 2
+    if not isinstance(keys, list) or any(not isinstance(k, dict) for k in keys):
+        print(f"  {path}: UNREADABLE (keyframes must be a list of objects) (NOT OK)")
+        return 2
     d = os.path.dirname(path) or "."
+    on_disk = {n for n in os.listdir(d) if os.path.splitext(n)[1].lower() in IMAGE_EXT}
+    if not keys:
+        print(f"  {path}: EMPTY MANIFEST — 0 keyframes declared, {len(on_disk)} image(s) on disk; "
+              f"Explore would load nothing from it (NOT OK)")
+        return 1
     declared = [k.get("file", "") for k in keys]
     absent = [f for f in declared if not f or not os.path.isfile(os.path.join(d, f))]
-    on_disk = {n for n in os.listdir(d) if os.path.splitext(n)[1].lower() in IMAGE_EXT}
     undeclared = sorted(on_disk - set(declared))
     dup = sorted({f for f in declared if declared.count(f) > 1})
     verdict = "ok" if not absent else "NOT OK"
