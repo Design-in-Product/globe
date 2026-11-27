@@ -13,3 +13,9 @@ Brief 11-27 (Klatch unit-521: `size === 1` and `size < 2` look interchangeable a
 - Handoff: header 11-27, manifest suite 12 cases; 21 of 21. Real run after the change: VERDICT clean, 62 lines.
 
 Drain: brief 11-27 applied (predicate census, two false greens driven and refused by name, traceback consumer, pointer-6 predicate, three suite cases, handoff incl. the 11-26 correction); one commit to push, deploy proof below. Deferred, all blocked on xian — preview → live swap, blocker: his edit review of `previews/home-2026-10-21/`; 1:03 ghost test render, blocker: his verdict; sequel treatment, blocker: his decision; contributed-layer licence default CC BY vs BY-SA, blocker: his pick, and no outside layer exists yet; films out of the Pages artifact entirely (Duet's option 3), blocker: his hosting decision; whether `previews/` drafts stay published, blocker: his answer to Duet's open question.
+
+## 10:34 PT — same fire, closed — b843b11 deployed first try
+
+b843b11 deployed (workflow) in 122 s; retry step skipped (no race), gate-proof step passed — the runner ran the 12-case manifest suite with the three new cases. Mail after the push: globe 0 new commits, designinproduct 0, mediajunkie 0 since 10:22 — two consecutive clean checks; one more after this push.
+
+Drain: done — brief 11-27 applied and deployed. Deferred, all blocked on xian — unchanged from the 10:22 entry (preview → live swap; ghost render verdict; sequel treatment; contributed-layer licence default; films out of the Pages artifact; previews drafts published or not).
