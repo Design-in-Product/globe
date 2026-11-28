@@ -287,6 +287,25 @@ else
     else echo "  login ($cfg): expires ${exp%T*}, $days days left"; fi
   fi
 fi
+# Shared config default + this seat's own model flag (brief 11-28, Pard: an
+# in-session /model rewrites "model" in the config dir's settings.json — the
+# default every seat and headless claude -p on that dir comes up on when
+# launched without --model. Pard's runbook keeps Fable off that default (xian's
+# policy) and puts the line back after each switch; this is the reader for
+# that step, each fire). The default is Pard's population, so it is named, not
+# pinned — only a Fable default or an unparseable file is NOT OK. The seat's
+# own flag is read from its live process (no flag = the default applies to it).
+sj="$cfg/settings.json"
+if [ ! -f "$sj" ]; then echo "  config default ($sj): no settings.json — UNMEASURABLE (NOT OK)"
+else
+  dm=$(python3 -I -c 'import json,sys; d=json.load(open(sys.argv[1])); print(d.get("model") or "(unset)")' "$sj" 2>/dev/null) || dm=""
+  if [ -z "$dm" ]; then echo "  config default ($sj): does not parse as JSON — every seat launched from it is affected — UNMEASURABLE (NOT OK)"
+  elif [[ "$dm" == *fable* ]]; then echo "  config default ($sj): model $dm — Fable on the shared default, against the runbook; a relaunched seat without --model comes up on it (NOT OK)"
+  else echo "  config default ($sj): model $dm (parses; shared by every seat launched from this dir without --model)"; fi
+fi
+own=$(ps -axo args | grep -E '^[^ ]*claude .*--remote-control tessera( |$)' | grep -oE -- '--model [^ ]+' | head -1 | cut -d' ' -f2)
+if [ -z "$own" ]; then echo "  this seat: no claude process with --remote-control tessera and a --model flag — it runs on the shared default or is not where this reader looks (NOT OK)"
+else echo "  this seat: launched with --model $own (the shared default does not apply to it)"; fi
 # Brief 11-22 (Klatch unit-496): a 0 from a form-keyed detector cannot tell
 # "none running" from "pgrep cannot see processes". The control counts this
 # very script by the same pipeline (a floor: >= 1; a parent shell can add one).
