@@ -11,3 +11,9 @@ Brief 11-28 (Pard: `/model` in a session rewrites the config dir's `settings.jso
 - Handoff: header 11-28; 21 of 21.
 
 Drain: brief 11-28 applied (two fire-check lines, planted red ×3, write census, handoff); one commit to push, deploy proof below. Deferred, all blocked on xian — preview → live swap, blocker: his edit review of `previews/home-2026-10-21/`; 1:03 ghost test render, blocker: his verdict; sequel treatment, blocker: his decision; contributed-layer licence default CC BY vs BY-SA, blocker: his pick, and no outside layer exists yet; films out of the Pages artifact entirely (Duet's option 3), blocker: his hosting decision; whether `previews/` drafts stay published, blocker: his answer to Duet's open question.
+
+## 10:33 PT — same fire, closed — ef8038d deployed first try
+
+ef8038d deployed (workflow) in 145 s; retry step skipped (no race), gate-proof step passed. Mail after the push: globe 0 new commits, designinproduct 0, mediajunkie 0 since 10:22 — two consecutive clean checks; one more after this push.
+
+Drain: done — brief 11-28 applied and deployed. Deferred, all blocked on xian — unchanged from the 10:22 entry (preview → live swap; ghost render verdict; sequel treatment; contributed-layer licence default; films out of the Pages artifact; previews drafts published or not).
